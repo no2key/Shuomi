@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="CustomWindowTitleBackground">
+        <item name="android:background">#565656</item>
+    </style>
+
+    <style name="titlebar_style_middle" parent="android:Theme">
+        <item name="android:windowTitleSize">36dip</item>
+        <item name="android:windowTitleBackgroundStyle">@style/CustomWindowTitleBackground</item>
+    </style>
+    
+<!--     <style name="button_style_small" parent="@android:attr/buttonStyleSmall"> -->
+<!--         <item name= "android:textSize">14dip</item> -->
+<!--         <item name= "android:minHeight">10dip</item> -->
+<!--         <item name= "android:minWidth">30dip</item> -->
+<!--         <item name= "android:paddingTop">2dip</item> -->
+<!--         <item name= "android:paddingBottom">2dip</item> -->
+<!--         <item name= "android:layout_marginTop">3dip</item>  -->
+<!--     </style>  -->
+
+</resources>

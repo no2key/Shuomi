@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/groupon_info_item"
+    android:orientation="horizontal"  
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:paddingLeft="15dip"
+    android:padding="6dip" >
+    
+	<TextView
+	    android:id="@+id/text_groupon_item"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:textSize="16sp"
+	    android:text="no item" 
+	    >
+	</TextView>
+	
+	<RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right" >
+          
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/right_arrow_gray"
+            android:id="@+id/user_photo">
+        </ImageView>
+
+    </RelativeLayout>
+
+</LinearLayout>

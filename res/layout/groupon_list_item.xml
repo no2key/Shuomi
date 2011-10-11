@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"   
+    android:orientation="horizontal"  
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/groupon_list_item"
+    android:padding="2dip">
+    
+    <ImageView
+        android:layout_width="70px"
+        android:layout_height="42px"
+        android:src="@drawable/unknown"
+        android:padding="2dip"
+        android:layout_marginRight="2dip"
+        android:id="@+id/demo_image"
+        android:scaleType="fitXY"
+        android:gravity="center" 
+        android:layout_gravity="center_vertical"
+        android:background="@color/white">
+<!--         android:background="@drawable/image_bg"> -->
+    </ImageView>
+        
+    <LinearLayout
+        android:orientation="vertical"  
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="1dip" >
+        
+        <LinearLayout
+            android:orientation="horizontal"  
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="1dip" >
+            
+            <TextView 
+                android:layout_height="wrap_content"   
+                android:layout_width="wrap_content"   
+                android:id="@+id/provider"
+                android:text="provider"
+                android:textSize="16dip"
+                android:textColor="@color/blue"
+                android:paddingRight="3dip" >
+            </TextView>
+            
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="1dip"
+                android:gravity="right">
+                     
+                <LinearLayout
+                    android:orientation="horizontal"  
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="1dip" >
+                              
+                <TextView  
+                    android:layout_height="wrap_content" 
+                    android:layout_width="wrap_content"  
+                    android:textSize="16dip"  
+                    android:text="0.0" 
+                    android:id="@+id/discount"
+                    android:textColor="@color/red"
+                    android:paddingRight="35dip"> 
+                </TextView>
+                 
+               <TextView 
+                   android:layout_height="wrap_content"
+                   android:layout_width="wrap_content"   
+                   android:id="@+id/price"
+                   android:text="00000.00"
+                   android:textSize="16dip"
+                   android:textColor="@color/red"
+                   android:paddingRight="5dip" >
+               </TextView>
+               
+               </LinearLayout>
+       
+           </RelativeLayout>
+                
+        </LinearLayout>
+        
+        <LinearLayout
+            android:orientation="horizontal"  
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="1dip" >
+            
+            <TextView 
+                android:layout_height="wrap_content"   
+                android:layout_width="wrap_content"   
+                android:id="@+id/details"
+                android:text="Details......"
+                android:textSize="16dip"
+                android:paddingRight="3dip"
+                android:maxLines="3">
+            </TextView>
+            
+        </LinearLayout>
+        
+    </LinearLayout>
+    
+</LinearLayout>
