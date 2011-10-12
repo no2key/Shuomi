@@ -194,7 +194,7 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 	
 	@Override
 	protected void onNewIntent( Intent intent ) {
-		if ( intent.getAction().equals( RESPONSE.HTTP_RESPONSE ) ) {
+		if ( intent.getAction().equals( RESPONSE.HTTP_RESPONSE_GROUPON ) ) {
 			ResponseIntent response = new ResponseIntent( intent );
 			NetworkResponse.process( this, ( ResponseIntent ) response );
 		}

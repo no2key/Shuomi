@@ -4,7 +4,7 @@ public class GrouponListRequestIntent extends RequestIntent {
 	
 	public GrouponListRequestIntent() {
 		super( REQUEST.LIST_GROUPON );
-		setResponseAction( RESPONSE.HTTP_RESPONSE );
+		setResponseAction( RESPONSE.HTTP_RESPONSE_GROUPON );
 	}
 	
 	public void setProvince( String province ) {

@@ -2,7 +2,7 @@ package com.android.shuomi.intent;
 
 public class RESPONSE {
 	
-	static final public String HTTP_RESPONSE = "com.android.shuomi.HTTP_RESPONSE";
+	static final public String HTTP_RESPONSE_GROUPON = "com.android.shuomi.HTTP_RESPONSE_GROUPON";
 	
 	public static final String PARAM_PAGES = "pages";
 	public static final String PARAM_LIST = "list";
