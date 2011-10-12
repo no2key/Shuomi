@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content">
+    
     <LinearLayout
+    	android:id="@+id/loading_more"
         android:gravity="center_vertical|center_horizontal"
         android:orientation="horizontal"
-        android:id="@+id/loading_more"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:paddingTop="10dip"
         android:paddingBottom="10dip">
+        
         <ProgressBar
             android:id="@+android:id/progress_large"
             android:layout_width="wrap_content"
@@ -19,6 +21,7 @@
             android:indeterminate="true"
             style="?android:attr/progressBarStyleSmall">
         </ProgressBar>
+        
         <TextView
             android:id="@+id/loading_msg"
             android:paddingLeft="6.0dip"
@@ -28,5 +31,7 @@
             android:layout_marginBottom="1.0dip"
             android:text="@string/loading">
         </TextView>
+        
     </LinearLayout>
-</LinearLayout>
+    
+</FrameLayout>

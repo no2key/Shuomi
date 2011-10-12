@@ -9,7 +9,7 @@
     <application 
         android:icon="@drawable/icon"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.NoTitleBar" >
+        android:theme="@android:style/Theme.NoTitleBar">
         
         <service android:enabled="true"
                  android:name=".network.NetworkService"

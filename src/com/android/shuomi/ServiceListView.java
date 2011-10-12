@@ -24,7 +24,6 @@ import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
-
 public class ServiceListView extends NetworkBindActivity implements NetworkResponseHandler {
 	
 	private static final String TAG = "ServiceListView";
@@ -64,6 +63,9 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
         final TabWidget tabWidget = tabHost.getTabWidget();
         tabWidget.setStripEnabled( false );
         setupTabLabelProperty( tabWidget );
+        
+        int tabHeight = tabWidget.getChildTabViewAt( 0 ).getLayoutParams().height;
+        tabHost.getTabContentView().setPadding( 0, 0, 0, tabHeight );
         
         tabHost.setCurrentTab( 0 );
 	}
@@ -144,14 +146,6 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 		current.showNext();
 	}
 	
-//	public void goToGrouponDetails( int position ) {
-//		GrouponListView view = new GrouponListView( this, position );
-//		
-//		ViewFlipper current = getCurrentFlipper();
-//		current.addView( view );
-//		current.showNext();
-//	}
-
 	@Override
 	protected void onNetworkServiceConnected() {
 		NetworkSession.create( this, getNetworkService() );		

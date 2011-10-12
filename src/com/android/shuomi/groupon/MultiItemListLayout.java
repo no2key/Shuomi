@@ -15,33 +15,69 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 
 public abstract class MultiItemListLayout extends ListLayout {
 
+	private final String TAG = " MultiItemLayout ";
 	private final int[] mItemFieldResIds = { R.id.demo_image, R.id.provider, R.id.discount, R.id.price, R.id.details };
 	private final int mItemResId = R.layout.groupon_list_item;
+	
 	
 	private boolean mLoadingInProgress = false;
 	private int mDesiredPage = 1;
 	private int mTotalPage = 1;
-	private ArrayList<ListItemUnion[]> mDataList = null;//new ArrayList<ListItemUnion[]>();
+	private ArrayList<ListItemUnion[]> mDataList = null;
 	private BaseAdapter mAdapter = null;
-	private View mFooter = null;	
+	
+	private View mFooter = null;
+	private LinearLayout mFooterInnerView = null;
+	private int mFooterInnerViewHeight = 0;
+	
+	private View mHeader = null;
+	private LinearLayout mHeaderInnerView = null;
+	private int mHeaderInnerViewHeight = 0;
 	
 	public MultiItemListLayout(Context context) {
 		super( context );
 		
 		LayoutInflater layoutInflater = ( LayoutInflater )getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-		mFooter = layoutInflater.inflate( R.layout.list_loading_footer, getList(), false );
+		setupFooterView( layoutInflater );
+		setupHeaderView( layoutInflater );
+	}
+	
+	private void setupHeaderView( LayoutInflater inflater ) {
+		mHeader = inflater.inflate( R.layout.list_loading_footer, getList(), false );
+		
+		mHeaderInnerView = (LinearLayout) mHeader.findViewById( R.id.loading_more );
+		mHeaderInnerViewHeight = mHeaderInnerView.getLayoutParams().height;
+
+		enableHeaderView( false );		
+		getList().addHeaderView( mHeader );
+	}
+	
+	protected void enableHeaderView( boolean enable ) {
+		mHeaderInnerView.getLayoutParams().height = enable ? mHeaderInnerViewHeight : 0;
+		mHeader.setVisibility( enable ? View.VISIBLE : View.GONE );
+	} 
+	
+	private void setupFooterView( LayoutInflater inflater ) {
+		mFooter = inflater.inflate( R.layout.list_loading_footer, getList(), false );
+		
+		mFooterInnerView = (LinearLayout) mFooter.findViewById( R.id.loading_more );
+		mFooterInnerViewHeight = mFooterInnerView.getLayoutParams().height;
+
+		enableFooterView( false );		
 		getList().addFooterView( mFooter );
+	}
+	
+	protected void enableFooterView( boolean enable ) {
+		mFooterInnerView.getLayoutParams().height = enable ? mFooterInnerViewHeight : 0;
+		mFooter.setVisibility( enable ? View.VISIBLE : View.GONE );
 		
-		//View emptyView = layoutInflater.inflate( R.layout.empty_view, getList(), false );
-		//View emptyView = findViewById( R.id.empty_view );
-		//getList().setEmptyView( emptyView );
-		
-//		mAdapter = new MiscListAdapter( getContext(), mItemResId, mDataList, 
-//	    		null, null, mItemFieldResIds );
-//		getList().setAdapter( mAdapter );
+		if ( enable ) {
+			getList().setSelection( getList().getCount() - 1 );
+		}
 	}
 	
 	private void switchView() {
@@ -61,6 +97,7 @@ public abstract class MultiItemListLayout extends ListLayout {
 				mLoadingInProgress = false;
 				updatePage( pageCount );
 				updateMultiPageList( pageCount, ( ArrayList<String[]> ) data );
+				setFooterOnResponse();
 				break;
 				
 			default:
@@ -69,12 +106,18 @@ public abstract class MultiItemListLayout extends ListLayout {
 		}
 	}
 	
+	private void setFooterOnResponse() {
+		if ( mDesiredPage == mTotalPage  ) {
+			getList().removeFooterView( mFooter );
+		}
+		else {
+			enableFooterView( false );
+		}
+	}
+	
 	protected void updatePage( int totalPage ) {
 		mTotalPage = totalPage;
-		
-		if ( mDesiredPage ++ == mTotalPage  ) {
-			getList().removeFooterView( mFooter );
-		}	
+		mDesiredPage ++;
 	}
 	
 	protected void updateMultiPageList( int page, ArrayList<String[]> itemList ) {
@@ -138,13 +181,16 @@ public abstract class MultiItemListLayout extends ListLayout {
 		Log.d( "MultiItemListLayout", "Desired page = " + String.valueOf( mDesiredPage ) + ", Total page = " + String.valueOf( mTotalPage ) );
 		
 		if ( mDesiredPage <= mTotalPage && !mLoadingInProgress ) {
-			bundle.putInt( REQUEST.PARAM_PAGE, mDesiredPage );
-			
-			GrouponListRequestIntent request = new GrouponListRequestIntent();
-			request.putExtras( bundle );
-			NetworkSession.send( request );
+			sendGrouponListRequest( bundle );
 			mLoadingInProgress = true;
 		}
+	}
+	
+	private void sendGrouponListRequest( Bundle bundle ) {
+		bundle.putInt( REQUEST.PARAM_PAGE, mDesiredPage );
+		GrouponListRequestIntent request = new GrouponListRequestIntent();
+		request.putExtras( bundle );
+		NetworkSession.send( request );
 	}
 	
 	protected BaseAdapter getAdapter() {

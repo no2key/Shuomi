@@ -37,8 +37,19 @@ public class GrouponListView extends MultiItemListLayout {
 				switch ( scrollState ) {
 					
 					case OnScrollListener.SCROLL_STATE_IDLE:
+						
+						Log.d( "GrouponListView", "Last = " + String.valueOf( view.getLastVisiblePosition() ) + 
+								", Total = " + String.valueOf( view.getCount() ) );
+						
+						if ( reachBottom( view ) ) {
+							Log.v( "GrouponListView", "reach the bottom 1" );
+							onReachLastItem();
+						}
+
 						if ( view.getLastVisiblePosition() == ( view.getCount() - 1 ) ) {
 							int lastPos = view.getLastVisiblePosition();
+							Log.d( "GrouponListView", "View Height = " + String.valueOf( view.getHeight() ) );
+							Log.d( "GrouponListView", "View Top = " + String.valueOf( view.getTop() ) );
 							Log.d( "GrouponListView", "View Bottom = " + String.valueOf( view.getBottom() ) );
 							Log.d( "GrouponListView", "Item Count = " +  String.valueOf( view.getCount() ) );
 							//Log.d( "GrouponListView", "Item Bottom = " + String.valueOf( view.getChildAt(view.getCount() - 1).getBottom() ) );
@@ -49,13 +60,13 @@ public class GrouponListView extends MultiItemListLayout {
 									Log.d( "GrouponListView", String.valueOf( i ) + ". Item Bottom = " + String.valueOf( bottom.getBottom() ) );
 								}
 							}
-							Log.v( "GrouponListView", "reach the bottom" );
-							onReachLastItem();
+							Log.v( "GrouponListView", "reach the bottom 2" );
+							//onReachLastItem();
 						}
-						else if ( view.getCount() > 0 && view.getFirstVisiblePosition() == 0 ) {
-							Log.d( "GrouponListView", "Top = " + String.valueOf( view.getChildAt(0).getTop() ) );
-							onReachFirstItem();
+						
+						else if ( reachTop( view ) ) {
 							Log.v( "GrouponListView", "reach the top" );
+							onReachFirstItem();
 						}
 						
 						break;
@@ -63,11 +74,22 @@ public class GrouponListView extends MultiItemListLayout {
 //					case OnScrollListener.SCROLL_STATE_FLING:
 //						break;
 //
-//					case OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
-//						break;
+					case OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
+						Log.v( "GrouponListView", "TOUCH_SCROLL" );
+						break;
 				}
 			}
 		} );
+	}
+	
+	private boolean reachBottom( AbsListView view ) { 
+		int extra = getList().getHeaderViewsCount() + getList().getFooterViewsCount();
+		return ( view.getLastVisiblePosition() == ( view.getCount() - 1 ) &&
+				view.getHeight() - getAdapter().getView( view.getLastVisiblePosition() - extra, null, null ).getBottom() <= 1 );
+	}
+	
+	private boolean reachTop( AbsListView view ) {
+		return ( view.getCount() > 0 && view.getFirstVisiblePosition() == 0 && view.getChildAt(0).getTop() == 0 ); 
 	}
 
 	private void setupTitle()	{
@@ -76,10 +98,11 @@ public class GrouponListView extends MultiItemListLayout {
 	}
 	
 	private void onReachFirstItem() {
-		
+		enableHeaderView( true );
 	}
 	
 	private void onReachLastItem() {
+		enableFooterView( true );
 		requestGrouponList( mBundle );
 	}
 
