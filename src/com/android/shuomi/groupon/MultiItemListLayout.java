@@ -1,5 +1,7 @@
 package com.android.shuomi.groupon;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
@@ -9,10 +11,12 @@ import com.android.shuomi.intent.REQUEST;
 import com.android.shuomi.network.NetworkSession;
 import com.android.shuomi.parser.ResponseParser;
 
+import android.R.integer;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
@@ -38,12 +42,26 @@ public abstract class MultiItemListLayout extends ListLayout {
 	private LinearLayout mHeaderInnerView = null;
 	private int mHeaderInnerViewHeight = 0;
 	
+	protected int mLastMotionY;
+	private int mRefreshViewHeight;
+	private int mRefreshOriginalTopPadding;
+	private int mRefreshState;
+	
+	private static final int TAP_TO_REFRESH = 1;
+    private static final int PULL_TO_REFRESH = 2;
+    private static final int RELEASE_TO_REFRESH = 3;
+    private static final int REFRESHING = 4;
+	
 	public MultiItemListLayout(Context context) {
 		super( context );
 		
 		LayoutInflater layoutInflater = ( LayoutInflater )getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
 		setupFooterView( layoutInflater );
 		setupHeaderView( layoutInflater );
+		
+		mRefreshViewHeight = mHeader.getMeasuredHeight();
+		mRefreshOriginalTopPadding = mHeader.getPaddingTop();
+		mRefreshState = TAP_TO_REFRESH;
 	}
 	
 	private void setupHeaderView( LayoutInflater inflater ) {
@@ -59,7 +77,44 @@ public abstract class MultiItemListLayout extends ListLayout {
 	protected void enableHeaderView( boolean enable ) {
 		mHeaderInnerView.getLayoutParams().height = enable ? mHeaderInnerViewHeight : 0;
 		mHeader.setVisibility( enable ? View.VISIBLE : View.GONE );
-	} 
+	}
+	
+	protected void applyHeaderPadding(MotionEvent ev) {
+        final int historySize = ev.getHistorySize();
+        int pointerCount = ev.getPointerCount();
+
+        for (int h = 0; h < historySize; h++) {
+            for (int p = 0; p < pointerCount; p++) {
+                if ( mRefreshState == RELEASE_TO_REFRESH) 
+                {
+                    if (isVerticalFadingEdgeEnabled()) {
+                        setVerticalScrollBarEnabled(false);
+                    }
+
+                    int historicalY = (int) ev.getHistoricalY( p, h );
+
+                    // Calculate the padding to apply, we divide by 1.7 to
+                    // simulate a more resistant effect during pull.
+                    int topPadding = (int) (((historicalY - mLastMotionY)
+                            - mRefreshViewHeight) / 1.7);
+
+                    mHeader.setPadding(
+                    		mHeader.getPaddingLeft(),
+                            topPadding,
+                            mHeader.getPaddingRight(),
+                            mHeader.getPaddingBottom());
+                }
+            }
+        }
+    }
+	
+	private void resetHeaderPadding() {
+        mHeader.setPadding(
+        		mHeader.getPaddingLeft(),
+                mRefreshOriginalTopPadding,
+                mHeader.getPaddingRight(),
+                mHeader.getPaddingBottom());
+    }
 	
 	private void setupFooterView( LayoutInflater inflater ) {
 		mFooter = inflater.inflate( R.layout.list_loading_footer, getList(), false );
@@ -132,6 +187,7 @@ public abstract class MultiItemListLayout extends ListLayout {
 				mAdapter = new MiscListAdapter( getContext(), mItemResId, mDataList, 
 			    		null, null, mItemFieldResIds );
 				getList().setAdapter( mAdapter );
+				//getList().setSelection( getList().getHeaderViewsCount() );
 			}
 			
 			mAdapter.notifyDataSetChanged();
