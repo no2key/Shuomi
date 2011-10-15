@@ -8,11 +8,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.AbsListView.OnScrollListener;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 public abstract class PullToRefreshListLayout extends ListLayout {
 
@@ -37,10 +43,20 @@ public abstract class PullToRefreshListLayout extends ListLayout {
 	private int mCurrentScrollState;
 	private int mRefreshState;
 	
+	private RotateAnimation mFlipAnimation;
+	private RotateAnimation mReverseFlipAnimation;
+	
 	private static final int TAP_TO_REFRESH = 1;
 	private static final int PULL_TO_REFRESH = 2;
 	private static final int RELEASE_TO_REFRESH = 3;
 	private static final int REFRESHING = 4;
+	
+	private static final int PULL_RELEASE_THRESHOLD = 20;
+	
+	private TextView mHeaderText;
+    private ImageView mHeaderImage;
+    private ProgressBar mHeaderProgress;
+    private TextView mHeaderLastUpdated;
 	
 	public PullToRefreshListLayout( Context context ) {
 		super( context );
@@ -49,19 +65,86 @@ public abstract class PullToRefreshListLayout extends ListLayout {
 		setupFooterView( layoutInflater );
 		setupHeaderView( layoutInflater );
 		
-		mRefreshViewHeight = mHeader.getMeasuredHeight();
-		mRefreshOriginalTopPadding = mHeader.getPaddingTop();
+//		measureView( mHeader );
+//		mRefreshViewHeight = mHeader.getMeasuredHeight();
+//		Log.e( TAG, "Header View height = " + mRefreshViewHeight );
+		
+//		mRefreshOriginalTopPadding = mHeader.getPaddingTop();
+//		Log.e( TAG, "Header View top padding = " + mRefreshOriginalTopPadding );
+		
 		mRefreshState = TAP_TO_REFRESH;
 		addListScrollListener();
 		addListTouchListener();
+		setupAnimations();
+		getHeaderWidgets();
 	}
 	
+	private void measureView(View child) {
+        ViewGroup.LayoutParams p = child.getLayoutParams();
+        if (p == null) {
+            p = new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.FILL_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
+
+        int childWidthSpec = ViewGroup.getChildMeasureSpec(0,
+                0 + 0, p.width);
+        int lpHeight = p.height;
+        int childHeightSpec;
+        if (lpHeight > 0) {
+            childHeightSpec = MeasureSpec.makeMeasureSpec(lpHeight, MeasureSpec.EXACTLY);
+        } else {
+            childHeightSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+        }
+        child.measure(childWidthSpec, childHeightSpec);
+    }
+	
+	private void getHeaderWidgets() {
+		mHeaderText = ( TextView ) mHeader.findViewById( R.id.pull_to_refresh_text );
+        mHeaderImage = ( ImageView ) mHeader.findViewById( R.id.pull_to_refresh_image );
+        mHeaderProgress = ( ProgressBar ) mHeader.findViewById( R.id.pull_to_refresh_progress );
+        mHeaderLastUpdated = ( TextView ) mHeader.findViewById( R.id.pull_to_refresh_updated_at );
+        
+        mHeaderImage.setMinimumHeight(50);
+	}
+	
+	private void setupAnimations() {
+        mFlipAnimation = new RotateAnimation( 0, -180,
+                RotateAnimation.RELATIVE_TO_SELF, 0.5f, RotateAnimation.RELATIVE_TO_SELF, 0.5f );
+        mFlipAnimation.setInterpolator( new LinearInterpolator() );
+        mFlipAnimation.setDuration( 250 );
+        mFlipAnimation.setFillAfter( true );
+        
+        mReverseFlipAnimation = new RotateAnimation( -180, 0,
+                RotateAnimation.RELATIVE_TO_SELF, 0.5f, RotateAnimation.RELATIVE_TO_SELF, 0.5f );
+        mReverseFlipAnimation.setInterpolator( new LinearInterpolator() );
+        mReverseFlipAnimation.setDuration( 250 );
+        mReverseFlipAnimation.setFillAfter( true );
+	}
+	
+	public void setLastUpdated( CharSequence lastUpdated ) {
+        if (lastUpdated != null) {
+        	mHeaderLastUpdated.setVisibility( View.VISIBLE );
+        	mHeaderLastUpdated.setText( lastUpdated );
+        } 
+        else {
+        	mHeaderLastUpdated.setVisibility( View.GONE );
+        }
+    }
+	
 	private void setupHeaderView( LayoutInflater inflater ) {
-		mHeader = inflater.inflate( R.layout.list_loading_footer, getList(), false );
+		mHeader = inflater.inflate( R.layout.pull_to_refresh_header, getList(), false );
 		
-		mHeaderInnerView = (LinearLayout) mHeader.findViewById( R.id.loading_more );
+		mHeaderInnerView = ( LinearLayout ) mHeader.findViewById( R.id.pull_to_refresh_header );
 		mHeaderInnerViewHeight = mHeaderInnerView.getLayoutParams().height;
 
+		measureView( mHeader );
+		mRefreshViewHeight = mHeader.getMeasuredHeight();
+		Log.e( TAG, "SETUP Header View height = " + mRefreshViewHeight );
+		
+		mRefreshOriginalTopPadding = mHeader.getPaddingTop();
+		Log.e( TAG, "Header View top padding = " + mRefreshOriginalTopPadding );
+		
 		enableHeaderView( false );		
 		getList().addHeaderView( mHeader );
 	}
@@ -97,29 +180,24 @@ public abstract class PullToRefreshListLayout extends ListLayout {
 	private void resetHeader() {
         if ( mRefreshState != TAP_TO_REFRESH ) {
             mRefreshState = TAP_TO_REFRESH;
-
-            resetHeaderPadding();
-            enableHeaderView( false );
             
-
-//            // Set refresh view text to the pull label
-//            mRefreshViewText.setText(R.string.pull_to_refresh_tap_label);
-//            // Replace refresh drawable with arrow drawable
-//            mRefreshViewImage.setImageResource(R.drawable.ic_pulltorefresh_arrow);
-//            // Clear the full rotation animation
-//            mRefreshViewImage.clearAnimation();
-//            // Hide progress bar and arrow.
-//            mRefreshViewImage.setVisibility(View.GONE);
-//            mRefreshViewProgress.setVisibility(View.GONE);
+            resetHeaderPadding();
+            enableHeaderView( false );            
+            resetHeaderWidgets();
         }
     }
 	
+	private void resetHeaderWidgets() {
+      mHeaderText.setText( R.string.pull_to_refresh_tap_label );
+      mHeaderImage.setImageResource( R.drawable.ic_pulltorefresh_arrow );
+      mHeaderImage.clearAnimation();
+      mHeaderImage.setVisibility( View.GONE );
+      mHeaderProgress.setVisibility( View.GONE );
+	}
+	
 	private void resetHeaderPadding() {
-        mHeader.setPadding(
-        		mHeader.getPaddingLeft(),
-                mRefreshOriginalTopPadding,
-                mHeader.getPaddingRight(),
-                mHeader.getPaddingBottom());
+        mHeader.setPadding(	mHeader.getPaddingLeft(), mRefreshOriginalTopPadding,
+                mHeader.getPaddingRight(), mHeader.getPaddingBottom() );
     }
 	
 	protected void applyHeaderPadding(MotionEvent ev) {
@@ -128,8 +206,7 @@ public abstract class PullToRefreshListLayout extends ListLayout {
 
         for (int h = 0; h < historySize; h++) {
             for (int p = 0; p < pointerCount; p++) {
-                if ( mRefreshState == RELEASE_TO_REFRESH) 
-                {
+                if ( mRefreshState == RELEASE_TO_REFRESH || mRefreshState == REFRESHING ) {
                     if (isVerticalFadingEdgeEnabled()) {
                         setVerticalScrollBarEnabled(false);
                     }
@@ -141,45 +218,60 @@ public abstract class PullToRefreshListLayout extends ListLayout {
                     int topPadding = (int) (((historicalY - mLastMotionY)
                             - mRefreshViewHeight) / 1.7);
 
-                    mHeader.setPadding(
-                    		mHeader.getPaddingLeft(),
-                            topPadding,
-                            mHeader.getPaddingRight(),
-                            mHeader.getPaddingBottom());
+                    mHeader.setPadding( mHeader.getPaddingLeft(), topPadding, 
+                    		mHeader.getPaddingRight(), mHeader.getPaddingBottom() );
                 }
             }
         }
     }
 
+	private void releaseToRefresh() {
+		mHeaderText.setText( R.string.pull_to_refresh_release_label );
+        mHeaderImage.clearAnimation();
+        mHeaderImage.startAnimation( mFlipAnimation );
+        
+        mRefreshState = RELEASE_TO_REFRESH;
+	}
+	
+	private boolean pullBeyondBound() {
+		return ( mHeader.getBottom() > mRefreshViewHeight + PULL_RELEASE_THRESHOLD || mHeader.getTop() >= 0 );
+	}
+	
+	private boolean releaseBackInBound() {
+		return ( mHeader.getBottom() < mRefreshViewHeight + PULL_RELEASE_THRESHOLD );
+	}
 	
 	private void addListScrollListener() {
 		getList().setOnScrollListener( new OnScrollListener() {
 
 			@Override
 			public void onScroll( AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount ) {
-				if ( mCurrentScrollState == SCROLL_STATE_TOUCH_SCROLL && mRefreshState != REFRESHING) {
+				if ( mCurrentScrollState == SCROLL_STATE_TOUCH_SCROLL /*&& mRefreshState != REFRESHING*/ ) {
 		            if ( firstVisibleItem == 0 ) {
-		                //mRefreshViewImage.setVisibility(View.VISIBLE);
-		                if ( ( mHeader.getBottom() > mRefreshViewHeight + 20 || mHeader.getTop() >= 0)
-		                        && mRefreshState != RELEASE_TO_REFRESH ) {
-//		                    mRefreshViewText.setText(R.string.pull_to_refresh_release_label);
-//		                    mRefreshViewImage.clearAnimation();
-//		                    mRefreshViewImage.startAnimation(mFlipAnimation);
-		                    mRefreshState = RELEASE_TO_REFRESH;
-		                } else if ( mHeader.getBottom() < mRefreshViewHeight + 20
-		                        && mRefreshState != PULL_TO_REFRESH ) {
-		                    //mRefreshViewText.setText(R.string.pull_to_refresh_pull_label);
+		                mHeaderImage.setVisibility( View.VISIBLE );
+		                
+		                if ( pullBeyondBound() && mRefreshState != RELEASE_TO_REFRESH ) {
+		                	releaseToRefresh();
+		                } 
+		                else if ( releaseBackInBound() && mRefreshState != PULL_TO_REFRESH ) {
+		                	Log.e( TAG, "Scroll back to pull to refresh" );
+		                	Log.e( TAG, "Header View height = " + mRefreshViewHeight );
+		                	
+		                	mHeaderText.setText( R.string.pull_to_refresh_pull_label );
+		                    
 		                    if ( mRefreshState != TAP_TO_REFRESH ) {
-		                        //mRefreshViewImage.clearAnimation();
-		                        //mRefreshViewImage.startAnimation(mReverseFlipAnimation);
+		                        mHeaderImage.clearAnimation();
+		                        mHeaderImage.startAnimation( mReverseFlipAnimation );
 		                    }
 		                    mRefreshState = PULL_TO_REFRESH;
 		                }
-		            } else {
-		                //mRefreshViewImage.setVisibility(View.GONE);
+		            } 
+		            else {
+		                mHeaderImage.setVisibility( View.GONE );
 		                resetHeader();
 		            }
-		        } else if (mCurrentScrollState == SCROLL_STATE_FLING
+		        } 
+				else if ( mCurrentScrollState == SCROLL_STATE_FLING 
 		                && firstVisibleItem == 0
 		                && mRefreshState != REFRESHING) {
 		            getList().setSelection(1);
@@ -194,13 +286,6 @@ public abstract class PullToRefreshListLayout extends ListLayout {
 				switch ( scrollState ) {
 					
 					case OnScrollListener.SCROLL_STATE_IDLE:
-						
-						Log.d( "GrouponListView", "Last = " + String.valueOf( view.getLastVisiblePosition() ) + 
-								", Total = " + String.valueOf( view.getCount() ) );
-						
-//						if ( view.getLastVisiblePosition() == ( view.getCount() - 1 ) ) {
-//							traceStatus( view );
-//						}
 						
 						if ( reachBottom( view ) ) {
 							Log.v( "GrouponListView", "reach the bottom 1" );
@@ -239,13 +324,13 @@ public abstract class PullToRefreshListLayout extends ListLayout {
 	public void prepareForRefresh() {
         resetHeaderPadding();
 
-//        mRefreshViewImage.setVisibility(View.GONE);
-//        // We need this hack, otherwise it will keep the previous drawable.
-//        mRefreshViewImage.setImageDrawable(null);
-//        mRefreshViewProgress.setVisibility(View.VISIBLE);
-//
-//        // Set refresh view text to the refreshing label
-//        mRefreshViewText.setText(R.string.pull_to_refresh_refreshing_label);
+        mHeaderImage.setVisibility( View.GONE );
+        // We need this hack, otherwise it will keep the previous drawable.
+        mHeaderImage.setImageDrawable( null );
+        mHeaderProgress.setVisibility( View.VISIBLE );
+
+        // Set refresh view text to the refreshing label
+        mHeaderText.setText( R.string.pull_to_refresh_refreshing_label );
 
         mRefreshState = REFRESHING;
     }
@@ -259,7 +344,7 @@ public abstract class PullToRefreshListLayout extends ListLayout {
         // the next item.
         if ( mHeader.getBottom() > 0) {
             getList().invalidateViews();
-            //setSelection(1);
+            getList().setSelection(1);
         }
     }
 	
@@ -269,31 +354,30 @@ public abstract class PullToRefreshListLayout extends ListLayout {
 			@Override
 			public boolean onTouch( View v, MotionEvent event ) {
 				final int y = (int) event.getY();
-				//int action = event.getAction();
-				//Log.e( "GrouponListView", "on touch event action = " + action );
 				
 		        switch (event.getAction()) {
 		            case MotionEvent.ACTION_UP:
-		            	if ( approachTop() ) {
-			            	View top = getAdapter().getView( 1, null, null );
-							int topY = getList().getChildAt( 1 ).getTop();
-							int topY1 = top.getTop();
-							Log.e( "GrouponListView", "ACTION_UP!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!, top = " + String.valueOf( topY1 ) + ", " + String.valueOf( topY ) );
-		            	}
+		            	
+//		            	if ( approachTop() ) {
+//			            	View top = getAdapter().getView( 1, null, null );
+//							int topY = getList().getChildAt( 1 ).getTop();
+//							int topY1 = top.getTop();
+//							Log.e( "GrouponListView", "ACTION_UP!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!, top = " + String.valueOf( topY1 ) + ", " + String.valueOf( topY ) );
+//		            	}
 
 		            	if ( getList().getFirstVisiblePosition() == 0 && mRefreshState != REFRESHING ) {
 		                    if ( ( mHeader.getBottom() > mRefreshViewHeight || mHeader.getTop() >= 0 )
-		                            && mRefreshState == RELEASE_TO_REFRESH) {
+		                            && mRefreshState == RELEASE_TO_REFRESH ) {
 		                        // Initiate the refresh
 		                        mRefreshState = REFRESHING;
 		                        prepareForRefresh();
 		                        //onRefresh();
-		                        onRefreshComplete();
-		                    } else if ( mHeader.getBottom() < mRefreshViewHeight
-		                            || mHeader.getTop() < 0) {
+		                        //onRefreshComplete();
+		                    } 
+		                    else if ( mHeader.getBottom() < mRefreshViewHeight || mHeader.getTop() < 0) {
 		                        // Abort refresh and scroll down below the refresh view
 		                        resetHeader();
-		                        //setSelection(1);
+		                        getList().setSelection(1);
 		                    }
 		                }
 
@@ -310,23 +394,6 @@ public abstract class PullToRefreshListLayout extends ListLayout {
 				return false;
 			}
 		});
-	}
-	
-	private void traceStatus( AbsListView view ) {
-		int lastPos = view.getLastVisiblePosition();
-		Log.d( "GrouponListView", "View Height = " + String.valueOf( view.getHeight() ) );
-		Log.d( "GrouponListView", "View Top = " + String.valueOf( view.getTop() ) );
-		Log.d( "GrouponListView", "View Bottom = " + String.valueOf( view.getBottom() ) );
-		Log.d( "GrouponListView", "Item Count = " +  String.valueOf( view.getCount() ) );
-		//Log.d( "GrouponListView", "Item Bottom = " + String.valueOf( view.getChildAt(view.getCount() - 1).getBottom() ) );
-		for ( int i = 0; i <= lastPos && i < getAdapter().getCount(); i ++ ) {
-			//View bottom = view.getChildAt( i );
-			View bottom = getAdapter().getView( i, null, null );
-			if ( bottom != null ) {
-				Log.d( "GrouponListView", String.valueOf( i ) + ". Item Bottom = " + String.valueOf( bottom.getBottom() ) );
-			}
-		}
-		Log.v( "GrouponListView", "reach the bottom 2" );
 	}
 	
 	private boolean approachTop() {

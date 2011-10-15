@@ -17,7 +17,7 @@ import android.widget.BaseAdapter;
 
 public abstract class MultiItemListLayout extends PullToRefreshListLayout {
 
-	private final String TAG = " MultiItemLayout ";
+	//private final String TAG = " MultiItemLayout ";
 	private final int[] mItemFieldResIds = { R.id.demo_image, R.id.provider, R.id.discount, R.id.price, R.id.details };
 	private final int mItemResId = R.layout.groupon_list_item;
 	
