@@ -24,13 +24,13 @@
     <string name="province_list">省份列表</string>
     <string name="discount_symbol">折</string>
     <string name="chinese_yuan_symbol">￥</string>
-    <string name="loading">加载中</string>
+    <string name="loading">更多</string>
     <string name="allover">全国</string>
     
-    <string name="pull_to_refresh_pull_label">Pull to refresh...</string>
-  	<string name="pull_to_refresh_release_label">Release to refresh...</string>
-  	<string name="pull_to_refresh_refreshing_label">Loading...</string>
-  	<string name="pull_to_refresh_tap_label">Tap to refresh...</string>
+    <string name="pull_to_refresh_pull_label">下拉可以刷新</string>
+    <string name="pull_to_refresh_release_label">松开可以刷新</string>
+    <string name="pull_to_refresh_refreshing_label">加载中...</string>
+    <string name="pull_to_refresh_tap_label">Tap to refresh...</string>
     
     
 </resources>

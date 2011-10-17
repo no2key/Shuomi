@@ -83,7 +83,10 @@ public abstract class MultiItemListLayout extends PullToRefreshListLayout {
 				mAdapter = new MiscListAdapter( getContext(), mItemResId, mDataList, 
 			    		null, null, mItemFieldResIds );
 				getList().setAdapter( mAdapter );
+				
+				// TODO: to be checked
 				//getList().setSelection( getList().getHeaderViewsCount() );
+				setSelectionOnTop();
 			}
 			
 			mAdapter.notifyDataSetChanged();
@@ -102,7 +105,12 @@ public abstract class MultiItemListLayout extends PullToRefreshListLayout {
 	}
 	
 	private String[] convertFields( String[] fields ) {
-		float discount = 10 * Float.parseFloat( fields[3] ) / Float.parseFloat( fields[2] );
+		float discount = 0;
+		
+		if ( Float.parseFloat( fields[2] ) > 0 ) {
+			discount = 10 * Float.parseFloat( fields[3] ) / Float.parseFloat( fields[2] );
+		}
+		
 		DecimalFormat df = new DecimalFormat( "########.0");
 		discount = Float.parseFloat( df.format( discount ) );
 		fields[2] = Float.toString( discount ) + getContext().getString( R.string.discount_symbol );
