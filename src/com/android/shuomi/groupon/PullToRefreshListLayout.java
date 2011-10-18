@@ -223,7 +223,7 @@ public abstract class PullToRefreshListLayout extends NetworkRequestLayout {
 
         for (int h = 0; h < historySize; h++) {
             for (int p = 0; p < pointerCount; p++) {
-                if ( mRefreshState == RELEASE_TO_REFRESH ) {
+                if ( mRefreshState == RELEASE_TO_REFRESH || mRefreshState == PULL_TO_REFRESH ) {
                     if ( getList().isVerticalFadingEdgeEnabled() ) {
                     	getList().setVerticalScrollBarEnabled( false );
                     }
@@ -233,6 +233,8 @@ public abstract class PullToRefreshListLayout extends NetworkRequestLayout {
                     // Calculate the padding to apply, we divide by 1.7 to
                     // simulate a more resistant effect during pull.
                     int topPadding = ( int ) ( ( ( historicalY - mLastMotionY ) - mRefreshViewHeight ) / 1.7 );
+                    
+                    Log.e( TAG, "top padding = " + topPadding );
 
                     mHeader.setPadding( mHeader.getPaddingLeft(), topPadding, 
                     		mHeader.getPaddingRight(), mHeader.getPaddingBottom() );
@@ -265,10 +267,16 @@ public abstract class PullToRefreshListLayout extends NetworkRequestLayout {
 				if ( mCurrentScrollState == SCROLL_STATE_TOUCH_SCROLL && mRefreshState != REFRESHING ) {
 		            if ( firstVisibleItem == 0 ) {
 		                mHeaderImage.setVisibility( View.VISIBLE );
+		                
+		        		Log.e( TAG, "header bottom = " + mHeader.getBottom() );
+		        		Log.e( TAG, "mRefreshViewHeight + PULL_RELEASE_THRESHOLD = " + mRefreshViewHeight + " + " + PULL_RELEASE_THRESHOLD );
+
 		                if ( pullBeyondBound() && mRefreshState != RELEASE_TO_REFRESH ) {
+		                	Log.e( TAG, "onScroll RELEASE_TO_REFRESH" );
 		                	releaseToRefresh();
 		                }
 		                else if ( releaseBackInBound() && mRefreshState != PULL_TO_REFRESH ) {
+		                	Log.e( TAG, "onScroll PULL_TO_REFRESH" );
 		                	mHeaderText.setText( R.string.pull_to_refresh_pull_label );
 		                    
 		                    if ( mRefreshState != TAP_TO_REFRESH ) {
@@ -277,16 +285,14 @@ public abstract class PullToRefreshListLayout extends NetworkRequestLayout {
 		                    }
 		                    setRefreshState( PULL_TO_REFRESH );
 		                }
-		                
 		            } 
 		            else {
 		                mHeaderImage.setVisibility( View.GONE );
 		                resetHeader();
 		            }
 		        } 
-				else if ( mCurrentScrollState == SCROLL_STATE_FLING 
-		                && firstVisibleItem == 0
-		                && mRefreshState != REFRESHING ) {
+				else if ( mCurrentScrollState == SCROLL_STATE_FLING && 
+						  firstVisibleItem == 0 && mRefreshState != REFRESHING ) {
 		            getList().setSelection(1);
 		        }
 
@@ -324,7 +330,7 @@ public abstract class PullToRefreshListLayout extends NetworkRequestLayout {
 		            	if ( !getList().isVerticalScrollBarEnabled() ) {
 		            		getList().setVerticalScrollBarEnabled( true );
 		                }
-		            	
+		            	mLastMotionY = y;
 		            	if ( getList().getFirstVisiblePosition() == 0 && mRefreshState != REFRESHING ) {
 		            		if ( ( mHeader.getBottom() > mRefreshViewHeight || mHeader.getTop() >= 0 )
 		                            && mRefreshState == RELEASE_TO_REFRESH ) {
@@ -346,6 +352,10 @@ public abstract class PullToRefreshListLayout extends NetworkRequestLayout {
 		            	if ( !getList().isVerticalScrollBarEnabled() ) {
 		            		getList().setVerticalScrollBarEnabled( true );
 		                }
+		            	if ( reachBottom( getList() ) ) {
+							Log.v( TAG, "reach the bottom 1" );
+							onReachLastItem();
+						}
 		            	mLastMotionY = y;
 		                break;
 		                
@@ -405,11 +415,11 @@ public abstract class PullToRefreshListLayout extends NetworkRequestLayout {
 	private boolean reachBottom( AbsListView view ) { 
 		int extraCount = getList().getHeaderViewsCount() + getList().getFooterViewsCount();
 		
-		Log.e( TAG, "extra view count = " + extraCount );
-		Log.e( TAG, "first visible = " + getList().getFirstVisiblePosition() );
-		Log.e( TAG, "count = " + getList().getCount() );
-		Log.e( TAG, "list height = " + getList().getHeight() );
-		Log.e( TAG, "last item bottom = " + getAdapter().getView( getList().getLastVisiblePosition() - extraCount, null, null ).getBottom() );
+//		Log.e( TAG, "extra view count = " + extraCount );
+//		Log.e( TAG, "first visible = " + getList().getFirstVisiblePosition() );
+//		Log.e( TAG, "count = " + getList().getCount() );
+//		Log.e( TAG, "list height = " + getList().getHeight() );
+//		Log.e( TAG, "last item bottom = " + getAdapter().getView( getList().getLastVisiblePosition() - extraCount, null, null ).getBottom() );
 		
 		return ( getList().getLastVisiblePosition() == ( getList().getCount() - 1 ) &&
 				getList().getHeight() - getAdapter().getView( getList().getLastVisiblePosition() - extraCount, null, null ).getBottom() <= 1 );
