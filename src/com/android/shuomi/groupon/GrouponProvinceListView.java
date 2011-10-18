@@ -109,6 +109,7 @@ public class GrouponProvinceListView extends SimpleListLayout implements Backabl
 	private void requestList( String param ) {
 		RequestIntent request = new RequestIntent( mReqAction[mState] );
 		request.setResponseAction( RESPONSE.HTTP_RESPONSE_GROUPON );
+		request.setSourceClass( getClass().getName() );
 		
 		if ( Util.isValid( param ) ) {
 			request.setParam1( param );

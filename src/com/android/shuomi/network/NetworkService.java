@@ -55,6 +55,9 @@ public class NetworkService extends Service {
     }
 	
 	private final class ServiceHandler extends Handler {
+		
+		private HttpService mHttpService = null;
+		
 		public ServiceHandler( Looper looper ) {
 			super( looper );
 		}
@@ -71,6 +74,18 @@ public class NetworkService extends Service {
 			}
 			
 			notifyResponseObservers( response );
+		}
+		
+		private Bundle sendHttpGetRequest( String url ) {
+			mHttpService = new HttpService();
+			mHttpService.get( url );
+			
+			Bundle bundle = new Bundle();
+			bundle.putInt( PARAM.HTTP_RSP.STATUS, mHttpService.getLastStatus() );
+			bundle.putString( PARAM.HTTP_RSP.BODY, mHttpService.getBody() );		
+			mHttpService = null;
+			
+			return bundle;
 		}
 	}
 	
@@ -94,17 +109,6 @@ public class NetworkService extends Service {
 		Log.e( "NetworkService", "onDestroy" );
 	}
 	
-	private Bundle sendHttpGetRequest( String url ) {
-		HttpService httpService = new HttpService();
-		httpService.get( url );
-		
-		Bundle bundle = new Bundle();
-		bundle.putInt( PARAM.HTTP_RSP.STATUS, httpService.getLastStatus() );
-		bundle.putString( PARAM.HTTP_RSP.BODY, httpService.getBody() );
-		
-		return bundle;
-	}
-
 	private void sendRequestMessage( String url ) {
 		Message msg = mWorkHandler.obtainMessage();
 	    msg.obj = url;

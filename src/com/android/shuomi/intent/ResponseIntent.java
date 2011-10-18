@@ -45,4 +45,12 @@ public class ResponseIntent extends Intent {
 	public String getUserData() {
 		return getStringExtra( PARAM.SESSION_RSP.DATA );
 	}
+	
+	public void setSourceClass( String className ) {
+		putExtra( PARAM.HTTP_RSP.SOURCE_CLASS, className );
+	}
+	
+	public String getSourceClass() {
+		return getStringExtra( PARAM.HTTP_RSP.SOURCE_CLASS );
+	}
 }

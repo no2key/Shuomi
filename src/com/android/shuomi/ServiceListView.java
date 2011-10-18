@@ -29,13 +29,14 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 	private static final String TAG = "ServiceListView";
 	private final String mTag = "tab";
 	private final int mTabLabels[] = { R.string.groupon_info, R.string.my_favourite, R.string.utility_list };
-	private final int mResIds[] = { R.id.tab1, R.id.tab2, R.id.tab3 };	
-	private ViewFlipper[] mFlippers = new ViewFlipper[3];
+	private final int mTabResIds[] = { R.id.tab1, R.id.tab2, R.id.tab3 };	
+	private ViewFlipper[] mFlippers;// = new ViewFlipper[3];
 	
 	private final String PROVINCE_SELECTED = "PROVINCE_SELECTED";
 	private final String CITY_SELECTED = "CITY_SELECTED";
 	private String mProvinceSelected = null;
 	private String mCitySelected = null;
+	private TabHost mTabHost;
 	
 	////////////////////////////
 	// Initialize Activity
@@ -46,28 +47,28 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 		setContentView( R.layout.service_list );
 		
         createTab();
-        loadSelectedLocation();
+        loadSelectedLocation();        
         initFlipper();
     }
 	
 	private void createTab() {
-        TabHost tabHost = ( TabHost ) findViewById( R.id.tabhost );
-        tabHost.setup( this.getLocalActivityManager() );
+		mTabHost = ( TabHost ) findViewById( R.id.tabhost );
+		mTabHost.setup( this.getLocalActivityManager() );
         
         for ( int i = 0; i < mTabLabels.length; i ++ ) {
-        	tabHost.addTab( tabHost.newTabSpec( mTag + String.valueOf( i+1 ) )
+        	mTabHost.addTab( mTabHost.newTabSpec( mTag + String.valueOf( i+1 ) )
                    .setIndicator( getString( mTabLabels[i] ) ) 
-                   .setContent( mResIds[i] ) );
+                   .setContent( mTabResIds[i] ) );
         }
         
-        final TabWidget tabWidget = tabHost.getTabWidget();
+        final TabWidget tabWidget = mTabHost.getTabWidget();
         tabWidget.setStripEnabled( false );
         setupTabLabelProperty( tabWidget );
         
         int tabHeight = tabWidget.getChildTabViewAt( 0 ).getLayoutParams().height;
-        tabHost.getTabContentView().setPadding( 0, 0, 0, tabHeight );
+        mTabHost.getTabContentView().setPadding( 0, 0, 0, tabHeight );
         
-        tabHost.setCurrentTab( 0 );
+        mTabHost.setCurrentTab( 0 );
 	}
 	
 	private void setupTabLabelProperty( final TabWidget tabWidget ) {
@@ -81,10 +82,10 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 	}
 	
 	private void initFlipper() {
-		mFlippers[0] = ( ViewFlipper ) findViewById( R.id.tab1 );
-        
-        GrouponMainView grouponView = new GrouponMainView( this, mProvinceSelected, mCitySelected );
-        mFlippers[0].addView( grouponView );
+		mFlippers = new ViewFlipper[mTabResIds.length];
+		mFlippers[0] = ( ViewFlipper ) findViewById( mTabResIds[0] );
+		
+		goToNextView( new GrouponMainView( this, mProvinceSelected, mCitySelected ) );
 	}
 	
 	private UpdatableView getFocusView() {
@@ -109,8 +110,7 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 	}
 	
 	private ViewFlipper getCurrentFlipper() {
-		TabHost tabHost = ( TabHost ) findViewById( R.id.tabhost );
-		return mFlippers[tabHost.getCurrentTab()];
+		return mFlippers[mTabHost.getCurrentTab()];
 	}
 	
 	private boolean flipperGoBack() {
@@ -202,14 +202,20 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 
 	@Override
 	public void onPositiveResponse( ResponseIntent response ) {
-		//ResponseParser parser = new ResponseParser( response.getUserData(), response.getRequestAction() );
-		ResponseParser parser = ResponseParserCreator.create( response );
+		UpdatableView view = findDestinationView( response );
 		
-		if ( parser.getDataType() == ResponseParser.TYPE_ARRAY ) {
-			getFocusView().update( response.getRequestAction(), parser.getDataType(), parser.getData(), parser.getPageCount() );
+		if ( view != null ) {
+			ResponseParser parser = ResponseParserCreator.create( response );
+			
+			if ( parser.getDataType() == ResponseParser.TYPE_ARRAY ) {
+				view.update( response.getRequestAction(), parser.getDataType(), parser.getData(), parser.getPageCount() );
+			}
+			else if ( parser.getDataType() == ResponseParser.TYPE_ARRAY_LIST ) {
+				view.update( response.getRequestAction(), parser.getDataType(), parser.getDataList(), parser.getPageCount() );
+			}
 		}
-		else if ( parser.getDataType() == ResponseParser.TYPE_ARRAY_LIST ) {
-			getFocusView().update( response.getRequestAction(), parser.getDataType(), parser.getDataList(), parser.getPageCount() );
+		else {
+			Log.e( TAG, "Do NOT find destination view!" );
 		}
 	}
 
@@ -223,5 +229,24 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 		bundle.putString( REQUEST.PARAM_PROVINCE , mProvinceSelected );
 		bundle.putString( REQUEST.PARAM_CITY , mCitySelected );
 		return bundle;
+	}
+	
+	private UpdatableView findDestinationView( ResponseIntent response ) {
+		UpdatableView view = null;
+		
+		if ( response.getAction().equals( RESPONSE.HTTP_RESPONSE_GROUPON ) ) {
+			try {
+				UpdatableView topView = ( UpdatableView ) mFlippers[0].getCurrentView();
+				if ( topView != null && topView.getClass().getName().equals( response.getSourceClass() ) ) {
+					view = topView;
+				}
+			}
+			catch( ClassCastException e ) {
+				Log.w( TAG, "destination view is NOT an UpdatableView!" );
+			}
+			
+		}
+		
+		return view;
 	}
 }

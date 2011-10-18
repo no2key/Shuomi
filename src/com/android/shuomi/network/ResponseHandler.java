@@ -16,6 +16,7 @@ public class ResponseHandler {
 		ResponseIntent response = new ResponseIntent( request.getResponseAction() );		
 		response.setResult( status == HTTP_OK );
 		response.setRequestAction( request.getAction() );
+		response.setSourceClass( request.getSourceClass() );
 		
 		if ( status == HTTP_OK ) {
 			String body = bundle.getString( PARAM.HTTP_RSP.BODY );

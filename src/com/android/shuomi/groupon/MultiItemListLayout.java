@@ -150,6 +150,7 @@ public abstract class MultiItemListLayout extends PullToRefreshListLayout {
 	private void sendGrouponListRequest( Bundle bundle ) {
 		bundle.putInt( REQUEST.PARAM_PAGE, mDesiredPage );
 		GrouponListRequestIntent request = new GrouponListRequestIntent();
+		request.setSourceClass( getClass().getName() );
 		request.putExtras( bundle );
 		NetworkSession.send( request );
 	}

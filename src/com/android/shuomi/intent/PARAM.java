@@ -5,6 +5,7 @@ public class PARAM {
 	public class HTTP_RSP {
 		static final public String STATUS = "STATUS";
 		static final public String BODY = "BODY";
+		static final public String SOURCE_CLASS = "SOURCE_CLASS";
 	}
 	
 	public class SESSION_RSP {
