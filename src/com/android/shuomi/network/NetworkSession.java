@@ -23,7 +23,6 @@ public class NetworkSession implements Observer {
 	private BlockingQueue <RequestIntent> m_ProcessQueue = new LinkedBlockingQueue<RequestIntent>();
 	
 	static private NetworkSession mThis = null;
-	static private final int HTTP_OK = 200;
 
 	static private final String TAG = "NetworkSession";
 	
@@ -45,6 +44,13 @@ public class NetworkSession implements Observer {
 		if ( mThis != null ) {
 			mThis.processRequest( request );
 		}
+	}
+	
+	static public void cancel( int intentHashCode ) {
+		if ( mThis != null ) {
+			mThis.cancelRequest( intentHashCode );
+		}
+		
 	}
 	
 	private NetworkSession( Context context, NetworkService nwService ) {
@@ -114,15 +120,31 @@ public class NetworkSession implements Observer {
 		}
 	}
 	
+	private void cancelRequest( int intentHashCode ) {
+		RequestIntent request = m_ProcessQueue.peek();
+		
+		if ( request != null && request.hashCode() == intentHashCode ) {
+			Log.d( TAG, "request hashCode = " + request.hashCode() + ", intent's = " + intentHashCode );
+			m_ProcessQueue.remove();
+			mLastProcess = null;
+			//mNetworkService.removeResponseObservers();
+			mNetworkService.cancelRequest();
+		}
+	}
+	
 	////////////////////
 	// Process Response
 	////////////////////
 	
 	public synchronized void update( Observable observable, Object data ) {
 		try {
+			Log.d( TAG, "receive http response by observer" );
 			Bundle response = ( Bundle ) data;
 			ResponseIntent intent = ResponseHandler.process( response, obtainAndRemoveHeadProcessing() );
-			mContext.startActivity( intent );
+			
+			if ( intent != null ) {
+				mContext.startActivity( intent );
+			}
 		}
 		catch ( ClassCastException e ) {
 			Log.w( TAG, e.getMessage() );
@@ -220,27 +242,27 @@ public class NetworkSession implements Observer {
 //		}
 //	}
 	
-	private boolean isDestinationActivityOnTop( String destName ) {
-		boolean found = false;
-		ActivityManager activityManager = (ActivityManager) mContext.getApplicationContext().getSystemService( Context.ACTIVITY_SERVICE );
-        List<RunningTaskInfo> runningTasks = activityManager.getRunningTasks( 50 );
-	    
-        //Log.d( "NetworkSession", "package name: " + mContext.getPackageName() );
-        
-        for ( RunningTaskInfo task : runningTasks  ) {
-        	String activityName = task.topActivity.getClassName();
-        	//Log.d( "NetworkSession", "top activity: " + activityName );
-        	
-        	if ( activityName.contains( mContext.getPackageName() ) ) {
-        		found = activityName.equals( destName );
-        		//Log.d( activityName, destName );
-        		//Log.d( "NetworkSession", "package found. activity found: " + String.valueOf( found ) );
-        		break;
-        	}
-        }
-        
-        return found;
-	}
+//	private boolean isDestinationActivityOnTop( String destName ) {
+//		boolean found = false;
+//		ActivityManager activityManager = (ActivityManager) mContext.getApplicationContext().getSystemService( Context.ACTIVITY_SERVICE );
+//        List<RunningTaskInfo> runningTasks = activityManager.getRunningTasks( 50 );
+//	    
+//        //Log.d( "NetworkSession", "package name: " + mContext.getPackageName() );
+//        
+//        for ( RunningTaskInfo task : runningTasks  ) {
+//        	String activityName = task.topActivity.getClassName();
+//        	//Log.d( "NetworkSession", "top activity: " + activityName );
+//        	
+//        	if ( activityName.contains( mContext.getPackageName() ) ) {
+//        		found = activityName.equals( destName );
+//        		//Log.d( activityName, destName );
+//        		//Log.d( "NetworkSession", "package found. activity found: " + String.valueOf( found ) );
+//        		break;
+//        	}
+//        }
+//        
+//        return found;
+//	}
 	
 	////////////////////
 	// Network Service

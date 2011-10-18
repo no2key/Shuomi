@@ -114,8 +114,8 @@ public class GrouponProvinceListView extends SimpleListLayout implements Backabl
 		if ( Util.isValid( param ) ) {
 			request.setParam1( param );
 		}
-
-		NetworkSession.send( request );
+		
+		sendRequest( request );
 	}
 	
 	private String getListLabel( int position ) {

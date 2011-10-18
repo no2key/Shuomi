@@ -10,7 +10,7 @@ public class ResponseIntent extends Intent {
 		super( action );
 	}
 	
-	public ResponseIntent(Intent intent) {
+	public ResponseIntent( Intent intent ) {
 		super( intent );
 	}
 

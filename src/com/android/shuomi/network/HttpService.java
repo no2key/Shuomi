@@ -31,6 +31,7 @@ public class HttpService {
 	private String mCookie = null;
 	private int mStatus = 0;
 	private HashMap<String, String> mHeader = null;
+	private HttpGet mHttpGetRequest = null;
 	
 	private void send( String url, String entity, boolean isHttpGet ) {
 		DefaultHttpClient httpClient = new DefaultHttpClient();
@@ -39,14 +40,14 @@ public class HttpService {
 		
 		try {
 			if ( isHttpGet ) {
-				HttpGet getRequest = new HttpGet( url );
-				getRequest.setHeader("Accept", "text/html, application/xml;q=0.9, application/xhtml+xml, image/png, image/webp, image/jpeg, image/gif, image/x-xbitmap, */*;q=0.1" );
-				getRequest.setHeader( "Accept-Language", "zh-CN,zh;q=0.9,en;q=0.8" );
-				getRequest.setHeader( "Accept-Encoding", "gzip, deflate" );
+				mHttpGetRequest = new HttpGet( url );
+				mHttpGetRequest.setHeader("Accept", "text/html, application/xml;q=0.9, application/xhtml+xml, image/png, image/webp, image/jpeg, image/gif, image/x-xbitmap, */*;q=0.1" );
+				mHttpGetRequest.setHeader( "Accept-Language", "zh-CN,zh;q=0.9,en;q=0.8" );
+				mHttpGetRequest.setHeader( "Accept-Encoding", "gzip, deflate" );
 				
-				//Log.v( "HttpService", "send GET request" );
 				Log.v( "HttpService", url );
-				mResponse = httpClient.execute( getRequest );
+				mResponse = httpClient.execute( mHttpGetRequest );
+				mHttpGetRequest = null;
 			}
 			else {
 				HttpPost postRequest = new HttpPost( url );
@@ -253,5 +254,15 @@ public class HttpService {
 
 	public void post( String url, String entity ) {
 		send( url, entity, false );
+	}
+
+	public void abortRequest() {
+		if ( mHttpGetRequest != null ) {
+			Log.v( "HttpService", "ABORT existing request" );
+			mHttpGetRequest.abort();
+		}
+		else {
+			Log.d( "HttpService", "mHttpGetRequest has been invalidated" );
+		}
 	}
 }

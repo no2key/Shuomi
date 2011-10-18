@@ -199,7 +199,18 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 			NetworkResponse.process( this, ( ResponseIntent ) response );
 		}
 	}
-
+	
+	@Override
+	public void onResponse( ResponseIntent response ) {
+		try {
+			NetworkRequestLayout view = (NetworkRequestLayout) findDestinationView( response );
+			view.onRequestDone();
+		}
+		catch( ClassCastException e ){
+			Log.w( TAG, "Cast failed: NOT a NetworkRequestLayout!" );
+		}
+	}
+	
 	@Override
 	public void onPositiveResponse( ResponseIntent response ) {
 		UpdatableView view = findDestinationView( response );
@@ -220,7 +231,7 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 	}
 
 	@Override
-	public void onNegativeResponse(int error, String message) {
+	public void onNegativeResponse( int error, String message ) {
 		// TODO Auto-generated method stub		
 	}
 	

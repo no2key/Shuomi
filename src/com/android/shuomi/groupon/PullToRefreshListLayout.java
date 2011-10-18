@@ -1,5 +1,6 @@
 package com.android.shuomi.groupon;
 
+import com.android.shuomi.NetworkRequestLayout;
 import com.android.shuomi.R;
 
 import android.content.Context;
@@ -19,7 +20,7 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-public abstract class PullToRefreshListLayout extends ListLayout {
+public abstract class PullToRefreshListLayout extends NetworkRequestLayout {
 
 	abstract protected BaseAdapter getAdapter();
 	abstract protected void requestGrouponList( Bundle bundle );
@@ -155,6 +156,8 @@ public abstract class PullToRefreshListLayout extends ListLayout {
 	
 	@Override
     protected void onAttachedToWindow() {
+		super.onAttachedToWindow();
+		
         //getList().setSelection(1);
 		setSelectionOnTop();
     }
@@ -298,7 +301,7 @@ public abstract class PullToRefreshListLayout extends ListLayout {
 					case OnScrollListener.SCROLL_STATE_IDLE:
 						
 						if ( reachBottom( view ) ) {
-							Log.v( "GrouponListView", "reach the bottom 1" );
+							Log.v( TAG, "reach the bottom 1" );
 							onReachLastItem();
 						}
 						
@@ -375,7 +378,7 @@ public abstract class PullToRefreshListLayout extends ListLayout {
     }
 	
 	public void onRefreshComplete() {
-        Log.d(TAG, "onRefreshComplete");
+        Log.d( TAG, "onRefreshComplete" );
 
         resetHeader();
 
@@ -389,20 +392,27 @@ public abstract class PullToRefreshListLayout extends ListLayout {
 	
 	private boolean approachTop() {
 		int extra = getList().getHeaderViewsCount();
-		Log.e( "GrouponListView", "header view count = " + extra );
-		Log.e( "GrouponListView", "first visible = " + getList().getFirstVisiblePosition() );
-		Log.e( "GrouponListView", "count = " + getList().getCount() );
-		Log.e( "GrouponListView", "first bottom = " + getList().getChildAt(extra).getBottom() );
-		Log.e( "GrouponListView", "first adapter = " + getAdapter().getView( extra, null, null ).getBottom() );
+		Log.e( TAG, "header view count = " + extra );
+		Log.e( TAG, "first visible = " + getList().getFirstVisiblePosition() );
+		Log.e( TAG, "count = " + getList().getCount() );
+		Log.e( TAG, "first bottom = " + getList().getChildAt(extra).getBottom() );
+		Log.e( TAG, "first adapter = " + getAdapter().getView( extra, null, null ).getBottom() );
 		
 		return ( getList().getCount() > 0 && getList().getFirstVisiblePosition() == extra && 
 				getAdapter().getView( extra, null, null ).getBottom() >= 50 ); 
 	}
 	
 	private boolean reachBottom( AbsListView view ) { 
-		int extra = getList().getHeaderViewsCount() + getList().getFooterViewsCount();
-		return ( view.getLastVisiblePosition() == ( view.getCount() - 1 ) &&
-				view.getHeight() - getAdapter().getView( view.getLastVisiblePosition() - extra, null, null ).getBottom() <= 1 );
+		int extraCount = getList().getHeaderViewsCount() + getList().getFooterViewsCount();
+		
+		Log.e( TAG, "extra view count = " + extraCount );
+		Log.e( TAG, "first visible = " + getList().getFirstVisiblePosition() );
+		Log.e( TAG, "count = " + getList().getCount() );
+		Log.e( TAG, "list height = " + getList().getHeight() );
+		Log.e( TAG, "last item bottom = " + getAdapter().getView( getList().getLastVisiblePosition() - extraCount, null, null ).getBottom() );
+		
+		return ( getList().getLastVisiblePosition() == ( getList().getCount() - 1 ) &&
+				getList().getHeight() - getAdapter().getView( getList().getLastVisiblePosition() - extraCount, null, null ).getBottom() <= 1 );
 	}
 	
 	private boolean reachTop( AbsListView view ) {

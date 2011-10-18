@@ -21,13 +21,17 @@ import android.os.Process;
 import android.util.Log;
 
 public class NetworkService extends Service {
+	
+	static private final int MSG_SEND = 0;
+	static private final int MSG_ABORT = 1;
+	
 	private Looper mServiceLooper;
 	private ServiceHandler mWorkHandler = null;
 	private final IBinder mBinder = new LocalBinder();
 	private NetworkObservable mResponseObservable = new NetworkObservable();
 	private NetworkObservable mRequestObservable = new NetworkObservable();
 	
-	public void addRequestObserver(Observer observer) {
+	public void addRequestObserver( Observer observer ) {
 		mRequestObservable.addObserver(observer);
 	}
 	
@@ -35,9 +39,15 @@ public class NetworkService extends Service {
 		mRequestObservable.notifyObservers( data );
 	}
 	
-	public void addResponseObserver(Observer observer) {
+	public void addResponseObserver( Observer observer ) {
 		mResponseObservable.addObserver(observer);
 	}
+	
+//	public void removeResponseObservers() {
+//		Bundle response = new Bundle();
+//		response.putInt( PARAM.HTTP_RSP.STATUS, ResponseHandler.HTTP_ABORT );
+//		mResponseObservable.notifyObservers( response );
+//	}
 	
 	private void notifyResponseObservers( Object data ) {
 		mResponseObservable.notifyObservers( data );
@@ -64,16 +74,27 @@ public class NetworkService extends Service {
 	    
 		@Override
 	    public void handleMessage( Message msg ) {
-			notifyRequestObservers( String.valueOf( "request" ) );
+			switch ( msg.arg1 ) {
 			
-			Bundle response = sendHttpGetRequest( ( String ) msg.obj );
+			case MSG_SEND:
+				notifyRequestObservers( String.valueOf( "request" ) );
+				
+				Bundle response = sendHttpGetRequest( ( String ) msg.obj );
+				
+				if ( Util.isValid( response.getString( PARAM.HTTP_RSP.BODY ) ) ) {
+					Log.d( "NetworkService",  "STATUS: " + response.getInt( PARAM.HTTP_RSP.STATUS ) );
+					Log.d( "NetworkService",  response.getString( PARAM.HTTP_RSP.BODY ) );
+				}
+				
+				notifyResponseObservers( response );
+				break;
 			
-			if ( Util.isValid( response.getString( PARAM.HTTP_RSP.BODY ) ) ) {
-				Log.d( "NetworkService",  "STATUS: " + response.getInt( PARAM.HTTP_RSP.STATUS ) );
-				Log.d( "NetworkService",  response.getString( PARAM.HTTP_RSP.BODY ) );
+			case MSG_ABORT:
+				Log.w( "NetworkService", "processing abort message" );
+				sendHttpAbortRequest();
+				break;
 			}
 			
-			notifyResponseObservers( response );
 		}
 		
 		private Bundle sendHttpGetRequest( String url ) {
@@ -82,10 +103,24 @@ public class NetworkService extends Service {
 			
 			Bundle bundle = new Bundle();
 			bundle.putInt( PARAM.HTTP_RSP.STATUS, mHttpService.getLastStatus() );
-			bundle.putString( PARAM.HTTP_RSP.BODY, mHttpService.getBody() );		
+			bundle.putString( PARAM.HTTP_RSP.BODY, mHttpService.getBody() );
 			mHttpService = null;
 			
 			return bundle;
+		}
+		
+		private void sendHttpAbortRequest() {
+			if ( mHttpService != null ) {
+				mHttpService.abortRequest();
+				
+				Bundle response = new Bundle();
+				response.putInt( PARAM.HTTP_RSP.STATUS, ResponseHandler.HTTP_ABORT );
+				mResponseObservable.notifyObservers( response );
+				Log.d( "NetworkService", "send abort response" );
+			}
+			else {
+				Log.d( "NetworkService", "mHttpService has been invalidated" );
+			}
 		}
 	}
 	
@@ -112,11 +147,23 @@ public class NetworkService extends Service {
 	private void sendRequestMessage( String url ) {
 		Message msg = mWorkHandler.obtainMessage();
 	    msg.obj = url;
+	    msg.arg1 = MSG_SEND;
 	    mWorkHandler.sendMessage( msg );
 	}
 	
 	public void exec( RequestIntent request ) {
 		RequestComposer composer = RequestCreator.create( request );
 		sendRequestMessage( composer.getRequetUri() );
+	}
+	
+	private void sendCancelMessage() {
+		Message msg = mWorkHandler.obtainMessage();
+	    msg.arg1 = MSG_ABORT;
+	    mWorkHandler.sendMessage( msg );
+	    Log.d( "NetworkService", "send abort message" );
+	}
+
+	public void cancelRequest() {
+		sendCancelMessage();
 	}
 }

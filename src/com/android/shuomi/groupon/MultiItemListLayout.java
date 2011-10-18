@@ -39,6 +39,7 @@ public abstract class MultiItemListLayout extends PullToRefreshListLayout {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void update( String requestAction, int dataType, Object data, int pageCount ) {
+		
 		if ( requestAction.equals( getRequestAction() ) ) {
 			switchView();
 			
@@ -152,7 +153,7 @@ public abstract class MultiItemListLayout extends PullToRefreshListLayout {
 		GrouponListRequestIntent request = new GrouponListRequestIntent();
 		request.setSourceClass( getClass().getName() );
 		request.putExtras( bundle );
-		NetworkSession.send( request );
+		sendRequest( request );
 	}
 	
 	protected BaseAdapter getAdapter() {
