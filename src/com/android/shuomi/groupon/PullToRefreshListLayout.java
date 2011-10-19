@@ -52,7 +52,7 @@ public abstract class PullToRefreshListLayout extends NetworkRequestLayout {
 	private static final int RELEASE_TO_REFRESH = 3;
 	private static final int REFRESHING = 4;
 	
-	private static final int PULL_RELEASE_THRESHOLD = 20;
+	private static final int PULL_RELEASE_THRESHOLD = 18;
 	
 	private TextView mHeaderText;
     private ImageView mHeaderImage;
@@ -130,8 +130,8 @@ public abstract class PullToRefreshListLayout extends NetworkRequestLayout {
 	private void setupHeaderView( LayoutInflater inflater ) {
 		mHeader = inflater.inflate( R.layout.pull_to_refresh_header, getList(), false );
 		
-		mHeaderInnerView = ( LinearLayout ) mHeader.findViewById( R.id.pull_to_refresh_header );
-		mHeaderInnerViewHeight = mHeaderInnerView.getLayoutParams().height;
+//		mHeaderInnerView = ( LinearLayout ) mHeader.findViewById( R.id.pull_to_refresh_header );
+//		mHeaderInnerViewHeight = mHeaderInnerView.getLayoutParams().height;
 
 		mRefreshOriginalTopPadding = mHeader.getPaddingTop();
 		Log.e( TAG, "Header View top padding = " + mRefreshOriginalTopPadding );
@@ -223,7 +223,7 @@ public abstract class PullToRefreshListLayout extends NetworkRequestLayout {
 
         for (int h = 0; h < historySize; h++) {
             for (int p = 0; p < pointerCount; p++) {
-                if ( mRefreshState == RELEASE_TO_REFRESH || mRefreshState == PULL_TO_REFRESH ) {
+                if ( mRefreshState == RELEASE_TO_REFRESH /*|| mRefreshState == PULL_TO_REFRESH*/ ) {
                     if ( getList().isVerticalFadingEdgeEnabled() ) {
                     	getList().setVerticalScrollBarEnabled( false );
                     }
@@ -269,7 +269,7 @@ public abstract class PullToRefreshListLayout extends NetworkRequestLayout {
 		                mHeaderImage.setVisibility( View.VISIBLE );
 		                
 		        		Log.e( TAG, "header bottom = " + mHeader.getBottom() );
-		        		Log.e( TAG, "mRefreshViewHeight + PULL_RELEASE_THRESHOLD = " + mRefreshViewHeight + " + " + PULL_RELEASE_THRESHOLD );
+		        		//Log.e( TAG, "mRefreshViewHeight + PULL_RELEASE_THRESHOLD = " + mRefreshViewHeight + " + " + PULL_RELEASE_THRESHOLD );
 
 		                if ( pullBeyondBound() && mRefreshState != RELEASE_TO_REFRESH ) {
 		                	Log.e( TAG, "onScroll RELEASE_TO_REFRESH" );
@@ -307,7 +307,7 @@ public abstract class PullToRefreshListLayout extends NetworkRequestLayout {
 					case OnScrollListener.SCROLL_STATE_IDLE:
 						
 						if ( reachBottom( view ) ) {
-							Log.v( TAG, "reach the bottom 1" );
+							Log.v( TAG, "reach the bottom" );
 							onReachLastItem();
 						}
 						
@@ -330,7 +330,7 @@ public abstract class PullToRefreshListLayout extends NetworkRequestLayout {
 		            	if ( !getList().isVerticalScrollBarEnabled() ) {
 		            		getList().setVerticalScrollBarEnabled( true );
 		                }
-		            	mLastMotionY = y;
+		            	//mLastMotionY = y;
 		            	if ( getList().getFirstVisiblePosition() == 0 && mRefreshState != REFRESHING ) {
 		            		if ( ( mHeader.getBottom() > mRefreshViewHeight || mHeader.getTop() >= 0 )
 		                            && mRefreshState == RELEASE_TO_REFRESH ) {
