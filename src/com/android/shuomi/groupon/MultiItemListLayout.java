@@ -1,6 +1,5 @@
 package com.android.shuomi.groupon;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import com.android.shuomi.R;
@@ -41,8 +40,9 @@ public abstract class MultiItemListLayout extends PullToRefreshListLayout {
 	@Override
 	protected void onItemSingleClick( View view, int position, long rowId ) {
 		if ( mAdapter != null ) {
-			ListItemUnion[] item = (ListItemUnion[]) mAdapter.getItem( position );
+			ListItemUnion[] item = (ListItemUnion[]) mAdapter.getItem( position - getList().getHeaderViewsCount() );
 			String id = item[item.length-1].getString();
+			Log.d( TAG, "click, pos = " + position );
 			Log.d( TAG, "click, id = " + id );
 			( ( ServiceListView ) getContext() ).goToNextView( new GrouponDetailsView( getContext(),  id ) );
 		}

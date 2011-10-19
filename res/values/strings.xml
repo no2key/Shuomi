@@ -37,9 +37,9 @@
   	<string name="address">地址</string>
   	<string name="purchase">购买</string>
   	<string name="chinese_yuan">元</string>
-  	<string name="original_price">原价：</string>
-    <string name="actual_price">现价：</string>
-    <string name="provider">供应商：</string>
+  	<string name="original_price">原价:</string>
+    <string name="actual_price">现价:</string>
+    <string name="provider">供应商:</string>
     <string name="people">人</string>
     <string name="expiry_by">离结束还有</string>
     <string name="day">天</string>

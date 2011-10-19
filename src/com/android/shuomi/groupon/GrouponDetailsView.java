@@ -1,27 +1,32 @@
 package com.android.shuomi.groupon;
 
-import java.sql.Date;
-
+import com.android.shuomi.ImageScaler;
 import com.android.shuomi.NetworkRequestLayout;
 import com.android.shuomi.R;
+import com.android.shuomi.groupon.AsyncImageLoader.ImageCallback;
 import com.android.shuomi.intent.GrouponDetailsRequestIntent;
 import com.android.shuomi.intent.REQUEST;
 import com.android.shuomi.intent.RESPONSE;
 import com.android.shuomi.parser.ResponseParser;
 import com.android.shuomi.util.Util;
 
-import android.R.integer;
 import android.content.Context;
-import android.text.format.DateFormat;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.text.TextPaint;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.View.MeasureSpec;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class GrouponDetailsView extends NetworkRequestLayout {
 	
 	static private final String TAG = "GrouponDetailsView"; 
 	private String mItemId;
+	private AsyncImageLoader mImageLoader = new AsyncImageLoader();
 	
 	public GrouponDetailsView( Context context, String itemId ) {
 		super(context);		
@@ -81,23 +86,60 @@ public class GrouponDetailsView extends NetworkRequestLayout {
 			TextView provider = (TextView) findViewById( R.id.provider );
 			provider.setText( getContext().getString( R.string.provider ) + items[1] );
 			
+			TextPaint paint1 = provider.getPaint();
+			float len1 = paint1.measureText( ( String )provider.getText() );
+			
+			Log.d( TAG, "provider width = " + provider.getWidth() + ", " + len1 );
+			
 			TextView follower = (TextView) findViewById( R.id.followed );
 			follower.setText( items[6] + getContext().getString( R.string.people ) + getContext().getString( R.string.favorites ) );
 			
+			//measureView( follower );
+			Log.d( TAG, "follower width = " + follower.getWidth() );
+			
 			int[] time = getExpireTime( Long.parseLong(items[5]) - System.currentTimeMillis() );
 			String expiryBy = getContext().getString( R.string.expiry_by );
-			//if ()
 			
-			Date expiry = new Date( Long.parseLong(items[5]) );
-			Log.d( TAG, expiry.toLocaleString() );
+			if ( time[0] > 0 ) {
+				expiryBy += time[0] + getContext().getString( R.string.day );
+				expiryBy += time[1] + getContext().getString( R.string.hour );
+			}
+			else if ( time[1] > 0 ) {
+				expiryBy += time[1] + getContext().getString( R.string.hour );
+			}
+			else {
+				expiryBy += getContext().getString( R.string.less_than_one ) + getContext().getString( R.string.hour );
+			}
 			
-			long current = System.currentTimeMillis();
-			Date currentDate = new Date( current );
-			Log.d( TAG, currentDate.toLocaleString() );
+			TextView expiry = (TextView) findViewById( R.id.expiry );
+			expiry.setText( expiryBy );
 			
-			long delta = Long.parseLong(items[5]) - System.currentTimeMillis();
-			Date deltaTime = new Date( delta );
-			Log.d( TAG, deltaTime.toLocaleString() );
+			TextPaint paint = expiry.getPaint();
+			float len = paint.measureText( ( String )expiry.getText() );
+
+			//measureView( expiry );
+			Log.d( TAG, "expiry width = " + expiry.getWidth() + ", " + len + ", " + expiry.getPaddingLeft()
+					+ ", " + expiry.getPaddingRight() );
+			
+			Log.d( TAG, "view width = " + getWidth() );
+			
+			final ImageView image = (ImageView) findViewById( R.id.demo_big_image );
+			Log.d( TAG, "dim = " + image.getWidth() + "," + image.getHeight() );
+			
+			Drawable drawable = mImageLoader.loadDrawable( items[0], new ImageCallback() {
+
+				public void imageLoaded( Drawable imageDrawable, String imageUrl ) {
+					Bitmap bitmap = ImageScaler.drawableToBitmap( imageDrawable );
+					int height = bitmap.getHeight();
+					int width = bitmap.getWidth();
+					Log.d( TAG,  "bitmap " + width + ", " + height );
+					int expectedWidth = image.getWidth();
+					int expectedHeight = height * expectedWidth / width;
+					Log.d( TAG,  "expected " + expectedWidth + ", " + expectedHeight );
+					Drawable newImageDrawable = ImageScaler.scaleDrawable( bitmap, expectedWidth, expectedHeight );
+					image.setImageDrawable( newImageDrawable );
+				}
+			});
 		}
 	}
 	
@@ -112,4 +154,25 @@ public class GrouponDetailsView extends NetworkRequestLayout {
 		
 		return time;
 	}
+	
+//	private void measureView( View child ) {
+//        ViewGroup.LayoutParams p = child.getLayoutParams();
+//        
+//        if ( p == null ) {
+//            p = new ViewGroup.LayoutParams( ViewGroup.LayoutParams.FILL_PARENT,
+//                    ViewGroup.LayoutParams.WRAP_CONTENT);
+//        }
+//
+//        int childWidthSpec = ViewGroup.getChildMeasureSpec( 0, 0 + 0, p.width );
+//        int lpHeight = p.height;
+//        int childHeightSpec;
+//        
+//        if ( lpHeight > 0 ) {
+//            childHeightSpec = MeasureSpec.makeMeasureSpec( lpHeight, MeasureSpec.EXACTLY );
+//        } 
+//        else {
+//            childHeightSpec = MeasureSpec.makeMeasureSpec( 0, MeasureSpec.UNSPECIFIED );
+//        }
+//        child.measure( childWidthSpec, childHeightSpec );
+//    }
 }
