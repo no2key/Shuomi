@@ -11,7 +11,7 @@ import android.content.Context;
 import android.widget.BaseAdapter;
 import android.widget.SimpleAdapter;
 
-public abstract class SimpleListLayout extends NetworkRequestLayout {
+public abstract class SimpleListLayout extends ListLayout {
 
 	static final protected String LABEL_KEY = "label_key";
 	

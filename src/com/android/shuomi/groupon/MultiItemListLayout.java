@@ -4,10 +4,11 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import com.android.shuomi.R;
+import com.android.shuomi.ServiceListView;
 import com.android.shuomi.intent.GrouponListRequestIntent;
 import com.android.shuomi.intent.REQUEST;
-import com.android.shuomi.network.NetworkSession;
 import com.android.shuomi.parser.ResponseParser;
+import com.android.shuomi.util.Util;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -15,9 +16,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.BaseAdapter;
 
+
 public abstract class MultiItemListLayout extends PullToRefreshListLayout {
 
-	//private final String TAG = " MultiItemLayout ";
+	private final String TAG = " MultiItemLayout ";
 	private final int[] mItemFieldResIds = { R.id.demo_image, R.id.provider, R.id.discount, R.id.price, R.id.details };
 	private final int mItemResId = R.layout.groupon_list_item;
 	
@@ -34,6 +36,16 @@ public abstract class MultiItemListLayout extends PullToRefreshListLayout {
 	private void switchView() {
 		findViewById( R.id.empty_view_loading ).setVisibility( View.GONE );
 		getList().setVisibility( View.VISIBLE );
+	}
+	
+	@Override
+	protected void onItemSingleClick( View view, int position, long rowId ) {
+		if ( mAdapter != null ) {
+			ListItemUnion[] item = (ListItemUnion[]) mAdapter.getItem( position );
+			String id = item[item.length-1].getString();
+			Log.d( TAG, "click, id = " + id );
+			( ( ServiceListView ) getContext() ).goToNextView( new GrouponDetailsView( getContext(),  id ) );
+		}
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -106,15 +118,24 @@ public abstract class MultiItemListLayout extends PullToRefreshListLayout {
 	}
 	
 	private String[] convertFields( String[] fields ) {
-		float discount = 0;
+//		float discount = 0;
+//		
+//		if ( Float.parseFloat( fields[2] ) > 0 ) {
+//			discount = 10 * Float.parseFloat( fields[3] ) / Float.parseFloat( fields[2] );
+//		}
+//		
+//		DecimalFormat df = new DecimalFormat( "########.0");
+//		discount = Float.parseFloat( df.format( discount ) );
 		
-		if ( Float.parseFloat( fields[2] ) > 0 ) {
-			discount = 10 * Float.parseFloat( fields[3] ) / Float.parseFloat( fields[2] );
+		String discount = Util.getDiscount( fields[3] , fields[2] );
+		
+		if ( Util.isValid( discount ) ) {
+			fields[2] = discount + getContext().getString( R.string.discount_symbol );
+		}
+		else {
+			fields[2] = "";
 		}
 		
-		DecimalFormat df = new DecimalFormat( "########.0");
-		discount = Float.parseFloat( df.format( discount ) );
-		fields[2] = Float.toString( discount ) + getContext().getString( R.string.discount_symbol );
 		fields[3] = getContext().getString( R.string.chinese_yuan_symbol ) + fields[3];
 		
 		return fields;

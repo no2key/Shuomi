@@ -11,7 +11,6 @@ import com.android.shuomi.SimpleListLayout;
 import com.android.shuomi.intent.REQUEST;
 import com.android.shuomi.intent.RESPONSE;
 import com.android.shuomi.intent.RequestIntent;
-import com.android.shuomi.network.NetworkSession;
 import com.android.shuomi.util.Util;
 
 import android.content.Context;

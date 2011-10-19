@@ -12,6 +12,9 @@ public class ResponseParserCreator {
 		if ( requestAction.equals( REQUEST.LIST_GROUPON ) ) {
 			parser = new GrouponListResponseParser( response.getUserData() );
 		}
+		else if ( requestAction.equals( REQUEST.OBTAIN_DETAILS ) ) {
+			parser = new GrouponDetailsResponseParser( response.getUserData() );
+		}
 		else {
 			parser = new ResponseParser( response.getUserData(), requestAction );
 		}

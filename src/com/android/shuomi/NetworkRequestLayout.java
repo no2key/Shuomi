@@ -1,12 +1,12 @@
 package com.android.shuomi;
 
 import android.content.Context;
+import android.widget.LinearLayout;
 
-import com.android.shuomi.groupon.ListLayout;
 import com.android.shuomi.intent.RequestIntent;
 import com.android.shuomi.network.NetworkSession;
 
-public abstract class NetworkRequestLayout extends ListLayout {
+public abstract class NetworkRequestLayout extends LinearLayout implements UpdatableView {
 
 	private int mRequestIntentHashCode = 0;
 	private boolean mRequestPending = false;

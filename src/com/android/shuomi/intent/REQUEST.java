@@ -5,6 +5,7 @@ public class REQUEST {
 	public static final String LIST_PROVINCE = "LIST_PROVINCE";
 	public static final String LIST_CITY = "LIST_CITY";
 	public static final String LIST_GROUPON = "LIST_GROUPON";
+	public static final String OBTAIN_DETAILS = "OBTAIN_DETAILS";
 	
 	public static final String PARAM_PROVINCE = "province";
 	public static final String PARAM_CITY = "city";
@@ -14,4 +15,6 @@ public class REQUEST {
 	public static final String PARAM_PAGE = "page";
 	public static final String PARAM_ROW = "row";
 	public static final String PARAM_ORDER = "order";
+	public static final String PARAM_DETAIL = "detail";
+	public static final String PARAM_ID = "id";
 }

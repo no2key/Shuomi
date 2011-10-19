@@ -18,6 +18,9 @@ public class RequestCreator {
 		else if ( action.equals( REQUEST.LIST_GROUPON ) ) {
 			composer = new GrouponListRequestComposer( request );
 		}
+		else if ( action.equals( REQUEST.OBTAIN_DETAILS ) ) {
+			composer = new GrouponDetailsRequestComposer( request );
+		}
 		
 		return composer;
 	}

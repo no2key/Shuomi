@@ -5,15 +5,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
+import com.android.shuomi.NetworkRequestLayout;
 import com.android.shuomi.R;
-import com.android.shuomi.UpdatableView;
 
-abstract public class ListLayout extends LinearLayout implements UpdatableView {
+abstract public class ListLayout extends NetworkRequestLayout {
 	abstract protected String getRequestAction();
 	abstract protected int getLayoutResId();
 	

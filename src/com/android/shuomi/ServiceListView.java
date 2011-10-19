@@ -204,7 +204,10 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 	public void onResponse( ResponseIntent response ) {
 		try {
 			NetworkRequestLayout view = (NetworkRequestLayout) findDestinationView( response );
-			view.onRequestDone();
+			
+			if ( view != null ) {
+				view.onRequestDone();
+			}
 		}
 		catch( ClassCastException e ){
 			Log.w( TAG, "Cast failed: NOT a NetworkRequestLayout!" );

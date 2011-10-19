@@ -10,6 +10,7 @@ public class RESPONSE {
 	public static final String PARAM_PROVIDER = "tuan";
 	public static final String PARAM_ID = "id";
 	public static final String PARAM_IMG_1 = "img1";
+	public static final String PARAM_IMG_2 = "img2";
 	public static final String PARAM_TITLE = "title";
 	public static final String PARAM_ACTUAL_PRICE = "price";
 	public static final String PARAM_CATE = "cate";
@@ -18,6 +19,9 @@ public class RESPONSE {
 	public static final String PARAM_PRICE = "value";
 	public static final String PARAM_PROVINCE = "province";
 	public static final String PARAM_CITY = "city";
+
+	public static final String PARAM_EXPIRY = "endtime";
+	public static final String FOLLOWED = "concern";
 	
 	public class ERROR {
 		

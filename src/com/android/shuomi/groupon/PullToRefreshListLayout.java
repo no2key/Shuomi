@@ -1,6 +1,5 @@
 package com.android.shuomi.groupon;
 
-import com.android.shuomi.NetworkRequestLayout;
 import com.android.shuomi.R;
 
 import android.content.Context;
@@ -20,7 +19,7 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-public abstract class PullToRefreshListLayout extends NetworkRequestLayout {
+public abstract class PullToRefreshListLayout extends ListLayout {
 
 	abstract protected BaseAdapter getAdapter();
 	abstract protected void requestGrouponList( Bundle bundle );
