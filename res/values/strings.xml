@@ -50,5 +50,6 @@
     
     <string name="no_shop_address">抱歉，没有该客户地址信息。</string>
     <string name="prompt_call_shop">是否拨打该商户电话？</string>
+    <string name="prompt_select_number">请选择要拨打的商户电话</string>
     
 </resources>
