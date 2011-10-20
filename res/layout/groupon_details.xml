@@ -21,8 +21,8 @@
 	        android:layout_height="wrap_content"	        
 	        android:padding="2dip"
 	        android:layout_marginTop="2dip"
-	        android:layout_marginLeft="10dip"
-	        android:layout_marginRight="2dip"	        
+	        android:layout_marginLeft="5dip"
+	        android:layout_marginRight="2dip"
 	        android:adjustViewBounds="true"
 	        android:gravity="center" 
 	        android:layout_gravity="center_vertical"
@@ -54,6 +54,7 @@
 	                android:text="0.0" 
 	                android:id="@+id/discount"
 	                android:textColor="@color/lightgreen"
+	                android:layout_marginBottom="5dip"
 	                android:gravity="left" > 
 	            </TextView>
 	             
@@ -63,7 +64,8 @@
 				    android:id="@+id/price"
 				    android:text="00000.00"
 				    android:textSize="16dip"
-				    android:paddingRight="5dip"
+				    android:textColor="@color/black"
+				    android:layout_marginBottom="7dip"
 				    android:gravity="left" >
 				</TextView>
 	           
@@ -75,8 +77,8 @@
 				    android:textSize="20dip"
 				    android:textColor="@color/red"
 				    android:background="#dcdcdc"
-				    android:paddingRight="5dip"
 				    android:singleLine="true"
+				    android:layout_marginBottom="5dip"
 				    android:gravity="left" >
 				</TextView>
            
@@ -169,7 +171,7 @@
 	        <TextView
 	            android:layout_height="wrap_content" 
 	            android:layout_width="wrap_content"  
-	            android:textSize="16dip"
+	            android:textSize="18dip"
 	            android:textColor="@color/black"
 	            android:text="0.0"
 	            android:id="@+id/description"> 
@@ -227,42 +229,6 @@
 			    android:singleLine="true"
 			    android:gravity="right" >
 			</TextView>
-			
-<!-- 			<TextView -->
-<!--            		android:layout_height="wrap_content"  -->
-<!-- 				android:layout_width="wrap_content" -->
-<!-- 				android:textSize="13dip"   -->
-<!-- 				android:text="0.0"  -->
-<!-- 				android:id="@+id/provider" -->
-<!-- 				android:textColor="@color/white" -->
-<!-- 				android:paddingLeft="2dip" -->
-<!-- 				android:maxLines="1" -->
-<!-- 				android:gravity="left" >  -->
-<!--        		</TextView> -->
-        
-<!-- 			<TextView  -->
-<!-- 			    android:layout_height="wrap_content" -->
-<!-- 			    android:layout_width="wrap_content" -->
-<!-- 			    android:id="@+id/expiry" -->
-<!-- 			    android:text="00000.00" -->
-<!-- 			    android:textSize="16dip" -->
-<!-- 			    android:textColor="@color/yellow" -->
-<!-- 			    android:paddingRight="2dip" -->
-<!-- 			    android:maxLines="1" -->
-<!-- 			    android:gravity="center" > -->
-<!-- 			</TextView> -->
-        
-<!-- 			<TextView  -->
-<!-- 			    android:layout_height="wrap_content" -->
-<!-- 			    android:layout_width="wrap_content" -->
-<!-- 			    android:id="@+id/followed" -->
-<!-- 			    android:text="00000.00" -->
-<!-- 			    android:textSize="16dip" -->
-<!-- 			    android:textColor="@color/white" -->
-<!-- 			    android:paddingRight="2dip" -->
-<!-- 			    android:maxLines="1" -->
-<!-- 			    android:gravity="right" > -->
-<!-- 			</TextView> -->
 
 		</LinearLayout>
 	            

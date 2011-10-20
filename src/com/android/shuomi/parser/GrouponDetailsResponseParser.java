@@ -4,9 +4,11 @@ import com.android.shuomi.intent.RESPONSE;
 
 public class GrouponDetailsResponseParser extends ResponseParser {
 	
-	private final String[] mKeys = { RESPONSE.PARAM_IMG_2, RESPONSE.PARAM_PROVIDER, 
-			RESPONSE.PARAM_PRICE, RESPONSE.PARAM_ACTUAL_PRICE, RESPONSE.PARAM_TITLE, 
-			RESPONSE.PARAM_EXPIRY, RESPONSE.FOLLOWED, RESPONSE.PARAM_ID };
+	private final String[] mKeys = { 
+			RESPONSE.PARAM_IMG_2, RESPONSE.PARAM_PROVIDER,RESPONSE.PARAM_PRICE, 
+			RESPONSE.PARAM_ACTUAL_PRICE, RESPONSE.PARAM_TITLE, RESPONSE.PARAM_EXPIRY, 
+			RESPONSE.FOLLOWED, RESPONSE.PARAM_ID, RESPONSE.PARAM_URL, 
+			RESPONSE.PARAM_SHOPLIST };
 	
 	public GrouponDetailsResponseParser( String inputStream ) {
 		parse( inputStream );

@@ -39,8 +39,8 @@ public class SimpleJsonParser {
 					values[i] = jsonObj.getString( keys[i] );
 				} 
 				catch ( JSONException e ) {
-					values = null;
-					Log.e( "SimpleJsonParser", "can NOT find expected key!" );
+					values[i] = null;
+					Log.e( "SimpleJsonParser", "can NOT find expected key: " + keys[i] );
 				}
 			}
 		}

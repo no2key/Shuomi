@@ -19,6 +19,8 @@ public class RESPONSE {
 	public static final String PARAM_PRICE = "value";
 	public static final String PARAM_PROVINCE = "province";
 	public static final String PARAM_CITY = "city";
+	public static final String PARAM_URL = "url";
+	public static final String PARAM_SHOPLIST = "shoplist";
 
 	public static final String PARAM_EXPIRY = "endtime";
 	public static final String FOLLOWED = "concern";

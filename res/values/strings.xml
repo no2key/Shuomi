@@ -3,6 +3,7 @@
     <string name="hello">Hello World, ShuomiActivity!</string>
     <string name="app_name">烁米团购</string>
     <string name="dlg_btn_ok">确定</string>
+    <string name="dlg_btn_cancel">取消</string>
     <string name="app_error">错误</string>
     
     <string name="groupon_info">团购信息</string>
@@ -45,5 +46,9 @@
     <string name="day">天</string>
     <string name="hour">小时</string>
     <string name="less_than_one">不到一</string>
+    <string name="groupon_expired">团购已结束</string>
+    
+    <string name="no_shop_address">抱歉，没有该客户地址信息。</string>
+    <string name="prompt_call_shop">是否拨打该商户电话？</string>
     
 </resources>

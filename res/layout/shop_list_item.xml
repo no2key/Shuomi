@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"   
+    android:orientation="horizontal"  
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/shop_list_item"
+    android:padding="2dip"
+    android:layout_marginTop="10dip"
+    android:layout_marginBottom="10dip">
+<!--     android:background="@color/white"> -->
+    
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/unknown"
+        android:padding="15dip"
+        android:layout_marginRight="2dip"
+        android:id="@+id/ic_call"
+        android:gravity="center" 
+        android:layout_gravity="center_vertical">
+    </ImageView>
+        
+    <LinearLayout
+        android:orientation="vertical"  
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical" >
+            
+        <TextView 
+            android:layout_height="wrap_content"   
+            android:layout_width="wrap_content"   
+            android:id="@+id/shop_name"
+            android:text="Shop Name"
+            android:textSize="20dip"
+            android:textColor="@color/black"
+            android:paddingRight="3dip" >
+        </TextView>
+        
+        <TextView 
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"   
+            android:id="@+id/shop_address"
+            android:text="Shop address"
+            android:textSize="16dip"
+            android:paddingRight="3dip" >
+        </TextView>
+        
+    </LinearLayout>
+    
+</LinearLayout>

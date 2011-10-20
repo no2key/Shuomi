@@ -1,24 +1,29 @@
 package com.android.shuomi.groupon;
 
+import java.util.ArrayList;
+
 import com.android.shuomi.ImageScaler;
 import com.android.shuomi.NetworkRequestLayout;
 import com.android.shuomi.R;
 import com.android.shuomi.groupon.AsyncImageLoader.ImageCallback;
 import com.android.shuomi.intent.GrouponDetailsRequestIntent;
 import com.android.shuomi.intent.REQUEST;
-import com.android.shuomi.intent.RESPONSE;
 import com.android.shuomi.parser.ResponseParser;
+import com.android.shuomi.parser.ShopListParser;
+import com.android.shuomi.util.EventIndicator;
 import com.android.shuomi.util.Util;
+import com.android.shuomi.ServiceListView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.text.TextPaint;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.View.MeasureSpec;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,15 +32,84 @@ public class GrouponDetailsView extends NetworkRequestLayout {
 	static private final String TAG = "GrouponDetailsView"; 
 	private String mItemId;
 	private AsyncImageLoader mImageLoader = new AsyncImageLoader();
+	private String mUrl = null;
+	private String mShopList = null;
 	
 	public GrouponDetailsView( Context context, String itemId ) {
 		super(context);		
 		inflateLayout();
-		
+		registerButtonActions();
 		mItemId = itemId;
 		requestGrouponDetails();
 	}
 	
+	private void registerButtonActions() {
+		Button favorite = (Button) findViewById( R.id.btn_favorites );
+		favorite.setOnClickListener( new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				onAddToFavorite();
+			}
+		});
+		
+		Button share = (Button) findViewById( R.id.btn_share );
+		share.setOnClickListener( new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				onShare();
+			}
+		});
+		
+		Button address = (Button) findViewById( R.id.btn_address );
+		address.setOnClickListener( new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				onViewAddress();
+			}
+		});
+		
+		Button purchase = (Button) findViewById( R.id.btn_purchase );
+		purchase.setOnClickListener( new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				onPurchase();
+			}
+		});
+	}
+	
+	private void onAddToFavorite() {
+		
+	}
+	
+	private void onShare() {
+		
+	}
+	
+	private void onViewAddress() {
+		if ( Util.isValid( mShopList ) ) {
+			ShopListParser parser = new ShopListParser( mShopList );
+			ArrayList<String[]> list = parser.getDataList();
+			
+			if ( list != null && list.size() > 0 ) {
+				( ( ServiceListView ) getContext() ).goToNextView( new ShopListView( getContext(),  list ) );
+			}
+			else {
+				EventIndicator.showToast( getContext(), getContext().getString( R.string.no_shop_address ) );
+			}
+		}
+		else {
+			EventIndicator.showToast( getContext(), getContext().getString( R.string.no_shop_address ) );
+		}
+	}
+	
+	private void onPurchase() {
+		getContext().startActivity( new Intent( Intent.ACTION_VIEW, Uri.parse( mUrl ) ) );     
+	}
+
 	private void requestGrouponDetails() {
 		GrouponDetailsRequestIntent request = new GrouponDetailsRequestIntent( REQUEST.OBTAIN_DETAILS, mItemId );
 		request.setSourceClass( getClass().getName() );
@@ -63,22 +137,9 @@ public class GrouponDetailsView extends NetworkRequestLayout {
 	}
 	
 	private void updateView( String[] items ) {
-		String[] mKeys = { RESPONSE.PARAM_IMG_2, RESPONSE.PARAM_PROVIDER, 
-				RESPONSE.PARAM_PRICE, RESPONSE.PARAM_ACTUAL_PRICE, RESPONSE.PARAM_TITLE, 
-				RESPONSE.PARAM_EXPIRY, RESPONSE.FOLLOWED, RESPONSE.PARAM_ID };
-		
 		if ( Util.isValid( items ) ) {
-			TextView price = (TextView) findViewById( R.id.price );
-			price.setText( getContext().getString( R.string.original_price ) + items[2] + getContext().getString( R.string.chinese_yuan ) );
-			
-			TextView actualPrice = (TextView) findViewById( R.id.actual_price );
-			actualPrice.setText( getContext().getString( R.string.actual_price ) + items[3] + getContext().getString( R.string.chinese_yuan ));
-			
-			String discountString = Util.getDiscount( items[3], items[2] );
-			if ( Util.isValid( discountString ) ) {
-				TextView discount = (TextView) findViewById( R.id.discount );
-				discount.setText( discountString + getContext().getString( R.string.discount_symbol ) );
-			}
+			setBigImage( items[0] );
+			setPrices( items[2], items[3] );
 			
 			TextView details = (TextView) findViewById( R.id.description );
 			details.setText( items[4] );
@@ -87,8 +148,7 @@ public class GrouponDetailsView extends NetworkRequestLayout {
 			provider.setText( getContext().getString( R.string.provider ) + items[1] );
 			
 			TextPaint paint1 = provider.getPaint();
-			float len1 = paint1.measureText( ( String )provider.getText() );
-			
+			float len1 = paint1.measureText( ( String )provider.getText() );			
 			Log.d( TAG, "provider width = " + provider.getWidth() + ", " + len1 );
 			
 			TextView follower = (TextView) findViewById( R.id.followed );
@@ -97,22 +157,8 @@ public class GrouponDetailsView extends NetworkRequestLayout {
 			//measureView( follower );
 			Log.d( TAG, "follower width = " + follower.getWidth() );
 			
-			int[] time = getExpireTime( Long.parseLong(items[5]) - System.currentTimeMillis() );
-			String expiryBy = getContext().getString( R.string.expiry_by );
-			
-			if ( time[0] > 0 ) {
-				expiryBy += time[0] + getContext().getString( R.string.day );
-				expiryBy += time[1] + getContext().getString( R.string.hour );
-			}
-			else if ( time[1] > 0 ) {
-				expiryBy += time[1] + getContext().getString( R.string.hour );
-			}
-			else {
-				expiryBy += getContext().getString( R.string.less_than_one ) + getContext().getString( R.string.hour );
-			}
-			
 			TextView expiry = (TextView) findViewById( R.id.expiry );
-			expiry.setText( expiryBy );
+			expiry.setText( getExpiryLabel( Long.parseLong(items[5]) - System.currentTimeMillis() ) );
 			
 			TextPaint paint = expiry.getPaint();
 			float len = paint.measureText( ( String )expiry.getText() );
@@ -123,24 +169,71 @@ public class GrouponDetailsView extends NetworkRequestLayout {
 			
 			Log.d( TAG, "view width = " + getWidth() );
 			
-			final ImageView image = (ImageView) findViewById( R.id.demo_big_image );
-			Log.d( TAG, "dim = " + image.getWidth() + "," + image.getHeight() );
-			
-			Drawable drawable = mImageLoader.loadDrawable( items[0], new ImageCallback() {
-
-				public void imageLoaded( Drawable imageDrawable, String imageUrl ) {
-					Bitmap bitmap = ImageScaler.drawableToBitmap( imageDrawable );
-					int height = bitmap.getHeight();
-					int width = bitmap.getWidth();
-					Log.d( TAG,  "bitmap " + width + ", " + height );
-					int expectedWidth = image.getWidth();
-					int expectedHeight = height * expectedWidth / width;
-					Log.d( TAG,  "expected " + expectedWidth + ", " + expectedHeight );
-					Drawable newImageDrawable = ImageScaler.scaleDrawable( bitmap, expectedWidth, expectedHeight );
-					image.setImageDrawable( newImageDrawable );
-				}
-			});
+			mUrl = items[8];
+			mShopList = items[9];
+			Log.d( TAG, "shoplist = " + items[9] + ", len = " + items[9].length() );
 		}
+	}
+	
+	private void setPrices( String originalPrice, String actualPrice ) {
+		TextView priceView = (TextView) findViewById( R.id.price );
+		priceView.setText( getContext().getString( R.string.original_price ) + originalPrice + getContext().getString( R.string.chinese_yuan ) );
+		
+		TextView actualPriceView = (TextView) findViewById( R.id.actual_price );
+		actualPriceView.setText( getContext().getString( R.string.actual_price ) + actualPrice + getContext().getString( R.string.chinese_yuan ));
+		
+		String discountString = Util.getDiscount( actualPrice, originalPrice );
+		if ( Util.isValid( discountString ) ) {
+			TextView discount = (TextView) findViewById( R.id.discount );
+			discount.setText( discountString + getContext().getString( R.string.discount_symbol ) );
+		}
+	}
+	
+	private void setBigImage( String uri ) {
+		final ImageView image = (ImageView) findViewById( R.id.demo_big_image );
+		Log.d( TAG, "dim = " + image.getWidth() + "," + image.getHeight() );
+		
+		@SuppressWarnings("unused")
+		Drawable drawable = mImageLoader.loadDrawable( uri, new ImageCallback() {
+
+			public void imageLoaded( Drawable imageDrawable, String imageUrl ) {
+				Bitmap bitmap = ImageScaler.drawableToBitmap( imageDrawable );
+				int height = bitmap.getHeight();
+				int width = bitmap.getWidth();
+				Log.d( TAG,  "bitmap " + width + ", " + height );
+				int expectedWidth = image.getWidth();
+				int expectedHeight = height * expectedWidth / width;
+				Log.d( TAG,  "expected " + expectedWidth + ", " + expectedHeight );
+				Drawable newImageDrawable = ImageScaler.scaleDrawable( bitmap, expectedWidth, expectedHeight );
+				image.setImageDrawable( newImageDrawable );
+				//switchView();
+			}
+		});
+	}
+	
+	private String getExpiryLabel( long delta ) {
+		String label;
+		
+		if ( delta > 0 ) {
+			int[] time = getExpireTime( delta );
+			label = getContext().getString( R.string.expiry_by );
+			
+			if ( time[0] > 0 ) {
+				label += time[0] + getContext().getString( R.string.day );
+				label += time[1] + getContext().getString( R.string.hour );
+			}
+			else if ( time[1] > 0 ) {
+				label += time[1] + getContext().getString( R.string.hour );
+			}
+			else {
+				label += getContext().getString( R.string.less_than_one ) + getContext().getString( R.string.hour );
+			}
+		}
+		else {
+			label = getContext().getString( R.string.groupon_expired );
+		}
+		
+		return label;
 	}
 	
 	private int[] getExpireTime( long delta ) {
@@ -154,25 +247,4 @@ public class GrouponDetailsView extends NetworkRequestLayout {
 		
 		return time;
 	}
-	
-//	private void measureView( View child ) {
-//        ViewGroup.LayoutParams p = child.getLayoutParams();
-//        
-//        if ( p == null ) {
-//            p = new ViewGroup.LayoutParams( ViewGroup.LayoutParams.FILL_PARENT,
-//                    ViewGroup.LayoutParams.WRAP_CONTENT);
-//        }
-//
-//        int childWidthSpec = ViewGroup.getChildMeasureSpec( 0, 0 + 0, p.width );
-//        int lpHeight = p.height;
-//        int childHeightSpec;
-//        
-//        if ( lpHeight > 0 ) {
-//            childHeightSpec = MeasureSpec.makeMeasureSpec( lpHeight, MeasureSpec.EXACTLY );
-//        } 
-//        else {
-//            childHeightSpec = MeasureSpec.makeMeasureSpec( 0, MeasureSpec.UNSPECIFIED );
-//        }
-//        child.measure( childWidthSpec, childHeightSpec );
-//    }
 }
