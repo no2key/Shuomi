@@ -88,10 +88,6 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 		goToNextView( new GrouponMainView( this, mProvinceSelected, mCitySelected ) );
 	}
 	
-	private UpdatableView getFocusView() {
-		return (UpdatableView) getCurrentFlipper().getCurrentView();
-	}
-	
 	////////////////////////////
 	// Do BACK key magic
 	////////////////////////////
@@ -246,21 +242,37 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 	}
 	
 	private UpdatableView findDestinationView( ResponseIntent response ) {
-		UpdatableView view = null;
+		UpdatableView dest = null;
+		ViewFlipper flipper = null;
 		
 		if ( response.getAction().equals( RESPONSE.HTTP_RESPONSE_GROUPON ) ) {
+			flipper = mFlippers[0];
+		}
+		
+		if ( flipper != null ) {
 			try {
-				UpdatableView topView = ( UpdatableView ) mFlippers[0].getCurrentView();
-				if ( topView != null && topView.getClass().getName().equals( response.getSourceClass() ) ) {
-					view = topView;
-				}
+				dest = (UpdatableView) findViewInFlipperByName( flipper, response.getSourceClass() );
 			}
 			catch( ClassCastException e ) {
 				Log.w( TAG, "destination view is NOT an UpdatableView!" );
 			}
-			
 		}
 		
-		return view;
+		return dest;
+	}
+	
+	private View findViewInFlipperByName( ViewFlipper flipper, String className ) {
+		View target = null;
+		
+		if ( flipper != null && Util.isValid( className ) ) {
+			for ( int i = flipper.getChildCount() -1; i > -1; i -- ) {
+				View view = flipper.getChildAt( i );
+				if ( view != null && view.getClass().getName().equals( className ) ) {
+					target = view;
+				}
+			}
+		}
+		
+		return target;
 	}
 }
