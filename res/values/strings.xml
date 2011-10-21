@@ -52,4 +52,13 @@
     <string name="prompt_call_shop">是否拨打该商户电话？</string>
     <string name="prompt_select_number">请选择要拨打的商户电话</string>
     
+    <string name="microblog">微博</string>
+    <string name="email">邮件</string>
+    <string name="please_select_shared_by">请选择分享方式</string>
+    
+    <string name="address_safety_promise">烁米网仅转发团购信息，不会收集您提供的邮件地址。</string>
+    <string name="recepients_list">收件人列表：</string>
+    <string name="send">发送</string>
+    <string name="add_email_address">新增收件人邮箱地址</string>
+    
 </resources>

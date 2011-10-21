@@ -14,6 +14,8 @@ import com.android.shuomi.util.EventIndicator;
 import com.android.shuomi.util.Util;
 import com.android.shuomi.ServiceListView;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -86,7 +88,66 @@ public class GrouponDetailsView extends NetworkRequestLayout {
 	}
 	
 	private void onShare() {
+		showSharedByDialog();
 		
+//		WindowManager wm = (WindowManager)getContext().getSystemService( "window" );  
+//		WindowManager.LayoutParams params = new WindowManager.LayoutParams();  
+//		params.type = WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;  
+//		  
+//		params.width = WindowManager.LayoutParams.WRAP_CONTENT;  
+//		params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+//		//params.
+//		  
+//		LayoutInflater inflater = LayoutInflater.from( getContext() );
+//		View shareView = inflater.inflate( R.layout.groupon_share_view, null );
+//		wm.addView( shareView, params );
+	}
+	
+	private void showSharedByDialog() {
+		LayoutInflater inflater = LayoutInflater.from( getContext() );
+		View shareView = inflater.inflate( R.layout.groupon_share_view, null );
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder( getContext() );
+		builder.setTitle( R.string.please_select_shared_by );
+		builder.setView( shareView );    	
+    	AlertDialog alert = builder.create();
+    	addSharedViewListener( alert, shareView );
+    	alert.show();
+	}
+	
+	private void addSharedViewListener( final Dialog parent, View view ) {
+		view.findViewById( R.id.btn_microblog ).setOnClickListener( new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				parent.dismiss();				
+			}
+		});
+		
+		view.findViewById( R.id.btn_email ).setOnClickListener( new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				parent.dismiss();
+				sharedByEmail();
+			}
+		});
+		
+		view.findViewById( R.id.btn_cancel ).setOnClickListener( new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				parent.dismiss();
+			}
+		});
+	}
+	
+	private void sharedByMicroBlog() {
+		
+	}
+	
+	private void sharedByEmail() {
+		( ( ServiceListView ) getContext() ).goToNextView( new GrouponSharedByEmailView( getContext(), mItemId ) );
 	}
 	
 	private void onViewAddress() {
@@ -95,7 +156,7 @@ public class GrouponDetailsView extends NetworkRequestLayout {
 			ArrayList<String[]> list = parser.getDataList();
 			
 			if ( list != null && list.size() > 0 ) {
-				( ( ServiceListView ) getContext() ).goToNextView( new ShopListView( getContext(),  list ) );
+				( ( ServiceListView ) getContext() ).goToNextView( new ShopListView( getContext(), list ) );
 			}
 			else {
 				EventIndicator.showToast( getContext(), getContext().getString( R.string.no_shop_address ) );

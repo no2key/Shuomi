@@ -4,8 +4,8 @@
     <solid android:color="#66C301"/>
 	
 	<gradient
-    	android:endColor="#66C301"  
-        android:startColor="#FFFFFF"  
+    	android:endColor="@color/red"  
+        android:startColor="#FFC0CB"  
         android:angle="270" />  
                 
 <!-- 	<stroke   -->
