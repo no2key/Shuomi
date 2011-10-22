@@ -26,18 +26,21 @@
     	android:text="@string/recepients_list"/>
     
     <EditText
+    	android:id="@+id/edit_address"
     	android:layout_width="match_parent"
     	android:layout_height="wrap_content"
     	android:layout_marginLeft="25dip"
     	android:layout_marginRight="25dip"
     	android:hint="@string/add_email_address"
+    	android:imeOptions="actionDone"
+    	android:inputType="textEmailAddress"
     	android:maxLines="1" />
     
     <ListView
     	android:id="@+id/list_address"
     	android:layout_width="match_parent"    	
     	android:layout_height="0dip"
-    	android:layout_weight="4"
+    	android:layout_weight="5"
     	android:layout_marginLeft="25dip"
     	android:layout_marginRight="25dip"
     	android:background="@drawable/border_email_list"/>
