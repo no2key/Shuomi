@@ -290,27 +290,27 @@ public class ServiceDb extends SQLiteOpenHelper {
 		super.close();
 	}
 	
-	public void update( String table, String id, String column, String value ) {
-		if ( isTableExist( table ) ) {
-			SQLiteDatabase db = getWritableDatabase();
-			ContentValues values = new ContentValues();
-			values.put( column, value );
-			db.update( table, values, "ID=?", new String[] {id} );
-		}
-	}
-	
-	public void update( String table, String id, String[] columns, String[] values ) {
-		if ( isTableExist( table ) ) {
-			SQLiteDatabase db = getWritableDatabase();
-			ContentValues contentValue = new ContentValues();
-			int length = Util.min( columns.length , values.length );
-			for ( int i = 0; i < length; i ++ ) {
-				contentValue.put( columns[i], values[i] );
-			}
-			
-			if ( length > 0 ) {
-				db.update( table, contentValue, "ID=?", new String[] {id} );
-			}
-		}
-	}
+//	public void update( String table, String id, String column, String value ) {
+//		if ( isTableExist( table ) ) {
+//			SQLiteDatabase db = getWritableDatabase();
+//			ContentValues values = new ContentValues();
+//			values.put( column, value );
+//			db.update( table, values, "ID=?", new String[] {id} );
+//		}
+//	}
+//	
+//	public void update( String table, String id, String[] columns, String[] values ) {
+//		if ( isTableExist( table ) ) {
+//			SQLiteDatabase db = getWritableDatabase();
+//			ContentValues contentValue = new ContentValues();
+//			int length = Util.min( columns.length , values.length );
+//			for ( int i = 0; i < length; i ++ ) {
+//				contentValue.put( columns[i], values[i] );
+//			}
+//			
+//			if ( length > 0 ) {
+//				db.update( table, contentValue, "ID=?", new String[] {id} );
+//			}
+//		}
+//	}
 }
