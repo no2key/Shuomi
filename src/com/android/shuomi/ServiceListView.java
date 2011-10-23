@@ -10,6 +10,7 @@ import com.android.shuomi.network.NetworkResponseHandler;
 import com.android.shuomi.network.NetworkSession;
 import com.android.shuomi.parser.ResponseParser;
 import com.android.shuomi.parser.ResponseParserCreator;
+import com.android.shuomi.util.EventIndicator;
 import com.android.shuomi.util.Util;
 
 import android.content.Intent;
@@ -190,7 +191,8 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 	
 	@Override
 	protected void onNewIntent( Intent intent ) {
-		if ( intent.getAction().equals( RESPONSE.HTTP_RESPONSE_GROUPON ) ) {
+		if ( intent.getAction().equals( RESPONSE.HTTP_RESPONSE_GROUPON ) || 
+			 intent.getAction().equals( RESPONSE.HTTP_RESPONSE_GROUPON_SHARE ) ) {
 			ResponseIntent response = new ResponseIntent( intent );
 			NetworkResponse.process( this, ( ResponseIntent ) response );
 		}
@@ -212,6 +214,20 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 	
 	@Override
 	public void onPositiveResponse( ResponseIntent response ) {
+		if ( response.getAction().equals( RESPONSE.HTTP_RESPONSE_GROUPON ) ) {
+			updateView( response );
+		}
+		else if ( response.getAction().equals( RESPONSE.HTTP_RESPONSE_GROUPON_SHARE ) ) {
+			EventIndicator.showToast( this, getString( R.string.email_sent_done ) );
+		}
+	}
+
+	@Override
+	public void onNegativeResponse( int error, String message ) {
+		// TODO Auto-generated method stub		
+	}
+	
+	private void updateView( ResponseIntent response ) {
 		UpdatableView view = findDestinationView( response );
 		
 		if ( view != null ) {
@@ -227,11 +243,6 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 		else {
 			Log.e( TAG, "Do NOT find destination view!" );
 		}
-	}
-
-	@Override
-	public void onNegativeResponse( int error, String message ) {
-		// TODO Auto-generated method stub		
 	}
 	
 	public Bundle getSelectedLocation() {

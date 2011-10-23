@@ -3,6 +3,7 @@ package com.android.shuomi.intent;
 public class RESPONSE {
 	
 	static final public String HTTP_RESPONSE_GROUPON = "com.android.shuomi.HTTP_RESPONSE_GROUPON";
+	static final public String HTTP_RESPONSE_GROUPON_SHARE = "com.android.shuomi.HTTP_RESPONSE_GROUPON_SHARE";
 	
 	public static final String PARAM_PAGES = "pages";
 	public static final String PARAM_LIST = "list";

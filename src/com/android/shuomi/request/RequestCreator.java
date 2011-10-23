@@ -21,6 +21,9 @@ public class RequestCreator {
 		else if ( action.equals( REQUEST.OBTAIN_DETAILS ) ) {
 			composer = new GrouponDetailsRequestComposer( request );
 		}
+		else if ( action.equals( REQUEST.SHARED_BY_EMAIL ) ) {
+			composer = new GrouponSharedByEmailRequestComposer( request );
+		}
 		
 		return composer;
 	}

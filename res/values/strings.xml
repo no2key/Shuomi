@@ -60,5 +60,9 @@
     <string name="recepients_list">收件人列表：</string>
     <string name="send">发送</string>
     <string name="add_email_address">新增收件人邮箱地址</string>
+    <string name="add">添加</string>
+    <string name="remove_email_address">从发送列表中移除下面地址？</string>
+    <string name="please_confirm">请确认</string>    
+    <string name="email_sent_done">邮件已经成功发送</string>
     
 </resources>
