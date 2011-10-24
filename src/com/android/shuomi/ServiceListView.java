@@ -86,6 +86,12 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 	private void onTabChange( int index ) {
 		Log.d( TAG, "index = " + index );
 		if ( index == 1 ) {
+			setupFavoriteFlipper();
+		}
+	}
+	
+	private void setupFavoriteFlipper() {
+		if ( mFlippers[1] == null ) {
 			mFlippers[1] = ( ViewFlipper ) findViewById( mTabResIds[1] );
 			goToNextView( new FavoritesListView( this ) );
 		}
@@ -106,6 +112,9 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 		mFlippers[0] = ( ViewFlipper ) findViewById( mTabResIds[0] );
 		
 		goToNextView( new GrouponMainView( this, mProvinceSelected, mCitySelected ) );
+		
+		mFlippers[1] = null;
+		mFlippers[2] = null;
 	}
 	
 	////////////////////////////

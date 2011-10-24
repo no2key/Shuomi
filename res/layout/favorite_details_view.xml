@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+  	xmlns:android="http://schemas.android.com/apk/res/android"
+  	android:orientation="vertical"
+  	android:layout_width="match_parent"
+  	android:layout_height="match_parent">
+    
+    <LinearLayout
+        android:orientation="horizontal"  
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="1dip"
+        android:background="#f5f5f5">
+        
+        <LinearLayout
+	        android:orientation="vertical"  
+	        android:layout_width="0px"
+			android:layout_weight="3" 
+	        android:layout_height="fill_parent"
+	        android:gravity="center"
+	        android:paddingTop="10dip"
+	        android:paddingBottom="10dip" 
+	        android:paddingLeft="5dip"
+	        android:paddingRight="5dip"
+	        android:background="#f5f5f5">
+	        
+	        <Button 
+	            android:text="@string/forward"
+	            android:id="@+id/btn_forward"
+	            android:paddingLeft="25dip"
+	            android:paddingRight="25dip"
+	            android:layout_marginLeft="5dip"
+	            android:layout_marginRight="5dip"
+	            android:layout_width="wrap_content"
+				android:layout_weight="1" 
+	            android:layout_height="0dip"
+	            style="?android:attr/buttonStyleSmall" />
+	        
+	        <Button 
+	            android:text="@string/address"
+	            android:id="@+id/btn_address"
+	            android:paddingLeft="25dip"
+	            android:paddingRight="25dip"
+	            android:layout_marginLeft="5dip"
+	            android:layout_marginRight="5dip"
+	            android:layout_width="wrap_content"
+				android:layout_weight="1"
+	            android:layout_height="0dip"
+	            style="?android:attr/buttonStyleSmall" />
+	            
+	        <Button 
+	            android:text="@string/purchase"
+	            android:id="@+id/btn_purchase"
+	            android:paddingLeft="25dip"
+	            android:paddingRight="25dip"
+	            android:layout_marginLeft="5dip"
+	            android:layout_marginRight="5dip"
+	            android:layout_width="wrap_content"
+				android:layout_weight="1"
+	            android:layout_height="0dip"
+	            style="?android:attr/buttonStyleSmall" />
+	            
+	    </LinearLayout>
+       
+        <RelativeLayout
+        	android:layout_width="0px"
+			android:layout_weight="2" 
+            android:layout_height="wrap_content"
+            android:paddingBottom="1dip"
+            android:layout_marginTop="10dip"
+            android:layout_marginBottom="10dip"
+            android:layout_marginRight="3dip"
+            android:gravity="center">
+                 
+            <LinearLayout
+                android:orientation="vertical"  
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"                
+                android:paddingBottom="1dip" 
+                android:layout_gravity="center_vertical"
+                android:gravity="center">
+                          
+	            <TextView
+	                android:layout_height="wrap_content" 
+	                android:layout_width="wrap_content"  
+	                android:textSize="30dip"  
+	                android:text="0.0" 
+	                android:id="@+id/discount"
+	                android:textColor="@color/lightgreen"
+	                android:layout_marginBottom="5dip"
+	                android:gravity="left" > 
+	            </TextView>
+	             
+				<TextView 
+				    android:layout_height="wrap_content"
+				    android:layout_width="wrap_content"   
+				    android:id="@+id/price"
+				    android:text="00000.00"
+				    android:textSize="16dip"
+				    android:textColor="@color/black"
+				    android:layout_marginBottom="7dip"
+				    android:gravity="left" >
+				</TextView>
+	           
+				<TextView 
+				    android:layout_height="wrap_content"
+				    android:layout_width="wrap_content"   
+				    android:id="@+id/actual_price"
+				    android:text="00000.00"
+				    android:textSize="20dip"
+				    android:textColor="@color/red"
+				    android:background="#dcdcdc"
+				    android:singleLine="true"
+				    android:layout_marginBottom="5dip"
+				    android:gravity="left" >
+				</TextView>
+           
+           </LinearLayout>
+   
+       </RelativeLayout>
+            
+    </LinearLayout>
+    
+    <View  
+    	android:layout_width="fill_parent"  
+    	android:layout_height="10px"  
+    	android:background="@color/strawberry" />
+    
+    <LinearLayout
+        android:orientation="vertical"  
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:background="#f5f5f5">
+        
+        <ScrollView
+  			android:layout_width="match_parent"
+  			android:layout_height="0dip"
+  			android:layout_weight="1"
+  			android:layout_marginTop="5dip"
+  			android:layout_marginBottom="5dip"
+  			android:layout_marginLeft="7dip"
+  			android:layout_marginRight="7dip">
+  			
+	        <TextView
+	            android:layout_height="wrap_content" 
+	            android:layout_width="wrap_content"  
+	            android:textSize="18dip"
+	            android:textColor="@color/black"
+	            android:text="0.0"
+	            android:id="@+id/description"> 
+	        </TextView>
+        
+        </ScrollView>
+        
+		<LinearLayout
+			android:orientation="horizontal"  
+		   	android:layout_width="fill_parent"
+		   	android:layout_height="35dip"
+		   	android:gravity="center_vertical"
+		   	android:background="@color/strawberry">
+		   		     
+    		<TextView
+           		android:layout_height="wrap_content" 
+				android:layout_width="0dip"
+				android:layout_weight="3"  
+				android:textSize="13dip"  
+				android:text="0.0" 
+				android:id="@+id/provider"
+				android:textColor="@color/white"
+				android:paddingLeft="5dip"
+				android:singleLine="true"
+				android:gravity="left" > 
+       		</TextView>
+        
+			<TextView 
+			    android:layout_height="wrap_content"
+			    android:layout_width="0dip"
+				android:layout_weight="6"   
+			    android:id="@+id/expiry"
+			    android:text="00000.00"
+			    android:textSize="18dip"
+			    android:textColor="@color/yellow"
+			    android:paddingRight="5dip"
+			    android:ellipsize="marquee"
+  				android:marqueeRepeatLimit="marquee_forever"
+  				android:singleLine="true"
+  				android:focusable="true"
+  				android:scrollHorizontally="true"
+  				android:focusableInTouchMode="true"
+			    android:gravity="right" >
+			</TextView>
+        
+<!-- 			<TextView  -->
+<!-- 			    android:layout_height="wrap_content" -->
+<!-- 			    android:layout_width="0dip" -->
+<!-- 				android:layout_weight="2" -->
+<!-- 			    android:id="@+id/followed" -->
+<!-- 			    android:text="00000.00" -->
+<!-- 			    android:textSize="16dip" -->
+<!-- 			    android:textColor="@color/white" -->
+<!-- 			    android:paddingRight="5dip" -->
+<!-- 			    android:singleLine="true" -->
+<!-- 			    android:gravity="right" > -->
+<!-- 			</TextView> -->
+
+		</LinearLayout>
+	            
+    </LinearLayout>
+    
+</LinearLayout>

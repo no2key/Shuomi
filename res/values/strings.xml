@@ -66,4 +66,9 @@
     <string name="email_sent_done">邮件已经成功发送</string>
     <string name="favorite_added_done">已经成功添加到收藏</string>
     
+    <string name="no_favorites">未收藏任何团购产品</string>
+    <string name="already_in_favorites">此团购产品已经被收藏</string>
+    <string name="forward">转发</string>
+    <string name="prompt_delete_favorite">是否删除选中的收藏？</string>
+    
 </resources>

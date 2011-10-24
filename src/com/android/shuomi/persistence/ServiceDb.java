@@ -319,4 +319,31 @@ public class ServiceDb extends SQLiteOpenHelper {
 //			}
 //		}
 //	}
+	
+	public boolean isRecordExisted( String table, String key, String value ) {
+		boolean result = false;
+		
+		if ( isTableExist( table ) ) 
+		{
+			SQLiteDatabase db = getReadableDatabase();
+			Cursor cursor = db.query( table, null, key + "=?", new String[]{ value }, null, null, null );
+			result = ( cursor != null && cursor.getCount() > 0 );
+			cursor.close();
+		}
+		
+		return result;
+	}
+	
+	public boolean deleteRecord( String table, String key, String value ) {
+		boolean result = false;
+		
+		if ( isTableExist( table ) ) 
+		{
+			SQLiteDatabase db = getWritableDatabase();
+			int count = db.delete( table, key + "=?", new String[] { value } );
+			result = ( count > 0 );		
+		}
+		
+		return result;
+	}
 }

@@ -89,8 +89,18 @@ public class GrouponDetailsView extends NetworkRequestLayout {
 	}
 	
 	private void onAddToFavorite() {
-		NetworkSession.send( new GrouponFavoriteRequestIntent( getClass().getName(), mItemId ) );
-		saveToDb();
+		if ( !DatabaseSession.getInstance().isRecordExisted( RESPONSE.PARAM_ID, mFields[6] ) ) 
+		{
+			NetworkSession.send( new GrouponFavoriteRequestIntent( getClass().getName(), mItemId ) );
+			saveToDb();
+			Log.d( TAG, "add new record" );
+		}
+		else
+		{
+			EventIndicator.showToast( getContext(), getContext().getString( R.string.already_in_favorites ) );
+			Log.d( TAG, "record existed" );
+			
+		}
 	}
 	
 	private void saveToDb() {

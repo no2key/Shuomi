@@ -53,4 +53,12 @@ public class DatabaseSession {
 	public void registerRecordAddObserver( Observer observer ) {
 		mDatabase.registerRecordAddedObserver( observer );
 	}
+	
+	public boolean deleteFavoriteRecord( String column, String value ) {
+		return mDatabase.deleteRecord( TABLE_FAVORITE, column, value );
+	}
+	
+	public boolean isRecordExisted( String column, String value ) {
+		return mDatabase.isRecordExisted( TABLE_FAVORITE , column, value );
+	}
 }
