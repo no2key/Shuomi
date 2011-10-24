@@ -7,6 +7,7 @@ public class REQUEST {
 	public static final String LIST_GROUPON = "LIST_GROUPON";
 	public static final String OBTAIN_DETAILS = "OBTAIN_DETAILS";
 	public static final String SHARED_BY_EMAIL = "SHARED_BY_EMAIL";
+	public static final String ADD_TO_FAVORITE = "ADD_TO_FAVORITE";
 	
 	public static final String PARAM_PROVINCE = "province";
 	public static final String PARAM_CITY = "city";
@@ -20,4 +21,5 @@ public class REQUEST {
 	public static final String PARAM_ID = "id";
 	public static final String PARAM_EMAIL = "mails";
 	public static final String PARAM_SHARE = "share";
+	public static final String PARAM_FAVORITE = "concern";
 }

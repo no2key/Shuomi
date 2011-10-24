@@ -1,5 +1,6 @@
 package com.android.shuomi;
 
+import com.android.shuomi.favorites.FavoritesListView;
 import com.android.shuomi.groupon.GrouponMainView;
 import com.android.shuomi.intent.REQUEST;
 import com.android.shuomi.intent.RESPONSE;
@@ -10,6 +11,7 @@ import com.android.shuomi.network.NetworkResponseHandler;
 import com.android.shuomi.network.NetworkSession;
 import com.android.shuomi.parser.ResponseParser;
 import com.android.shuomi.parser.ResponseParserCreator;
+import com.android.shuomi.persistence.DatabaseSession;
 import com.android.shuomi.util.EventIndicator;
 import com.android.shuomi.util.Util;
 
@@ -21,6 +23,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TabHost;
+import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
@@ -50,6 +53,7 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
         createTab();
         loadSelectedLocation();        
         initFlipper();
+        DatabaseSession.create( this );
     }
 	
 	private void createTab() {
@@ -70,6 +74,21 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
         mTabHost.getTabContentView().setPadding( 0, 0, 0, tabHeight );
         
         mTabHost.setCurrentTab( 0 );
+        mTabHost.setOnTabChangedListener( new OnTabChangeListener() {
+			
+			@Override
+			public void onTabChanged( String tabId ) {
+				onTabChange(  tabId.charAt( tabId.length()-1 ) - '1' );
+			}
+		});
+	}
+	
+	private void onTabChange( int index ) {
+		Log.d( TAG, "index = " + index );
+		if ( index == 1 ) {
+			mFlippers[1] = ( ViewFlipper ) findViewById( mTabResIds[1] );
+			goToNextView( new FavoritesListView( this ) );
+		}
 	}
 	
 	private void setupTabLabelProperty( final TabWidget tabWidget ) {
@@ -192,7 +211,8 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 	@Override
 	protected void onNewIntent( Intent intent ) {
 		if ( intent.getAction().equals( RESPONSE.HTTP_RESPONSE_GROUPON ) || 
-			 intent.getAction().equals( RESPONSE.HTTP_RESPONSE_GROUPON_SHARE ) ) {
+			 intent.getAction().equals( RESPONSE.HTTP_RESPONSE_GROUPON_SHARE ) || 
+			 intent.getAction().equals( RESPONSE.HTTP_RESPONSE_GROUPON_FAVORITE ) ) {
 			ResponseIntent response = new ResponseIntent( intent );
 			NetworkResponse.process( this, ( ResponseIntent ) response );
 		}
@@ -219,6 +239,9 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 		}
 		else if ( response.getAction().equals( RESPONSE.HTTP_RESPONSE_GROUPON_SHARE ) ) {
 			EventIndicator.showToast( this, getString( R.string.email_sent_done ) );
+		}
+		else if ( response.getAction().equals( RESPONSE.HTTP_RESPONSE_GROUPON_FAVORITE ) ) {
+			EventIndicator.showToast( this, getString( R.string.favorite_added_done ) );
 		}
 	}
 

@@ -1,6 +1,5 @@
 package com.android.shuomi.network;
 
-import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.concurrent.BlockingQueue;
@@ -9,8 +8,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import com.android.shuomi.intent.RequestIntent;
 import com.android.shuomi.intent.ResponseIntent;
 
-import android.app.ActivityManager;
-import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;

@@ -1,12 +1,7 @@
 package com.android.shuomi.persistence;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.android.shuomi.util.Util;
+import java.util.Observer;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -28,6 +23,15 @@ public class ServiceDb extends SQLiteOpenHelper {
 	private boolean mIsTableExist = false;
 	private String mTableName = null;
 	private String[] mTableColumns = null;
+	private DbObservable mAddRecordObservable = new DbObservable();
+	
+	public void registerRecordAddedObserver( Observer observer ) {
+		mAddRecordObservable.addObserver(observer);
+	}
+	
+	private void notifyRecordAddedObservers( Object data ) {
+		mAddRecordObservable.notifyObservers( data );
+	}
 	
 	public ServiceDb( Context context ) {
 		super( context, DATABASE_NAME, null, DATABASE_VERSION );
@@ -158,7 +162,9 @@ public class ServiceDb extends SQLiteOpenHelper {
 			}
 			
 			try {
-				db.insertOrThrow( name, null, values );
+				if ( db.insertOrThrow( name, null, values ) != -1 ) {
+					notifyRecordAddedObservers( null );
+				}
 			}
 			catch ( SQLException e ) {
 				Log.w( TAG, e.getMessage() );
@@ -169,42 +175,42 @@ public class ServiceDb extends SQLiteOpenHelper {
 		return result;
 	}
 	
-	public boolean insertRecords( String tableName, JSONObject dataObj ) {
-		boolean result = true;
-		
-		if ( dataObj != null && dataObj.length() > 0 ) {
-			Iterator<?> iter = dataObj.keys();
-			
-			String[] columns = new String[dataObj.length()];
-			String[] values = new String[dataObj.length()];
-			int i = 0;
-			
-			while( iter.hasNext() ) {
-		        String key = iter.next().toString();
-		        
-		        if ( Util.isValid( key ) ) {
-		        	columns[i] = key;
-			        try {
-						values[i] = dataObj.getString( columns[i] );
-					} 
-			        catch (JSONException e) {
-						Log.e( TAG, e.getMessage() );
-						result = false;
-						break;
-					}
-			        
-			        if ( columns[i].equals( "index" ) ) {
-			        	columns[i] = "_index_";
-			        }
-			        i ++;
-		        }
-		    }
-			
-			insertRecord( tableName, columns, values );
-		}
-		
-		return result;
-	}
+//	public boolean insertRecords( String tableName, JSONObject dataObj ) {
+//		boolean result = true;
+//		
+//		if ( dataObj != null && dataObj.length() > 0 ) {
+//			Iterator<?> iter = dataObj.keys();
+//			
+//			String[] columns = new String[dataObj.length()];
+//			String[] values = new String[dataObj.length()];
+//			int i = 0;
+//			
+//			while( iter.hasNext() ) {
+//		        String key = iter.next().toString();
+//		        
+//		        if ( Util.isValid( key ) ) {
+//		        	columns[i] = key;
+//			        try {
+//						values[i] = dataObj.getString( columns[i] );
+//					} 
+//			        catch (JSONException e) {
+//						Log.e( TAG, e.getMessage() );
+//						result = false;
+//						break;
+//					}
+//			        
+//			        if ( columns[i].equals( "index" ) ) {
+//			        	columns[i] = "_index_";
+//			        }
+//			        i ++;
+//		        }
+//		    }
+//			
+//			insertRecord( tableName, columns, values );
+//		}
+//		
+//		return result;
+//	}
 	
 	private Cursor query( String name, String[] columns, String orderByColumn ) {
 		SQLiteDatabase db = getReadableDatabase();

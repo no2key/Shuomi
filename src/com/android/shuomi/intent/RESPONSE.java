@@ -4,6 +4,7 @@ public class RESPONSE {
 	
 	static final public String HTTP_RESPONSE_GROUPON = "com.android.shuomi.HTTP_RESPONSE_GROUPON";
 	static final public String HTTP_RESPONSE_GROUPON_SHARE = "com.android.shuomi.HTTP_RESPONSE_GROUPON_SHARE";
+	static final public String HTTP_RESPONSE_GROUPON_FAVORITE = "com.android.shuomi.HTTP_RESPONSE_GROUPON_FAVORITE";
 	
 	public static final String PARAM_PAGES = "pages";
 	public static final String PARAM_LIST = "list";
@@ -22,6 +23,7 @@ public class RESPONSE {
 	public static final String PARAM_CITY = "city";
 	public static final String PARAM_URL = "url";
 	public static final String PARAM_SHOPLIST = "shoplist";
+	public static final String PARAM_TIMESTAMP = "timestamp";
 
 	public static final String PARAM_EXPIRY = "endtime";
 	public static final String FOLLOWED = "concern";

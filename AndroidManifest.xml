@@ -37,6 +37,11 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             
+            <intent-filter>
+                <action android:name="com.android.shuomi.HTTP_RESPONSE_GROUPON_FAVORITE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            
         </activity>
 
     </application>

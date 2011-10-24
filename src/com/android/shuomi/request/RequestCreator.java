@@ -24,6 +24,9 @@ public class RequestCreator {
 		else if ( action.equals( REQUEST.SHARED_BY_EMAIL ) ) {
 			composer = new GrouponSharedByEmailRequestComposer( request );
 		}
+		else if ( action.equals( REQUEST.ADD_TO_FAVORITE ) ) {
+			composer = new GrouponFavoriteRequestComposer( request );
+		}
 		
 		return composer;
 	}

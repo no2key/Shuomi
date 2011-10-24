@@ -7,9 +7,13 @@ import com.android.shuomi.NetworkRequestLayout;
 import com.android.shuomi.R;
 import com.android.shuomi.groupon.AsyncImageLoader.ImageCallback;
 import com.android.shuomi.intent.GrouponDetailsRequestIntent;
+import com.android.shuomi.intent.GrouponFavoriteRequestIntent;
 import com.android.shuomi.intent.REQUEST;
+import com.android.shuomi.intent.RESPONSE;
+import com.android.shuomi.network.NetworkSession;
 import com.android.shuomi.parser.ResponseParser;
 import com.android.shuomi.parser.ShopListParser;
+import com.android.shuomi.persistence.DatabaseSession;
 import com.android.shuomi.util.EventIndicator;
 import com.android.shuomi.util.Util;
 import com.android.shuomi.ServiceListView;
@@ -36,6 +40,7 @@ public class GrouponDetailsView extends NetworkRequestLayout {
 	private AsyncImageLoader mImageLoader = new AsyncImageLoader();
 	private String mUrl = null;
 	private String mShopList = null;
+	private String[] mFields = null;
 	
 	public GrouponDetailsView( Context context, String itemId ) {
 		super(context);		
@@ -84,7 +89,19 @@ public class GrouponDetailsView extends NetworkRequestLayout {
 	}
 	
 	private void onAddToFavorite() {
+		NetworkSession.send( new GrouponFavoriteRequestIntent( getClass().getName(), mItemId ) );
+		saveToDb();
+	}
+	
+	private void saveToDb() {
+		final String[] columns = { /*RESPONSE.PARAM_IMG_2,*/ 
+				RESPONSE.PARAM_PROVIDER, RESPONSE.PARAM_PRICE, RESPONSE.PARAM_ACTUAL_PRICE, 
+				RESPONSE.PARAM_TITLE, RESPONSE.PARAM_EXPIRY, RESPONSE.FOLLOWED, 
+				RESPONSE.PARAM_ID, RESPONSE.PARAM_URL, RESPONSE.PARAM_SHOPLIST, 
+				RESPONSE.PARAM_TIMESTAMP };
 		
+		mFields[ mFields.length-1 ] = String.valueOf( System.currentTimeMillis() );
+		DatabaseSession.getInstance().saveFavoriteRecord( columns, mFields );
 	}
 	
 	private void onShare() {
@@ -120,7 +137,8 @@ public class GrouponDetailsView extends NetworkRequestLayout {
 			
 			@Override
 			public void onClick(View v) {
-				parent.dismiss();				
+				parent.dismiss();
+				sharedByMicroBlog();
 			}
 		});
 		
@@ -199,6 +217,7 @@ public class GrouponDetailsView extends NetworkRequestLayout {
 	
 	private void updateView( String[] items ) {
 		if ( Util.isValid( items ) ) {
+			
 			setBigImage( items[0] );
 			setPrices( items[2], items[3] );
 			
@@ -233,6 +252,18 @@ public class GrouponDetailsView extends NetworkRequestLayout {
 			mUrl = items[8];
 			mShopList = items[9];
 			Log.d( TAG, "shoplist = " + items[9] + ", len = " + items[9].length() );
+			
+			cacheFields( items );
+		}
+	}
+	
+	private void cacheFields( String[] items ) {
+		if ( Util.isValid( items ) ) {
+			mFields = new String[ items.length ];
+			
+			for( int i = 0; i < items.length-1; i ++ ) {
+				mFields[i] = items[i+1];
+			}
 		}
 	}
 	

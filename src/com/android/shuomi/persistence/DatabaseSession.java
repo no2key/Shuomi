@@ -1,6 +1,7 @@
 package com.android.shuomi.persistence;
 
 import java.util.ArrayList;
+import java.util.Observer;
 
 import com.android.shuomi.util.Util;
 
@@ -47,5 +48,9 @@ public class DatabaseSession {
 	
 	public ArrayList<String[]> loadFavoriteRecords( String[] columns, String sortByColumn ) {
 		return mDatabase.loadRecords( TABLE_FAVORITE, columns, sortByColumn );
+	}
+	
+	public void registerRecordAddObserver( Observer observer ) {
+		mDatabase.registerRecordAddedObserver( observer );
 	}
 }
