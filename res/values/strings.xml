@@ -77,5 +77,6 @@
     
     <string name="city_list">城市列表</string>
     <string name="county_list">区县列表</string>
+    <string name="next_four_days_feature">未来4天天气预报</string>
     
 </resources>

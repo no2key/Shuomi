@@ -1,11 +1,160 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/ivory">
     
-    <include 
-        android:id="@+id/header_view"
-        layout="@layout/title_bar" />
+    <LinearLayout 
+    	android:orientation="vertical"
+    	android:layout_width="match_parent"
+    	android:layout_height="match_parent"
+    	android:weightSum="7">
+    	
+	    <include 
+	        android:id="@+id/header_view"
+	        layout="@layout/title_bar" />
+	        
+	    <LinearLayout 
+	    	android:orientation="horizontal"
+	    	android:layout_width="match_parent"
+	    	android:layout_height="0dip"
+	    	android:layout_weight="4">
+	    
+<!-- 	    	 <LinearLayout  -->
+<!-- 		    	android:orientation="vertical" -->
+<!-- 		    	android:layout_width="0dip" -->
+<!-- 		    	android:layout_weight="3" -->
+<!-- 		    	android:layout_height="wrap_content" -->
+<!-- 		    	android:layout_marginLeft="10dip" -->
+<!-- 		    	android:layout_marginTop="15dip"> -->
+		    
+<!-- 		    	<TextView -->
+<!-- 		    		android:id="@+id/city" -->
+<!-- 		    		android:layout_width="wrap_content" -->
+<!-- 		    		android:layout_height="wrap_content" -->
+<!-- 		    		android:padding="3dip" -->
+<!-- 		    		android:text="city" -->
+<!-- 		    		android:textSize="20dip" -->
+<!-- 		    		android:textColor="@color/black" -->
+<!-- 		    		android:textStyle="bold"/> -->
+		    		
+<!-- 		    	<TextView -->
+<!-- 		    		android:id="@+id/weather" -->
+<!-- 		    		android:layout_width="wrap_content" -->
+<!-- 		    		android:layout_height="wrap_content" -->
+<!-- 		    		android:padding="3dip" -->
+<!-- 		    		android:text="weather" -->
+<!-- 		    		android:textSize="16dip" -->
+<!-- 		    		android:textColor="@color/black"/> -->
+		    	
+<!-- 		    	<TextView -->
+<!-- 		    		android:id="@+id/wind" -->
+<!-- 		    		android:layout_width="wrap_content" -->
+<!-- 		    		android:layout_height="wrap_content" -->
+<!-- 		    		android:padding="3dip" -->
+<!-- 		    		android:text="wind" -->
+<!-- 		    		android:textSize="16dip" -->
+<!-- 		    		android:textColor="@color/black"/> -->
+		    	
+<!-- 		    	<TextView -->
+<!-- 		    		android:id="@+id/description" -->
+<!-- 		    		android:layout_width="fill_parent" -->
+<!-- 		    		android:layout_height="wrap_content" -->
+<!-- 		    		android:padding="3dip" -->
+<!-- 		    		android:text="description" -->
+<!-- 		    		android:textSize="14dip" -->
+<!-- 		    		android:textColor="@color/black"/> -->
+		    
+<!-- 		    </LinearLayout> -->
+		    
+<!-- 		    <LinearLayout  -->
+<!-- 		    	android:orientation="vertical" -->
+<!-- 		    	android:layout_width="0dip" -->
+<!-- 		    	android:layout_weight="2" -->
+<!-- 		    	android:layout_height="fill_parent" -->
+<!-- 		    	android:background="@color/ivory"> -->
+		    
+<!-- 		    	<Imageview -->
+<!-- 		    		android:id="@+id/img_weather" -->
+<!-- 		    		android:layout_width="fill_parent" -->
+<!-- 		    		android:layout_height="0dip" -->
+<!-- 		    		android:layout_weight="2" -->
+<!-- 		    		android:padding="2dip" -->
+<!-- 		    		android:background="@color/ivory"/>		    	 -->
+		    	
+<!-- 		    	<TextView -->
+<!-- 		    		android:id="@+id/temperature" -->
+<!-- 		    		android:layout_width="fill_parent" -->
+<!-- 		    		android:layout_height="0dip" -->
+<!-- 		    		android:layout_weight="1" -->
+<!-- 		    		android:layout_gravity="center_vertical" -->
+<!-- 		    		android:text="description" -->
+<!-- 		    		android:textSize="20dip" -->
+<!-- 		    		android:textStyle="bold"/> -->
+		    
+<!-- 		    </LinearLayout> -->
+	    
+	    </LinearLayout>
+	    
+	    <TextView 
+	    	android:orientation="horizontal"
+	    	android:layout_width="match_parent"
+	    	android:layout_height="15dip"
+	    	android:text="@string/next_four_days_feature"
+	    	android:textColor="@color/white"
+	    	android:paddingLeft="5dip"
+	    	android:background="@color/darkgrey"/>
+	    
+	    <LinearLayout 
+	    	android:orientation="horizontal"
+	    	android:layout_width="match_parent"
+	    	android:layout_height="0dip"
+	    	android:layout_weight="3">
+	    	
+<!-- 	    	<LinearLayout  -->
+<!-- 	    		android:orientation="horizontal" -->
+<!-- 	    		android:layout_width="match_parent" -->
+<!-- 	    		android:layout_height="match_parent"> -->
+
+<!-- 	    	<include -->
+<!-- 	        	android:id="@+id/day_1" -->
+<!-- 	        	android:layout_width="0dip" -->
+<!-- 	        	android:layout_weight="1" -->
+<!-- 	        	layout="@layout/next_day_weather" /> -->
+		    
+<!-- 		    <include -->
+<!-- 	        	android:id="@+id/day_2" -->
+<!-- 	        	android:layout_width="0dip" -->
+<!-- 	        	android:layout_weight="1" -->
+<!-- 	        	layout="@layout/next_day_weather" /> -->
+	    	
+<!-- 	    	<include -->
+<!-- 	        	android:id="@+id/day_3" -->
+<!-- 	        	android:layout_width="0dip" -->
+<!-- 	        	android:layout_weight="1" -->
+<!-- 	        	layout="@layout/next_day_weather" /> -->
+	        
+<!-- 	        <include -->
+<!-- 	        	android:id="@+id/day_4" -->
+<!-- 	        	android:layout_width="0dip" -->
+<!-- 	        	android:layout_weight="1" -->
+<!-- 	        	layout="@layout/next_day_weather" /> -->
+	        	
+<!-- 	        </LinearLayout>		 -->
+	        
+	    </LinearLayout>
+	    
+	    <TextView 
+	    	android:orientation="horizontal"
+	    	android:layout_width="match_parent"
+	    	android:layout_height="15dip"
+	    	android:id="@+id/last_updated"
+	    	android:text="last updated"
+	    	android:textColor="@color/white"
+	    	android:paddingLeft="5dip"
+	    	android:background="@color/darkgrey"/>
+	    	
+    </LinearLayout>
     
-</LinearLayout>
+</ScrollView>
