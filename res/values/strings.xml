@@ -71,4 +71,11 @@
     <string name="forward">转发</string>
     <string name="prompt_delete_favorite">是否删除选中的收藏？</string>
     
+    <string name="weather_service">天气服务</string>
+    <string name="express_query">快递查询</string>
+    <string name="about_us">关于我们</string>
+    
+    <string name="city_list">城市列表</string>
+    <string name="county_list">区县列表</string>
+    
 </resources>

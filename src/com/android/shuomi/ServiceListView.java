@@ -12,6 +12,9 @@ import com.android.shuomi.network.NetworkSession;
 import com.android.shuomi.parser.ResponseParser;
 import com.android.shuomi.parser.ResponseParserCreator;
 import com.android.shuomi.persistence.DatabaseSession;
+import com.android.shuomi.persistence.Preference;
+import com.android.shuomi.tools.ToolsMainView;
+import com.android.shuomi.tools.WeatherServiceView;
 import com.android.shuomi.util.EventIndicator;
 import com.android.shuomi.util.Util;
 
@@ -31,13 +34,15 @@ import android.widget.ViewFlipper;
 public class ServiceListView extends NetworkBindActivity implements NetworkResponseHandler {
 	
 	private static final String TAG = "ServiceListView";
+	private static final int GROUPON = 0;
+	private static final int FAVORITES = 1;
+	private static final int UTILITIES = 2;
+	
 	private final String mTag = "tab";
 	private final int mTabLabels[] = { R.string.groupon_info, R.string.my_favourite, R.string.utility_list };
 	private final int mTabResIds[] = { R.id.tab1, R.id.tab2, R.id.tab3 };	
-	private ViewFlipper[] mFlippers;// = new ViewFlipper[3];
+	private ViewFlipper[] mFlippers;
 	
-	private final String PROVINCE_SELECTED = "PROVINCE_SELECTED";
-	private final String CITY_SELECTED = "CITY_SELECTED";
 	private String mProvinceSelected = null;
 	private String mCitySelected = null;
 	private TabHost mTabHost;
@@ -85,15 +90,25 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 	
 	private void onTabChange( int index ) {
 		Log.d( TAG, "index = " + index );
-		if ( index == 1 ) {
+		if ( index == FAVORITES ) {
 			setupFavoriteFlipper();
+		}
+		else if ( index == UTILITIES ) {
+			setupToolsFlipper();
 		}
 	}
 	
 	private void setupFavoriteFlipper() {
-		if ( mFlippers[1] == null ) {
-			mFlippers[1] = ( ViewFlipper ) findViewById( mTabResIds[1] );
+		if ( mFlippers[FAVORITES] == null ) {
+			mFlippers[FAVORITES] = ( ViewFlipper ) findViewById( mTabResIds[FAVORITES] );
 			goToNextView( new FavoritesListView( this ) );
+		}
+	}
+	
+	private void setupToolsFlipper() {
+		if ( mFlippers[UTILITIES] == null ) {
+			mFlippers[UTILITIES] = ( ViewFlipper ) findViewById( mTabResIds[UTILITIES] );
+			goToNextView( new ToolsMainView( this ) );
 		}
 	}
 	
@@ -109,12 +124,12 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 	
 	private void initFlipper() {
 		mFlippers = new ViewFlipper[mTabResIds.length];
-		mFlippers[0] = ( ViewFlipper ) findViewById( mTabResIds[0] );
+		mFlippers[GROUPON] = ( ViewFlipper ) findViewById( mTabResIds[GROUPON] );
 		
 		goToNextView( new GrouponMainView( this, mProvinceSelected, mCitySelected ) );
 		
-		mFlippers[1] = null;
-		mFlippers[2] = null;
+		mFlippers[FAVORITES] = null;
+		mFlippers[UTILITIES] = null;
 	}
 	
 	////////////////////////////
@@ -193,8 +208,8 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 	
 	private void loadSelectedLocation() {
 		SharedPreferences pref = getSharedPreferences ( "groupon", 0 );
-		mProvinceSelected = pref.getString(  PROVINCE_SELECTED, null );
-		mCitySelected = pref.getString(  CITY_SELECTED, null );
+		mProvinceSelected = pref.getString(  Preference.PROVINCE_SELECTED, null );
+		mCitySelected = pref.getString(  Preference.CITY_SELECTED, null );
 		
 		if ( !Util.isValid( mProvinceSelected ) ) {
 			String defLocation = getString( R.string.allover );
@@ -207,8 +222,38 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 		if ( Util.isValid( mProvinceSelected ) && Util.isValid( mCitySelected ) ) {
 			SharedPreferences pref = getSharedPreferences ( "groupon", 0 );
 			Editor editor = pref.edit();
-			editor.putString( PROVINCE_SELECTED,  mProvinceSelected );
-			editor.putString( CITY_SELECTED,  mCitySelected );
+			editor.putString( Preference.PROVINCE_SELECTED,  mProvinceSelected );
+			editor.putString( Preference.CITY_SELECTED,  mCitySelected );
+			editor.commit();
+		}
+	}
+	
+	public void onWeatherLocationSelected( String locationId ) {
+		saveWeatherLocationId( locationId );
+		
+		ViewFlipper current = getCurrentFlipper();
+		
+		if ( current != null ) {
+			current.removeViewAt( current.getDisplayedChild() );
+		}
+		
+		try 
+		{
+			WeatherServiceView view = ( WeatherServiceView ) getCurrentFlipper().getCurrentView();
+			view.setLocationId( locationId );
+		}
+		catch ( ClassCastException e ) {
+			Log.w( TAG, e.getMessage() );
+		}
+		
+	}
+	
+	private void saveWeatherLocationId( String locationId ) {
+		if ( Util.isValid( locationId ) ) 
+		{
+			SharedPreferences pref = getSharedPreferences ( "groupon", 0 );
+			Editor editor = pref.edit();
+			editor.putString( Preference.WEATHER_LOCATION_ID,  locationId );
 			editor.commit();
 		}
 	}
@@ -221,7 +266,9 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 	protected void onNewIntent( Intent intent ) {
 		if ( intent.getAction().equals( RESPONSE.HTTP_RESPONSE_GROUPON ) || 
 			 intent.getAction().equals( RESPONSE.HTTP_RESPONSE_GROUPON_SHARE ) || 
-			 intent.getAction().equals( RESPONSE.HTTP_RESPONSE_GROUPON_FAVORITE ) ) {
+			 intent.getAction().equals( RESPONSE.HTTP_RESPONSE_GROUPON_FAVORITE ) ||
+			 intent.getAction().equals( RESPONSE.HTTP_RESPONSE_WEATHER ) ) 
+		{
 			ResponseIntent response = new ResponseIntent( intent );
 			NetworkResponse.process( this, ( ResponseIntent ) response );
 		}
@@ -243,13 +290,17 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 	
 	@Override
 	public void onPositiveResponse( ResponseIntent response ) {
-		if ( response.getAction().equals( RESPONSE.HTTP_RESPONSE_GROUPON ) ) {
+		if ( response.getAction().equals( RESPONSE.HTTP_RESPONSE_GROUPON ) || 
+			 response.getAction().equals( RESPONSE.HTTP_RESPONSE_WEATHER ) ) 
+		{
 			updateView( response );
 		}
-		else if ( response.getAction().equals( RESPONSE.HTTP_RESPONSE_GROUPON_SHARE ) ) {
+		else if ( response.getAction().equals( RESPONSE.HTTP_RESPONSE_GROUPON_SHARE ) ) 
+		{
 			EventIndicator.showToast( this, getString( R.string.email_sent_done ) );
 		}
-		else if ( response.getAction().equals( RESPONSE.HTTP_RESPONSE_GROUPON_FAVORITE ) ) {
+		else if ( response.getAction().equals( RESPONSE.HTTP_RESPONSE_GROUPON_FAVORITE ) ) 
+		{
 			EventIndicator.showToast( this, getString( R.string.favorite_added_done ) );
 		}
 	}
@@ -288,8 +339,12 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 		UpdatableView dest = null;
 		ViewFlipper flipper = null;
 		
-		if ( response.getAction().equals( RESPONSE.HTTP_RESPONSE_GROUPON ) ) {
+		if ( response.getAction().equals( RESPONSE.HTTP_RESPONSE_GROUPON ) ) 
+		{
 			flipper = mFlippers[0];
+		}
+		else if ( ( response.getAction().equals( RESPONSE.HTTP_RESPONSE_WEATHER ) ) ) {
+			flipper = mFlippers[2];
 		}
 		
 		if ( flipper != null ) {

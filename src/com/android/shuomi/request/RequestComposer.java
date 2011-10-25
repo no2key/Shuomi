@@ -12,6 +12,8 @@ public class RequestComposer {
 	static private final String mBaseUri = "http://www.stylelink.cn/servlet/tuan.jsp";	
 	static private final String mOpKey = "go";
 	
+	static private final String mWeatherUri = "http://www.stylelink.cn/servlet/weather.jsp";
+	
 	protected String mRequestUri = null;
 	
 	protected RequestComposer( RequestIntent request ) {
@@ -26,6 +28,10 @@ public class RequestComposer {
 	
 	protected String getCommonPrefix() {
 		return mBaseUri + URI_CONNECTOR + mOpKey + OP_EQUAL;
+	}
+	
+	protected String getWeatherPrefix() {
+		return mWeatherUri + URI_CONNECTOR + mOpKey + OP_EQUAL;
 	}
 	
 	protected String encodeParam( String[] keys, String[] values ) {

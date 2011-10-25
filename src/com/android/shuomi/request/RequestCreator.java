@@ -27,6 +27,18 @@ public class RequestCreator {
 		else if ( action.equals( REQUEST.ADD_TO_FAVORITE ) ) {
 			composer = new GrouponFavoriteRequestComposer( request );
 		}
+		else if ( action.equals( REQUEST.WEATHER_PROVINCE ) ) {
+			composer = new WeatherProvinceRequestComposer( request );
+		}
+		else if ( action.equals( REQUEST.WEATHER_CITY ) ) {
+			composer = new WeatherCityRequestComposer( request );
+		}
+		else if ( action.equals( REQUEST.WEATHER_COUNTY ) ) {
+			composer = new WeatherCountyRequestComposer( request );
+		}
+		else if ( action.equals( REQUEST.WEATHER_DETAILS ) ) {
+			composer = new WeatherDetailsRequestComposer( request );
+		}
 		
 		return composer;
 	}

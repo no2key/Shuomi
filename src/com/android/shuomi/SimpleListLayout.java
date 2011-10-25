@@ -15,9 +15,9 @@ public abstract class SimpleListLayout extends ListLayout {
 
 	static final protected String LABEL_KEY = "label_key";
 	
-	private final String[] mMapKeys = { LABEL_KEY };
-	private final int[] mMapValues = { R.id.text_groupon_item };
-	private final int mItemResId = R.layout.single_field_item;
+	protected final String[] mMapKeys = { LABEL_KEY };
+	protected final int[] mMapValues = { R.id.text_groupon_item };
+	protected final int mItemResId = R.layout.single_field_item;
 	
 	public SimpleListLayout( Context context ) {
 		super( context );
@@ -48,7 +48,7 @@ public abstract class SimpleListLayout extends ListLayout {
         return arrayList;
     }
 	
-	protected void updateMultiPageList( int page, ArrayList<String[]> itemList ) {
+	protected void updateArrayList( int page, ArrayList<String[]> itemList ) {
 		
 	}
 	
@@ -63,7 +63,7 @@ public abstract class SimpleListLayout extends ListLayout {
 				break;
 				
 			case ResponseParser.TYPE_ARRAY_LIST:
-				updateMultiPageList( pageCount, (ArrayList<String[]>)data );
+				updateArrayList( pageCount, (ArrayList<String[]>)data );
 				break;
 				
 			default:

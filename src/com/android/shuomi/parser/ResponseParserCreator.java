@@ -15,6 +15,14 @@ public class ResponseParserCreator {
 		else if ( requestAction.equals( REQUEST.OBTAIN_DETAILS ) ) {
 			parser = new GrouponDetailsResponseParser( response.getUserData() );
 		}
+		else if ( requestAction.equals( REQUEST.WEATHER_PROVINCE ) || 
+				  requestAction.equals( REQUEST.WEATHER_CITY ) || 
+				  requestAction.equals( REQUEST.WEATHER_COUNTY ) ) {
+			parser = new WeatherLocationResponseParser( response.getUserData() );
+		}
+		else if ( requestAction.equals( REQUEST.WEATHER_DETAILS ) ) {
+			parser = new WeatherDetailsResponseParser( response.getUserData() );
+		}
 		else {
 			parser = new ResponseParser( response.getUserData(), requestAction );
 		}

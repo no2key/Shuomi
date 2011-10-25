@@ -8,6 +8,10 @@ public class REQUEST {
 	public static final String OBTAIN_DETAILS = "OBTAIN_DETAILS";
 	public static final String SHARED_BY_EMAIL = "SHARED_BY_EMAIL";
 	public static final String ADD_TO_FAVORITE = "ADD_TO_FAVORITE";
+	public static final String WEATHER_PROVINCE = "WEATHER_PROVINCE";
+	public static final String WEATHER_CITY = "WEATHER_CITY";
+	public static final String WEATHER_COUNTY = "WEATHER_COUNTY";
+	public static final String WEATHER_DETAILS = "WEATHER_DETAILS";
 	
 	public static final String PARAM_PROVINCE = "province";
 	public static final String PARAM_CITY = "city";
@@ -22,4 +26,5 @@ public class REQUEST {
 	public static final String PARAM_EMAIL = "mails";
 	public static final String PARAM_SHARE = "share";
 	public static final String PARAM_FAVORITE = "concern";
+	public static final String PARAM_NO = "no";
 }

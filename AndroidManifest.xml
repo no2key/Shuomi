@@ -42,6 +42,11 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             
+            <intent-filter>
+                <action android:name="com.android.shuomi.HTTP_RESPONSE_WEATHER" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
         </activity>
 
     </application>
