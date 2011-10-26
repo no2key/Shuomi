@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  	android:orientation="vertical"
+  	android:layout_width="match_parent"
+  	android:layout_height="match_parent">
+    
+    <include 
+        android:id="@+id/header_view"
+        layout="@layout/title_bar" />
+    
+    <include
+		android:id="@+id/empty_view_loading"
+		layout="@layout/empty_list_loading"
+		android:visibility="gone" />
+    
+    <LinearLayout
+    	android:id="@+id/content_view"
+	  	android:orientation="vertical"
+	  	android:layout_width="match_parent"
+	  	android:layout_height="match_parent"
+	  	android:background="@color/ivory">
+	  	
+	  	<com.android.shuomi.EnhancedEditText
+	    	android:id="@+id/edit_query_no"
+	    	android:layout_width="match_parent"
+	    	android:layout_height="wrap_content"
+	    	android:layout_marginTop="20dip"
+	    	android:layout_marginBottom="10dip"
+	    	android:layout_marginLeft="25dip"
+	    	android:layout_marginRight="25dip"
+	    	android:hint="@string/please_input_express_no"
+	    	android:imeOptions="actionDone"
+	    	android:imeActionLabel="@string/complete"
+	    	android:inputType="number"
+	    	android:drawablePadding="1dip"
+	    	android:maxLines="1" />
+	  	
+	  	<TextView
+	  		android:layout_width="match_parent"
+	  		android:layout_height="wrap_content"
+	  		android:layout_marginBottom="10dip"
+	  		android:layout_marginLeft="25dip"
+	  		android:gravity="left"
+	  		android:text="@string/select_express_company"
+	  		android:textColor="@color/black"
+	  		android:textSize="16dip"/>
+	  		
+	  	<Spinner 
+	  		android:id="@+id/spinner_companies" 
+	  		android:layout_width="match_parent"
+	  		android:layout_height="wrap_content"
+	  		android:layout_marginLeft="25dip"
+	    	android:layout_marginRight="25dip"
+	    	android:layout_marginBottom="20dip"/>
+	    	
+	  	<Button 
+	  		android:id="@+id/button1" 
+	  		android:layout_width="wrap_content" 
+	  		android:layout_height="wrap_content"
+	  		android:layout_marginTop="20dip"
+	  		android:layout_gravity="right"
+	  		android:paddingLeft="40dip"
+	  		android:paddingRight="40dip"
+	  		android:layout_marginLeft="25dip"
+	    	android:layout_marginRight="25dip"
+	  		android:text="@string/query"
+	  		android:textSize="20dip"/>
+	  	
+    </LinearLayout>
+    
+</LinearLayout>

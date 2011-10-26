@@ -74,6 +74,7 @@ public class ToolsMainView extends LinearLayout {
 			( ( ServiceListView ) getContext() ).goToNextView( new WeatherServiceView( getContext() ) );
 			break;
 		case EXPRESS_QUERY:
+			( ( ServiceListView ) getContext() ).goToNextView( new ExpressQueryView( getContext() ) );
 			break;
 		case ABOUT_US:
 			showAboutUsDialog();

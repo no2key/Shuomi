@@ -28,6 +28,7 @@ import android.widget.TextView;
 
 public class FavoritesListView extends LinearLayout {
 
+	//private static final String TAG = "FavoritesListView";
 	private ListView mList = null;
 	private ArrayList< HashMap<String, Object> > mItemDataList = null;
 	private SimpleAdapter mAdapter = null;
@@ -49,7 +50,7 @@ public class FavoritesListView extends LinearLayout {
 		public void update( Observable observable, Object data ) {
 			getDataFromDb();
 			mAdapter.notifyDataSetChanged();
-			Log.d( "FavoritesListView", "new favorite added" );
+			Log.d( "FavoritesListView", "new favorite added " + mAdapter.getCount() );
 		}
 	}; 
 	
@@ -57,11 +58,10 @@ public class FavoritesListView extends LinearLayout {
 		super(context);
 		inflateLayout();
 		getDataFromDb();
-		fillList();
+		initList();
 		registerItemClickListener();
 		
 		registerDbRecordAdded( mObserver );
-		Log.d( "FavoritesListView", "create" );
 		
 	}
 
@@ -71,22 +71,7 @@ public class FavoritesListView extends LinearLayout {
 		mList = (ListView) findViewById( R.id.list );
 	}
 	
-	private void fillList() {
-//		if ( mDataList != null && mDataList.size() > 0 ) {
-//			mAdapter = new SimpleAdapter ( getContext(), mDataList, 
-//					R.layout.favorites_list_item, mMapKeys, mItemWidgetResIds );
-//			mList.setAdapter( mAdapter );
-//			mAdapter.notifyDataSetChanged();
-//		}
-//		else {
-//			LayoutInflater layoutInflater = ( LayoutInflater )getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-//			LinearLayout view = (LinearLayout) layoutInflater.inflate( R.layout.favorites_list, this, true );
-//			mList.setEmptyView( view );
-//		}
-		
-//		LayoutInflater layoutInflater = ( LayoutInflater )getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-//		LinearLayout view = (LinearLayout) layoutInflater.inflate( R.layout.favorites_list, this, true );
-		
+	private void initList() {
 		mList.setEmptyView( findViewById( R.id.text_no_item ) );
 		
 		mAdapter = new SimpleAdapter ( getContext(), mItemDataList, 
@@ -102,31 +87,36 @@ public class FavoritesListView extends LinearLayout {
 				RESPONSE.PARAM_TIMESTAMP, BaseColumns._ID };
 		
 		mDbDataList = DatabaseSession.getInstance().loadFavoriteRecords( columns, "timestamp desc" );
-		mItemDataList = getDataList( mDbDataList );
+		getAdapterDataList();
 	}
 	
-	private ArrayList< HashMap<String, Object> > getDataList( ArrayList<String[]> list ) {		
-        //ArrayList< HashMap<String, Object> > arrayList = null;
-        ArrayList< HashMap<String, Object> > arrayList = new ArrayList< HashMap<String,Object> >();
-        
-        if ( list != null && list.size() > 0 ) {
-        	//arrayList = new ArrayList< HashMap<String,Object> >();
-        	
-	        for ( int i = 0; i < list.size(); i ++ ) {  
+	private void getAdapterDataList() 
+	{
+		if ( mDbDataList != null && mDbDataList.size() > 0 ) 
+		{
+			if ( mItemDataList == null )
+			{
+				mItemDataList = new ArrayList< HashMap<String,Object> >();
+			}
+			else if ( !mItemDataList.isEmpty() )
+			{
+				mItemDataList.clear();
+			}
+			
+			for ( int i = 0; i < mDbDataList.size(); i ++ ) 
+			{  
 	            HashMap <String, Object> map = new HashMap< String, Object >();
 	            
-	            String[] fields = list.get( i );
+	            String[] fields = mDbDataList.get( i );
 	            map.put( KEY_PROVIDER, fields[0] );
 	            map.put( KEY_DISCOUNT, Util.getDiscount( fields[2], fields[1] ) + getContext().getString( R.string.discount_symbol ) );
 	            map.put( KEY_PRICE, getContext().getString( R.string.chinese_yuan_symbol ) + fields[2] );
 	            map.put( KEY_DETAILS, fields[3] );
 	            
-	            arrayList.add( map );
+	            mItemDataList.add( map );
 	        }
-        }
-          
-        return arrayList;
-    }
+		}		
+	}
 	
 	private void registerDbRecordAdded( Observer observer ) {
 		DatabaseSession.getInstance().registerRecordAddObserver( observer );

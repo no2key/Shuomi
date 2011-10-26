@@ -10,9 +10,10 @@ public class RequestComposer {
 	static private final String PARAM_CONNECTOR = "&";
 	
 	static private final String mBaseUri = "http://www.stylelink.cn/servlet/tuan.jsp";	
-	static private final String mOpKey = "go";
-	
 	static private final String mWeatherUri = "http://www.stylelink.cn/servlet/weather.jsp";
+	static private final String mExpressUri = "http://www.stylelink.cn/servlet/kuaidi.jsp";
+	
+	static private final String mOpKey = "go";
 	
 	protected String mRequestUri = null;
 	
@@ -32,6 +33,10 @@ public class RequestComposer {
 	
 	protected String getWeatherPrefix() {
 		return mWeatherUri + URI_CONNECTOR + mOpKey + OP_EQUAL;
+	}
+	
+	protected String getExpressPrefix() {
+		return mExpressUri + URI_CONNECTOR + mOpKey + OP_EQUAL;
 	}
 	
 	protected String encodeParam( String[] keys, String[] values ) {

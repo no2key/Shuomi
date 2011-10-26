@@ -7,6 +7,7 @@ public class RESPONSE {
 	static final public String HTTP_RESPONSE_GROUPON_FAVORITE = "com.android.shuomi.HTTP_RESPONSE_GROUPON_FAVORITE";
 	
 	static final public String HTTP_RESPONSE_WEATHER = "com.android.shuomi.HTTP_RESPONSE_WEATHER";
+	static final public String HTTP_RESPONSE_EXPRESS = "com.android.shuomi.HTTP_RESPONSE_EXPRESS";
 	
 	public static final String PARAM_PAGES = "pages";
 	public static final String PARAM_LIST = "list";

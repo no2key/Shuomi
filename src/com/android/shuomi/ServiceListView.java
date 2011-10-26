@@ -267,7 +267,8 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 		if ( intent.getAction().equals( RESPONSE.HTTP_RESPONSE_GROUPON ) || 
 			 intent.getAction().equals( RESPONSE.HTTP_RESPONSE_GROUPON_SHARE ) || 
 			 intent.getAction().equals( RESPONSE.HTTP_RESPONSE_GROUPON_FAVORITE ) ||
-			 intent.getAction().equals( RESPONSE.HTTP_RESPONSE_WEATHER ) ) 
+			 intent.getAction().equals( RESPONSE.HTTP_RESPONSE_WEATHER ) ||
+			 intent.getAction().equals( RESPONSE.HTTP_RESPONSE_EXPRESS ) ) 
 		{
 			ResponseIntent response = new ResponseIntent( intent );
 			NetworkResponse.process( this, ( ResponseIntent ) response );
@@ -291,7 +292,8 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 	@Override
 	public void onPositiveResponse( ResponseIntent response ) {
 		if ( response.getAction().equals( RESPONSE.HTTP_RESPONSE_GROUPON ) || 
-			 response.getAction().equals( RESPONSE.HTTP_RESPONSE_WEATHER ) ) 
+			 response.getAction().equals( RESPONSE.HTTP_RESPONSE_WEATHER ) ||
+			 response.getAction().equals( RESPONSE.HTTP_RESPONSE_EXPRESS ) ) 
 		{
 			updateView( response );
 		}
@@ -341,10 +343,11 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 		
 		if ( response.getAction().equals( RESPONSE.HTTP_RESPONSE_GROUPON ) ) 
 		{
-			flipper = mFlippers[0];
+			flipper = mFlippers[GROUPON];
 		}
-		else if ( ( response.getAction().equals( RESPONSE.HTTP_RESPONSE_WEATHER ) ) ) {
-			flipper = mFlippers[2];
+		else if ( response.getAction().equals( RESPONSE.HTTP_RESPONSE_WEATHER ) || 
+				  response.getAction().equals( RESPONSE.HTTP_RESPONSE_EXPRESS ) ) {
+			flipper = mFlippers[UTILITIES];
 		}
 		
 		if ( flipper != null ) {

@@ -25,7 +25,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.text.TextPaint;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -237,31 +236,14 @@ public class GrouponDetailsView extends NetworkRequestLayout {
 			TextView provider = (TextView) findViewById( R.id.provider );
 			provider.setText( getContext().getString( R.string.provider ) + items[1] );
 			
-			TextPaint paint1 = provider.getPaint();
-			float len1 = paint1.measureText( ( String )provider.getText() );			
-			Log.d( TAG, "provider width = " + provider.getWidth() + ", " + len1 );
-			
 			TextView follower = (TextView) findViewById( R.id.followed );
 			follower.setText( items[6] + getContext().getString( R.string.people ) + getContext().getString( R.string.favorites ) );
 			
-			//measureView( follower );
-			Log.d( TAG, "follower width = " + follower.getWidth() );
-			
 			TextView expiry = (TextView) findViewById( R.id.expiry );
 			expiry.setText( getExpiryLabel( Long.parseLong(items[5]) - System.currentTimeMillis() ) );
-			
-			TextPaint paint = expiry.getPaint();
-			float len = paint.measureText( ( String )expiry.getText() );
 
-			//measureView( expiry );
-			Log.d( TAG, "expiry width = " + expiry.getWidth() + ", " + len + ", " + expiry.getPaddingLeft()
-					+ ", " + expiry.getPaddingRight() );
-			
-			Log.d( TAG, "view width = " + getWidth() );
-			
 			mUrl = items[8];
 			mShopList = items[9];
-			Log.d( TAG, "shoplist = " + items[9] + ", len = " + items[9].length() );
 			
 			cacheFields( items );
 		}

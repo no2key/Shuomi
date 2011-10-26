@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, ShuomiActivity!</string>
     <string name="app_name">烁米团购</string>
     <string name="dlg_btn_ok">确定</string>
     <string name="dlg_btn_cancel">取消</string>
@@ -78,5 +77,31 @@
     <string name="city_list">城市列表</string>
     <string name="county_list">区县列表</string>
     <string name="next_four_days_feature">未来4天天气预报</string>
+    
+    <string name="fog">雾</string>
+    <string name="grey_day">阴</string>
+    <string name="cloudy">多云</string>
+    <string name="fine">晴</string>
+    <string name="light_rain">小雨</string>
+    <string name="middle_rain">中雨</string>
+    <string name="heary_rain">大雨</string>
+    <string name="thunder">雷</string>
+    <string name="snow">雪</string>
+    <string name="rain">雨</string>
+    
+    <string name="sunday">星期日</string>
+    <string name="monday">星期一</string>
+    <string name="tuesday">星期二</string>
+    <string name="wednesday">星期三</string>
+    <string name="thursday">星期四</string>
+    <string name="friday">星期五</string>
+    <string name="saturday">星期六</string>
+    
+    <string name="last_updated">最后更新：</string>
+    
+    <string name="select_express_company">选择快递公司：</string>
+    <string name="please_input_express_no">请输入快递单号</string>
+    <string name="complete">完成</string>
+    <string name="query">查询</string>
     
 </resources>

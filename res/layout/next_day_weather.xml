@@ -17,18 +17,22 @@
    	<ImageView
    		android:id="@+id/img_weather"
    		android:layout_width="fill_parent"
-   		android:layout_height="0dip"
-   		android:layout_weight="1"
-   		android:gravity="center"
+   		android:layout_height="wrap_content"
    		android:padding="2dip"
-   		android:background="@color/ivory"/>
+   		android:adjustViewBounds="true"
+        android:gravity="center" 
+        android:layout_gravity="center_vertical"
+   		android:background="@color/ivory"
+   		android:scaleType="fitXY"
+   		android:src="@drawable/snowing"/>
    	
    	<TextView
    		android:id="@+id/weather"
    		android:layout_width="fill_parent"
    		android:layout_height="wrap_content"
    		android:gravity="center"
-   		android:padding="2dip"
+   		android:paddingTop="2dip"
+   		android:paddingBottom="2dip"
    		android:text="weather"
    		android:textColor="@color/black"
    		android:textSize="16dip"/>
@@ -38,9 +42,10 @@
    		android:layout_width="fill_parent"
    		android:layout_height="wrap_content"
    		android:gravity="center"
-   		android:padding="2dip"
+   		android:paddingTop="2dip"
+   		android:paddingBottom="2dip"
    		android:text="temperature"
    		android:textColor="@color/black"
-   		android:textSize="16dip"/>
+   		android:textSize="15dip"/>
     
 </LinearLayout>

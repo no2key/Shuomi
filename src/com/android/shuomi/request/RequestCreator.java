@@ -39,6 +39,12 @@ public class RequestCreator {
 		else if ( action.equals( REQUEST.WEATHER_DETAILS ) ) {
 			composer = new WeatherDetailsRequestComposer( request );
 		}
+		else if ( action.equals( REQUEST.EXPRESS_LIST ) ) {
+			composer = new ExpressListRequestComposer( request );
+		}
+		else if ( action.equals( REQUEST.EXPRESS_QUERY ) ) {
+			composer = new ExpressQueryRequestComposer( request );
+		}
 		
 		return composer;
 	}

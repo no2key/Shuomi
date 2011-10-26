@@ -23,7 +23,7 @@ import android.widget.TextView;
 
 public class FavoriteDetailsView extends LinearLayout {
 	
-	static final private String TAG = "FavoriteDetailsView";
+	//static final private String TAG = "FavoriteDetailsView";
 	
 	private String[] mItems;
 	

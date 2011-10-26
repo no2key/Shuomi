@@ -12,6 +12,8 @@ public class REQUEST {
 	public static final String WEATHER_CITY = "WEATHER_CITY";
 	public static final String WEATHER_COUNTY = "WEATHER_COUNTY";
 	public static final String WEATHER_DETAILS = "WEATHER_DETAILS";
+	public static final String EXPRESS_LIST = "EXPRESS_LIST";
+	public static final String EXPRESS_QUERY = "EXPRESS_QUERY";
 	
 	public static final String PARAM_PROVINCE = "province";
 	public static final String PARAM_CITY = "city";
@@ -27,4 +29,5 @@ public class REQUEST {
 	public static final String PARAM_SHARE = "share";
 	public static final String PARAM_FAVORITE = "concern";
 	public static final String PARAM_NO = "no";
+	public static final String PARAM_CODE = "code";
 }

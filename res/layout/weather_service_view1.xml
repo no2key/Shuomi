@@ -7,11 +7,17 @@
   	<include 
         android:id="@+id/header_view"
         layout="@layout/title_bar" />
+    
+    <include
+		android:id="@+id/empty_view_loading"
+		layout="@layout/empty_list_loading" />
 	
 	<ScrollView
+		android:id="@+id/content_view"
 		android:orientation="vertical"
   		android:layout_width="match_parent"
   		android:layout_height="match_parent"
+  		android:visibility="gone"
   		android:background="@color/ivory">
   		
   		<LinearLayout 
@@ -30,7 +36,7 @@
   				
   			</LinearLayout>
   			
-  			 <TextView 
+  			<TextView 
 		    	android:orientation="horizontal"
 		    	android:layout_width="match_parent"
 		    	android:layout_height="wrap_content"
