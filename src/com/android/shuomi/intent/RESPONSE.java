@@ -29,7 +29,8 @@ public class RESPONSE {
 	public static final String PARAM_TIMESTAMP = "timestamp";
 
 	public static final String PARAM_EXPIRY = "endtime";
-	public static final String FOLLOWED = "concern";
+	public static final String PARAM_FOLLOWED = "concern";
+	public static final String PARAM_RETURN = "return";
 	
 	public class ERROR {
 		

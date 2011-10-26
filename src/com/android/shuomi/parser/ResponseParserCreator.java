@@ -23,6 +23,12 @@ public class ResponseParserCreator {
 		else if ( requestAction.equals( REQUEST.WEATHER_DETAILS ) ) {
 			parser = new WeatherDetailsResponseParser( response.getUserData() );
 		}
+		else if ( requestAction.equals( REQUEST.EXPRESS_LIST ) ) {
+			parser = new ExpressListResponseParser( response.getUserData() );
+		}
+		else if ( requestAction.equals( REQUEST.EXPRESS_QUERY ) ) {
+			parser = new ExpressQueryResponseParser( response.getUserData() );
+		}
 		else {
 			parser = new ResponseParser( response.getUserData(), requestAction );
 		}

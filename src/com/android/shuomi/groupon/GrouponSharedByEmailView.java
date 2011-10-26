@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.android.shuomi.EnhancedEditText;
-import com.android.shuomi.EnhancedEditText.OnAfterTextChangedListener;
 import com.android.shuomi.EnhancedEditText.OnEditorActionDoneListener;
-import com.android.shuomi.EnhancedEditText.OnRightDrawableClickListener;
 import com.android.shuomi.R;
 import com.android.shuomi.intent.GrouponSharedByEmailRequestIntent;
 import com.android.shuomi.network.NetworkSession;
@@ -114,30 +112,30 @@ public class GrouponSharedByEmailView extends LinearLayout {
 			
 		} );
 		
-		mEdit.setOnAfterTextChangedListener( new OnAfterTextChangedListener() {
-
-			@Override
-			public void onChanged() {
-				if ( Util.isValid( mEdit.getText().toString() ) ) {
-					mEdit.setCompoundDrawablesWithIntrinsicBounds( android.R.drawable.sym_action_email, 
-							0, R.drawable.ic_cancel, 0 );
-				}
-				else {
-					mEdit.setCompoundDrawablesWithIntrinsicBounds( android.R.drawable.sym_action_email, 
-							0, 0, 0 );
-				}
-			}
-			
-		} );
-		
-		mEdit.setOnRightDrawableClickListener( new OnRightDrawableClickListener() {
-
-			@Override
-			public void onClick() {
-				mEdit.setText( "" );
-			}
-			
-		});
+//		mEdit.setOnAfterTextChangedListener( new OnAfterTextChangedListener() {
+//
+//			@Override
+//			public void onChanged() {
+//				if ( Util.isValid( mEdit.getText().toString() ) ) {
+//					mEdit.setCompoundDrawablesWithIntrinsicBounds( android.R.drawable.sym_action_email, 
+//							0, R.drawable.ic_cancel, 0 );
+//				}
+//				else {
+//					mEdit.setCompoundDrawablesWithIntrinsicBounds( android.R.drawable.sym_action_email, 
+//							0, 0, 0 );
+//				}
+//			}
+//			
+//		} );
+//		
+//		mEdit.setOnRightDrawableClickListener( new OnRightDrawableClickListener() {
+//
+//			@Override
+//			public void onClick() {
+//				mEdit.setText( "" );
+//			}
+//			
+//		});
 	}
 	
 	private void addListItem() {

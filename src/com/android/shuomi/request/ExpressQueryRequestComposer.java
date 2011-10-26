@@ -14,7 +14,7 @@ public class ExpressQueryRequestComposer extends RequestComposer {
 	protected String encodeUri( RequestIntent request ) {
 		String url = null;
 		
-		if ( request.getAction().equals( REQUEST.EXPRESS_LIST ) ) 
+		if ( request.getAction().equals( REQUEST.EXPRESS_QUERY ) ) 
 		{
 			ExpressQueryRequestIntent req = ( ExpressQueryRequestIntent ) request;
 			url = getExpressPrefix() + REQUEST.PARAM_DETAIL;

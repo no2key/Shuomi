@@ -1,5 +1,7 @@
 package com.android.shuomi;
 
+import com.android.shuomi.util.Util;
+
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -29,14 +31,17 @@ public class EnhancedEditText extends EditText {
 	
 	public EnhancedEditText( Context context, AttributeSet attrs, int defStyle ) {
         super( context, attrs, defStyle );
+        setDefaultListener();
     }
 	
     public EnhancedEditText( Context context, AttributeSet attrs ) {
         super(context, attrs);
+        setDefaultListener();
     }
     
     public EnhancedEditText( Context context ) {
         super( context );
+        setDefaultListener();
     }
 
     public void setOnEditorDoneListener( final OnEditorActionDoneListener listener ) {
@@ -90,6 +95,34 @@ public class EnhancedEditText extends EditText {
 			public void afterTextChanged(Editable s) {
 				listener.onChanged();
 			}
+		});
+    }
+    
+    private void setDefaultListener()
+    {
+    	setOnAfterTextChangedListener( new OnAfterTextChangedListener() {
+
+			@Override
+			public void onChanged() {
+				if ( Util.isValid( getText().toString() ) ) {
+					setCompoundDrawablesWithIntrinsicBounds( android.R.drawable.sym_action_email, 
+							0, R.drawable.ic_cancel, 0 );
+				}
+				else {
+					setCompoundDrawablesWithIntrinsicBounds( android.R.drawable.sym_action_email, 
+							0, 0, 0 );
+				}
+			}
+			
+		} );
+		
+		setOnRightDrawableClickListener( new OnRightDrawableClickListener() {
+
+			@Override
+			public void onClick() {
+				setText( "" );
+			}
+			
 		});
     }
 }

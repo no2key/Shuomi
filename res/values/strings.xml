@@ -7,6 +7,7 @@
     
     <string name="groupon_info">团购信息</string>
     <string name="my_favourite">我的收藏</string>
+    <string name="groupon_around">周边团购</string>
     <string name="utility_list">实用工具</string>
     <string name="search_hint">团购搜索</string>
     <string name="search">搜索</string>
@@ -74,6 +75,10 @@
     <string name="express_query">快递查询</string>
     <string name="about_us">关于我们</string>
     
+    <string name="about_provider">软件实现：烁米网</string>
+    <string name="about_support">技术支持：stylelinkr@gmail.com</string>
+    <string name="about_responsibility">所有团购信息均收集自第三方团购供应商，烁米网不对团购信息负法律责任</string>
+    
     <string name="city_list">城市列表</string>
     <string name="county_list">区县列表</string>
     <string name="next_four_days_feature">未来4天天气预报</string>
@@ -103,5 +108,6 @@
     <string name="please_input_express_no">请输入快递单号</string>
     <string name="complete">完成</string>
     <string name="query">查询</string>
+    <string name="express_query_result">快递查询结果</string>
     
 </resources>

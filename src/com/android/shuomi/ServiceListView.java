@@ -36,11 +36,12 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 	private static final String TAG = "ServiceListView";
 	private static final int GROUPON = 0;
 	private static final int FAVORITES = 1;
-	private static final int UTILITIES = 2;
+	private static final int AROUND = 2;
+	private static final int UTILITIES = 3;
 	
 	private final String mTag = "tab";
-	private final int mTabLabels[] = { R.string.groupon_info, R.string.my_favourite, R.string.utility_list };
-	private final int mTabResIds[] = { R.id.tab1, R.id.tab2, R.id.tab3 };	
+	private final int mTabLabels[] = { R.string.groupon_info, R.string.my_favourite, R.string.groupon_around, R.string.utility_list };
+	private final int mTabResIds[] = { R.id.tab1, R.id.tab2, R.id.tab3, R.id.tab4 };	
 	private ViewFlipper[] mFlippers;
 	
 	private String mProvinceSelected = null;
@@ -117,7 +118,7 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
         	View view = tabWidget.getChildTabViewAt( i );   
         	//view.getLayoutParams().height = 60; //tabWidget.getChildAt(i)
         	final TextView tv = ( TextView ) view.findViewById( android.R.id.title );
-        	tv.setTextSize( 17 );
+        	tv.setTextSize( 14 );
         	tv.setTextColor( this.getResources().getColorStateList( android.R.color.white ) );
         }
 	}

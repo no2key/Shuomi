@@ -83,10 +83,14 @@ public class ToolsMainView extends LinearLayout {
 	}
 	
 	private void showAboutUsDialog() {
+		LayoutInflater layoutInflater = ( LayoutInflater )getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+		View view = layoutInflater.inflate( R.layout.about_view, null, true );
+		
 		AlertDialog.Builder builder = new AlertDialog.Builder( getContext() );
 		builder.setIcon( android.R.drawable.ic_dialog_info );
 		builder.setTitle( R.string.about_us );
-		builder.setMessage( R.string.about_us );
+		//builder.setMessage( R.string.about_us );
+		builder.setView( view );
 
     	builder.setPositiveButton( R.string.dlg_btn_ok, new DialogInterface.OnClickListener() {				
 			public void onClick( DialogInterface dialog, int which ) {

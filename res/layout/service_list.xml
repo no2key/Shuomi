@@ -29,6 +29,12 @@
             android:layout_width="fill_parent" 
             android:layout_height="fill_parent"> 
         </ViewFlipper>
+        
+        <ViewFlipper 
+            android:id="@+id/tab4"
+            android:layout_width="fill_parent" 
+            android:layout_height="fill_parent"> 
+        </ViewFlipper>
             
     </FrameLayout>
     
