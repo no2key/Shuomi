@@ -1,7 +1,9 @@
 package com.android.shuomi.network;
 
 import com.android.shuomi.network.NetworkService.LocalBinder;
+import com.google.android.maps.MapActivity;
 
+import android.app.Activity;
 import android.app.ActivityGroup;
 import android.content.ComponentName;
 import android.content.Context;
@@ -10,7 +12,7 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.util.Log;
 
-public abstract class NetworkBindActivity extends ActivityGroup {
+public abstract class NetworkBindActivity extends MapActivity {
 	abstract protected void onNetworkServiceConnected();
 	
 	private NetworkService mNetworkService;

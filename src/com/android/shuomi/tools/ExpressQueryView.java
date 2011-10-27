@@ -74,8 +74,6 @@ public class ExpressQueryView extends LinearLayout implements UpdatableView {
 		{
 			int position = mExpressList.getSelectedItemPosition();
 			String expressId = mDataList.get( position )[0];
-			Log.d( TAG, "selected position: " + mDataList.get( position )[0] );
-			//sendQueryRequest( orderId, position );
 			( ( ServiceListView ) getContext() ).goToNextView( new ExpressQueryResultView( getContext(), orderId, expressId ) );
 		}
 		else
@@ -83,13 +81,6 @@ public class ExpressQueryView extends LinearLayout implements UpdatableView {
 			EventIndicator.showToast( getContext(), getContext().getString( R.string.please_input_express_no ) );
 		}
 	}
-	
-//	private void sendQueryRequest( String orderId, int position )
-//	{
-//		String expressId = mDataList.get( position )[0];
-//		ExpressQueryRequestIntent request = new ExpressQueryRequestIntent( getClass().getName(), expressId, orderId );
-//		NetworkSession.send( request );
-//	}
 	
 	private void setupExpressList( ArrayList<String> list ) {
 		mExpressList = (Spinner) findViewById( R.id.spinner_companies );  

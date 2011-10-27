@@ -25,9 +25,9 @@
         </ViewFlipper>
         
         <ViewFlipper 
-            android:id="@+id/tab3"
-            android:layout_width="fill_parent" 
-            android:layout_height="fill_parent"> 
+        	android:id="@+id/tab3"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent">
         </ViewFlipper>
         
         <ViewFlipper 
@@ -35,7 +35,7 @@
             android:layout_width="fill_parent" 
             android:layout_height="fill_parent"> 
         </ViewFlipper>
-            
+        
     </FrameLayout>
     
     <RelativeLayout

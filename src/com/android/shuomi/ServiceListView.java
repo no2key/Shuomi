@@ -1,5 +1,6 @@
 package com.android.shuomi;
 
+import com.android.shuomi.around.GrouponAroundView;
 import com.android.shuomi.favorites.FavoritesListView;
 import com.android.shuomi.groupon.GrouponMainView;
 import com.android.shuomi.intent.REQUEST;
@@ -21,6 +22,7 @@ import com.android.shuomi.util.Util;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -64,7 +66,8 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 	
 	private void createTab() {
 		mTabHost = ( TabHost ) findViewById( R.id.tabhost );
-		mTabHost.setup( this.getLocalActivityManager() );
+		//mTabHost.setup( this.getLocalActivityManager() );
+		mTabHost.setup();
         
         for ( int i = 0; i < mTabLabels.length; i ++ ) {
         	mTabHost.addTab( mTabHost.newTabSpec( mTag + String.valueOf( i+1 ) )
@@ -97,6 +100,9 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 		else if ( index == UTILITIES ) {
 			setupToolsFlipper();
 		}
+		else if ( index == AROUND ) {
+			setupAroundFlipper();
+		}
 	}
 	
 	private void setupFavoriteFlipper() {
@@ -111,6 +117,16 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 			mFlippers[UTILITIES] = ( ViewFlipper ) findViewById( mTabResIds[UTILITIES] );
 			goToNextView( new ToolsMainView( this ) );
 		}
+	}
+	
+	private void setupAroundFlipper()
+	{
+		if ( mFlippers[AROUND] == null ) {
+			mFlippers[AROUND] = ( ViewFlipper ) findViewById( mTabResIds[AROUND] );
+			goToNextView( new GrouponAroundView( this ) );
+		}
+		
+		//startActivity( new Intent( this, GrouponAroundView.class ) );
 	}
 	
 	private void setupTabLabelProperty( final TabWidget tabWidget ) {
@@ -131,6 +147,7 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 		
 		mFlippers[FAVORITES] = null;
 		mFlippers[UTILITIES] = null;
+		mFlippers[AROUND] = null;
 	}
 	
 	////////////////////////////
@@ -264,7 +281,7 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 	/////////////////////////////
 	
 	@Override
-	protected void onNewIntent( Intent intent ) {
+	public void onNewIntent( Intent intent ) {
 		if ( intent.getAction().equals( RESPONSE.HTTP_RESPONSE_GROUPON ) || 
 			 intent.getAction().equals( RESPONSE.HTTP_RESPONSE_GROUPON_SHARE ) || 
 			 intent.getAction().equals( RESPONSE.HTTP_RESPONSE_GROUPON_FAVORITE ) ||
@@ -376,5 +393,16 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 		}
 		
 		return target;
+	}
+	
+    @Override
+    public void onConfigurationChanged( Configuration config ) {
+        super.onConfigurationChanged( config );
+    }
+
+	@Override
+	protected boolean isRouteDisplayed() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

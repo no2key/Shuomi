@@ -30,7 +30,7 @@ public class FavoritesListView extends LinearLayout {
 
 	//private static final String TAG = "FavoritesListView";
 	private ListView mList = null;
-	private ArrayList< HashMap<String, Object> > mItemDataList = null;
+	private ArrayList< HashMap<String, Object> > mItemDataList = new ArrayList< HashMap<String,Object> >();
 	private SimpleAdapter mAdapter = null;
 	private ArrayList<String[]> mDbDataList = null;
 	
@@ -68,10 +68,10 @@ public class FavoritesListView extends LinearLayout {
 	private void inflateLayout() {
 		LayoutInflater layoutInflater = ( LayoutInflater )getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
 		layoutInflater.inflate( R.layout.favorites_list, this, true );
-		mList = (ListView) findViewById( R.id.list );
 	}
 	
 	private void initList() {
+		mList = (ListView) findViewById( R.id.list );
 		mList.setEmptyView( findViewById( R.id.text_no_item ) );
 		
 		mAdapter = new SimpleAdapter ( getContext(), mItemDataList, 
@@ -94,11 +94,7 @@ public class FavoritesListView extends LinearLayout {
 	{
 		if ( mDbDataList != null && mDbDataList.size() > 0 ) 
 		{
-			if ( mItemDataList == null )
-			{
-				mItemDataList = new ArrayList< HashMap<String,Object> >();
-			}
-			else if ( !mItemDataList.isEmpty() )
+			if ( !mItemDataList.isEmpty() )
 			{
 				mItemDataList.clear();
 			}
