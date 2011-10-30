@@ -110,4 +110,6 @@
     <string name="query">查询</string>
     <string name="express_query_result">快递查询结果</string>
     
+    <string name="refresh">刷新</string>
+    
 </resources>

@@ -8,6 +8,7 @@ public class RESPONSE {
 	
 	static final public String HTTP_RESPONSE_WEATHER = "com.android.shuomi.HTTP_RESPONSE_WEATHER";
 	static final public String HTTP_RESPONSE_EXPRESS = "com.android.shuomi.HTTP_RESPONSE_EXPRESS";
+	static final public String HTTP_RESPONSE_AROUND = "com.android.shuomi.HTTP_RESPONSE_AROUND";
 	
 	public static final String PARAM_PAGES = "pages";
 	public static final String PARAM_LIST = "list";
@@ -31,6 +32,12 @@ public class RESPONSE {
 	public static final String PARAM_EXPIRY = "endtime";
 	public static final String PARAM_FOLLOWED = "concern";
 	public static final String PARAM_RETURN = "return";
+	
+	public static final String PARAM_LATITUDE = "y";
+	public static final String PARAM_LONGITUDE = "x";
+	public static final String PARAM_DISTANCE = "distance";
+	public static final String PARAM_ADDRESS = "addr";
+	public static final String PARAM_NAME = "name";
 	
 	public class ERROR {
 		

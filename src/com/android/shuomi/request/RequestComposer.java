@@ -9,7 +9,7 @@ public class RequestComposer {
 	static private final String OP_EQUAL = "=";
 	static private final String PARAM_CONNECTOR = "&";
 	
-	static private final String mBaseUri = "http://www.stylelink.cn/servlet/tuan.jsp";	
+	static private final String mGrouponUri = "http://www.stylelink.cn/servlet/tuan.jsp";	
 	static private final String mWeatherUri = "http://www.stylelink.cn/servlet/weather.jsp";
 	static private final String mExpressUri = "http://www.stylelink.cn/servlet/kuaidi.jsp";
 	
@@ -28,7 +28,7 @@ public class RequestComposer {
 	}
 	
 	protected String getCommonPrefix() {
-		return mBaseUri + URI_CONNECTOR + mOpKey + OP_EQUAL;
+		return mGrouponUri + URI_CONNECTOR + mOpKey + OP_EQUAL;
 	}
 	
 	protected String getWeatherPrefix() {

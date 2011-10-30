@@ -19,6 +19,7 @@ import com.android.shuomi.tools.WeatherServiceView;
 import com.android.shuomi.util.EventIndicator;
 import com.android.shuomi.util.Util;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -50,6 +51,8 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 	private String mCitySelected = null;
 	private TabHost mTabHost;
 	
+	public static Context gContext = null;
+	
 	////////////////////////////
 	// Initialize Activity
 	////////////////////////////
@@ -62,6 +65,8 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
         loadSelectedLocation();        
         initFlipper();
         DatabaseSession.create( this );
+        
+        //testHttp();
     }
 	
 	private void createTab() {
@@ -92,6 +97,13 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 		});
 	}
 	
+//	private void testHttp()
+//	{
+//		gContext = this;
+//		HttpService http = new HttpService();
+//		http.get( "http://www.stylelink.cn/servlet/tuan.jsp?go=shoplist&x=116.45863&y=39.95289&distance=5000" );
+//	}
+	
 	private void onTabChange( int index ) {
 		Log.d( TAG, "index = " + index );
 		if ( index == FAVORITES ) {
@@ -121,12 +133,11 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 	
 	private void setupAroundFlipper()
 	{
-		if ( mFlippers[AROUND] == null ) {
+		if ( mFlippers[AROUND] == null ) 
+		{
 			mFlippers[AROUND] = ( ViewFlipper ) findViewById( mTabResIds[AROUND] );
 			goToNextView( new GrouponAroundView( this ) );
 		}
-		
-		//startActivity( new Intent( this, GrouponAroundView.class ) );
 	}
 	
 	private void setupTabLabelProperty( final TabWidget tabWidget ) {
@@ -286,7 +297,8 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 			 intent.getAction().equals( RESPONSE.HTTP_RESPONSE_GROUPON_SHARE ) || 
 			 intent.getAction().equals( RESPONSE.HTTP_RESPONSE_GROUPON_FAVORITE ) ||
 			 intent.getAction().equals( RESPONSE.HTTP_RESPONSE_WEATHER ) ||
-			 intent.getAction().equals( RESPONSE.HTTP_RESPONSE_EXPRESS ) ) 
+			 intent.getAction().equals( RESPONSE.HTTP_RESPONSE_EXPRESS ) || 
+			 intent.getAction().equals( RESPONSE.HTTP_RESPONSE_AROUND ) ) 
 		{
 			ResponseIntent response = new ResponseIntent( intent );
 			NetworkResponse.process( this, ( ResponseIntent ) response );
@@ -311,7 +323,8 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 	public void onPositiveResponse( ResponseIntent response ) {
 		if ( response.getAction().equals( RESPONSE.HTTP_RESPONSE_GROUPON ) || 
 			 response.getAction().equals( RESPONSE.HTTP_RESPONSE_WEATHER ) ||
-			 response.getAction().equals( RESPONSE.HTTP_RESPONSE_EXPRESS ) ) 
+			 response.getAction().equals( RESPONSE.HTTP_RESPONSE_EXPRESS ) || 
+			 response.getAction().equals( RESPONSE.HTTP_RESPONSE_AROUND ) ) 
 		{
 			updateView( response );
 		}
@@ -366,6 +379,9 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 		else if ( response.getAction().equals( RESPONSE.HTTP_RESPONSE_WEATHER ) || 
 				  response.getAction().equals( RESPONSE.HTTP_RESPONSE_EXPRESS ) ) {
 			flipper = mFlippers[UTILITIES];
+		}
+		else if ( response.getAction().equals( RESPONSE.HTTP_RESPONSE_AROUND ) ) {
+			flipper = mFlippers[AROUND];
 		}
 		
 		if ( flipper != null ) {

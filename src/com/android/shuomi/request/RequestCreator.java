@@ -45,6 +45,9 @@ public class RequestCreator {
 		else if ( action.equals( REQUEST.EXPRESS_QUERY ) ) {
 			composer = new ExpressQueryRequestComposer( request );
 		}
+		else if ( action.equals( REQUEST.AROUND_GROUPON ) ) {
+			composer = new GrouponAroundRequestComposer( request );
+		}
 		
 		return composer;
 	}

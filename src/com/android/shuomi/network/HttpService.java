@@ -1,9 +1,7 @@
 package com.android.shuomi.network;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 
@@ -12,17 +10,17 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.CoreConnectionPNames;
-import org.apache.http.params.CoreProtocolPNames;
 
 import com.android.shuomi.util.Util;
 
 import android.util.Log;
 
 public class HttpService {
+	
+	static final private int BUF_SIZE = 1024 * 16;
+	
 	private final int ERROR_GENERIC = -1;
     private final int ERROR_UNKNOWN_HOST = -2;
     private final int ERROR_PROTOCOL = -3;
@@ -41,7 +39,7 @@ public class HttpService {
 		try {
 			if ( isHttpGet ) {
 				mHttpGetRequest = new HttpGet( url );
-				mHttpGetRequest.setHeader("Accept", "text/html, application/xml;q=0.9, application/xhtml+xml, image/png, image/webp, image/jpeg, image/gif, image/x-xbitmap, */*;q=0.1" );
+				mHttpGetRequest.setHeader( "Accept", "text/html, application/xml;q=0.9, application/xhtml+xml, image/png, image/webp, image/jpeg, image/gif, image/x-xbitmap, */*;q=0.1" );
 				mHttpGetRequest.setHeader( "Accept-Language", "zh-CN,zh;q=0.9,en;q=0.8" );
 				mHttpGetRequest.setHeader( "Accept-Encoding", "gzip, deflate" );
 				
@@ -49,24 +47,24 @@ public class HttpService {
 				mResponse = httpClient.execute( mHttpGetRequest );
 				mHttpGetRequest = null;
 			}
-			else {
-				HttpPost postRequest = new HttpPost( url );
-				
-				if ( entity != null && entity.length() > 0 ) {
-					StringEntity se = new StringEntity( entity );  
-					se.setContentEncoding( "UTF-8" );
-					se.setContentType( "application/x-www-form-urlencoded" );
-					
-                    postRequest.setEntity( se );
-					
-					HttpEntity httpEntity = postRequest.getEntity();
-					Log.d( "HttpService", getEntity( httpEntity ) );
-				}
-				
-				postRequest.getParams().setBooleanParameter( CoreProtocolPNames.USE_EXPECT_CONTINUE, false );
-				
-				mResponse = httpClient.execute( postRequest );
-			}
+//			else {
+//				HttpPost postRequest = new HttpPost( url );
+//				
+//				if ( entity != null && entity.length() > 0 ) {
+//					StringEntity se = new StringEntity( entity );  
+//					se.setContentEncoding( "UTF-8" );
+//					se.setContentType( "application/x-www-form-urlencoded" );
+//					
+//                    postRequest.setEntity( se );
+//					
+//					HttpEntity httpEntity = postRequest.getEntity();
+//					Log.d( "HttpService", getEntity( httpEntity ) );
+//				}
+//				
+//				postRequest.getParams().setBooleanParameter( CoreProtocolPNames.USE_EXPECT_CONTINUE, false );
+//				
+//				mResponse = httpClient.execute( postRequest );
+//			}
 			
 			if ( mResponse != null ) {
 				mStatus = mResponse.getStatusLine().getStatusCode();
@@ -126,78 +124,110 @@ public class HttpService {
 //        return stringBuffer.toString();
 //    }
 	
-	private String getEntity( HttpEntity entity ) {
+//	private String getEntity( HttpEntity entity ) {
+//		StringBuffer s = new StringBuffer( "" );
+//		
+//		try {
+//			InputStream is = entity.getContent();
+//			long contentLen = entity.getContentLength();
+//			InputStreamReader reader = new InputStreamReader(is);
+//			BufferedReader in = new BufferedReader( reader, (int)contentLen );
+//			String str = "";
+//			
+//			try {
+//				do {
+//					str = in.readLine();
+//					
+//					if ( str != null ) {
+//						s.append( str );
+//					}
+//					else {
+//						break;
+//					}
+//				}
+//				while ( in.ready() );
+//				
+//				
+//			}
+//			catch ( IOException e ) {
+//				e.printStackTrace();
+//			}
+//			
+//			reader.close();
+//		}
+//		catch ( IllegalStateException e ) {
+//			e.printStackTrace();
+//		}
+//		catch ( IOException e ) {
+//			e.printStackTrace();
+//		}
+//	    
+//	    return s.toString();
+//	}
+	
+	private String getEntityText( InputStream inputStream ) throws IOException
+	{
 		StringBuffer s = new StringBuffer( "" );
 		
-		try {
-			InputStream is = entity.getContent();
-			long contentLen = entity.getContentLength();
-			InputStreamReader reader = new InputStreamReader(is);
-			BufferedReader in = new BufferedReader( reader, (int)contentLen );
-			String str = "";
-			
-			try {
-				do {
-					str = in.readLine();
+		if ( inputStream != null )
+		{
+			byte[] recvBuf = new byte[BUF_SIZE];
+			int length = 0;
+			int total = 0;
+
+			do 
+			{
+				while ( total < BUF_SIZE )
+				{
+					length = inputStream.read( recvBuf, total, BUF_SIZE - total );
 					
-					if ( str != null ) {
-						s.append( str );
-					}
-					else {
-						break;
-					}
+					if ( length < 0 ) break;
+					
+					total += length;
+					Log.d( "HttpService", "read: " + length + ", total: " + total );
 				}
-				while ( in.ready() );
 				
+				int last;
+				for ( last = total-1; last > -1 && ( recvBuf[last] > 127 || recvBuf[last] < 0 ); last -- );
 				
-			}
-			catch ( IOException e ) {
-				e.printStackTrace();
-			}
-			
-			reader.close();
+				String chunk = new String( recvBuf, 0, last + 1, "utf-8" );				
+				s.append( chunk );
+				
+				total = total - last - 1;
+					
+				for ( int i = 0; i < total; i ++ )
+				{
+					recvBuf[i] = recvBuf[last+1+i];
+				}
+			} 
+			while ( length > -1 );
 		}
-		catch ( IllegalStateException e ) {
-			e.printStackTrace();
-		}
-		catch ( IOException e ) {
-			e.printStackTrace();
-		}
-	    
-	    return s.toString();
+		
+		return s.toString();
 	}
 	
-	private String getBodyInternal( HttpResponse response ) {
-		StringBuffer s = new StringBuffer( "" );
+	private String getBodyInternal( HttpResponse response ) 
+	{
+		String content = "";
 		
-		try {
+		try 
+		{
 			HttpEntity entity = response.getEntity();
+			
+			Log.d( "HttpService", "isStreaming = " + entity.isStreaming() );
+			
 			InputStream is = entity.getContent();
-			long contentLen = entity.getContentLength();
-			InputStreamReader reader = new InputStreamReader(is);
-			BufferedReader in = new BufferedReader( reader, (int)contentLen );
-			String str = "";
+
+			content = getEntityText( is );
+			Log.d( "HttpService", "content len: " + content.length() );
 			
-			try {
-				do {
-					str = in.readLine();
-					
-					if ( str != null ) {
-						s.append( str );
-					}
-					else {
-						break;
-					}
-				}
-				while ( in.ready() );
-				
-				
-			}
-			catch ( IOException e ) {
-				e.printStackTrace();
-			}
+			byte[] contentbyte = content.getBytes();
+			Log.d( "HttpService", "content byte len: " + contentbyte.length );
 			
-			reader.close();
+//			ServiceListView.gContext.deleteFile( "dump2.txt" );
+//			FileOutputStream fos = ServiceListView.gContext.openFileOutput( "dump2.txt", Context.MODE_PRIVATE );  
+//            fos.write( content.getBytes() );  
+//            fos.close();
 		}
 		catch ( IllegalStateException e ) {
 			e.printStackTrace();
@@ -206,7 +236,7 @@ public class HttpService {
 			e.printStackTrace();
 		}
 	    
-	    return s.toString();
+	    return content;
 	}
 	
 	public int getLastStatus() {

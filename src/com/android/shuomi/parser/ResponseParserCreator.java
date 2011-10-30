@@ -29,6 +29,9 @@ public class ResponseParserCreator {
 		else if ( requestAction.equals( REQUEST.EXPRESS_QUERY ) ) {
 			parser = new ExpressQueryResponseParser( response.getUserData() );
 		}
+		else if ( requestAction.equals( REQUEST.AROUND_GROUPON ) ) {
+			parser = new GrouponAroundResponseParser( response.getUserData() );
+		}
 		else {
 			parser = new ResponseParser( response.getUserData(), requestAction );
 		}

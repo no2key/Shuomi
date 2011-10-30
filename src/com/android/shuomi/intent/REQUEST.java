@@ -14,6 +14,7 @@ public class REQUEST {
 	public static final String WEATHER_DETAILS = "WEATHER_DETAILS";
 	public static final String EXPRESS_LIST = "EXPRESS_LIST";
 	public static final String EXPRESS_QUERY = "EXPRESS_QUERY";
+	public static final String AROUND_GROUPON = "AROUND_GROUPON";
 	
 	public static final String PARAM_PROVINCE = "province";
 	public static final String PARAM_CITY = "city";
@@ -30,4 +31,10 @@ public class REQUEST {
 	public static final String PARAM_FAVORITE = "concern";
 	public static final String PARAM_NO = "no";
 	public static final String PARAM_CODE = "code";
+	
+	public static final String PARAM_LATITUDE = "y";
+	public static final String PARAM_LONGITUDE = "x";
+	public static final String PARAM_DISTANCE = "distance";
+	
+	public static final String PARAM_SHOPLIST = "shoplist";
 }
