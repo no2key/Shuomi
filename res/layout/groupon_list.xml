@@ -31,17 +31,14 @@
         android:visibility="gone">
     </ListView>
     
-<!--     <FrameLayout -->
-<!--     	android:id="@+id/footer_view" -->
-<!--     	android:layout_width="fill_parent" -->
-<!--     	android:layout_height="wrap_content"> -->
-    	
-<!--     	<include -->
-<!-- 			android:id="@+id/inner_footer_view" -->
-<!-- 			android:visibility="gone" -->
-<!-- 			layout="@layout/list_loading_footer"/> -->
-			    	
-<!--     </FrameLayout> -->
-    
+    <TextView
+	    android:id="@+id/text_no_item"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:gravity="center"
+	    android:layout_gravity="center_vertical|center_horizontal"
+	    android:textSize="18dip"
+	    android:textStyle="bold"
+	    android:text="@string/no_groupon_item" />    
 	
 </LinearLayout>

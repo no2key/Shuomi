@@ -8,7 +8,7 @@
     android:focusable="true"
     android:focusableInTouchMode="true" >
     
-    <EditText 
+    <com.android.shuomi.EnhancedEditText 
         android:textSize="16dip"
         android:layout_marginLeft="10dip"
         android:layout_marginRight="10dip"
@@ -18,10 +18,10 @@
         android:inputType="text"
         android:hint="@string/search_hint"
         android:imeOptions="actionSearch"
+        android:imeActionLabel="@string/search"
         android:drawableLeft="@drawable/ic_search_small"
         android:maxLines="1"
-        android:id="@+id/edit_search">
-    </EditText>
+        android:id="@+id/edit_search"/>
     
     <ListView 
         android:id="@+id/list_city" 

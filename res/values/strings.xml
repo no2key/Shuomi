@@ -18,6 +18,7 @@
     <string name="entertainment">休闲娱乐</string>
     <string name="beauty_healthy">美容保健</string>
     <string name="others">其他</string>
+    <string name="no_groupon_item">找不到请求的信息</string>
     
     <string name="hide_pic">隐藏图片</string>
     <string name="show_pic">显示图片</string>
@@ -110,6 +111,6 @@
     <string name="query">查询</string>
     <string name="express_query_result">快递查询结果</string>
     
-    <string name="refresh">刷新</string>
+    <string name="refresh_location">刷新位置</string>
     
 </resources>

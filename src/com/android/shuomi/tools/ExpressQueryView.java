@@ -45,6 +45,7 @@ public class ExpressQueryView extends LinearLayout implements UpdatableView {
 		setupTitle();
 		addButtonListener();
 		mEditOrder = (EnhancedEditText) findViewById( R.id.edit_query_no );
+		mEditOrder.setLeftDrawable( android.R.drawable.sym_action_email );
 	}
 	
 	private void setupTitle() {

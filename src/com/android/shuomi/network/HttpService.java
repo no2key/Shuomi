@@ -184,7 +184,7 @@ public class HttpService {
 					if ( length < 0 ) break;
 					
 					total += length;
-					Log.d( "HttpService", "read: " + length + ", total: " + total );
+					//Log.d( "HttpService", "read: " + length + ", total: " + total );
 				}
 				
 				int last;

@@ -65,8 +65,6 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
         loadSelectedLocation();        
         initFlipper();
         DatabaseSession.create( this );
-        
-        //testHttp();
     }
 	
 	private void createTab() {
@@ -96,13 +94,6 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 			}
 		});
 	}
-	
-//	private void testHttp()
-//	{
-//		gContext = this;
-//		HttpService http = new HttpService();
-//		http.get( "http://www.stylelink.cn/servlet/tuan.jsp?go=shoplist&x=116.45863&y=39.95289&distance=5000" );
-//	}
 	
 	private void onTabChange( int index ) {
 		Log.d( TAG, "index = " + index );
@@ -418,7 +409,6 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 
 	@Override
 	protected boolean isRouteDisplayed() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 }

@@ -2,10 +2,10 @@ package com.android.shuomi.intent;
 
 public class GrouponDetailsRequestIntent extends RequestIntent {
 
-	public GrouponDetailsRequestIntent( String action, String id ) {
-		super(action);
+	public GrouponDetailsRequestIntent( String action, String response, String id ) {
+		super( action );
 		setItemId( id );
-		setResponseAction( RESPONSE.HTTP_RESPONSE_GROUPON );
+		setResponseAction( response );
 	}
 
 	public void setItemId( String id ) {

@@ -139,8 +139,10 @@ public abstract class PullToRefreshListLayout extends ListLayout {
 		mRefreshViewHeight = mHeader.getMeasuredHeight();
 		Log.e( TAG, "SETUP Header View height = " + mRefreshViewHeight );
 		
-		//enableHeaderView( false );		
-		getList().addHeaderView( mHeader );
+		//enableHeaderView( false );
+		
+		// TODO disable the pull to refresh temporarily 
+//		getList().addHeaderView( mHeader );
 	}
 	
 //	protected void enableHeaderView( boolean enable ) {
@@ -262,46 +264,57 @@ public abstract class PullToRefreshListLayout extends ListLayout {
 		getList().setOnScrollListener( new OnScrollListener() {
 
 			@Override
-			public void onScroll( AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount ) {
-				if ( mCurrentScrollState == SCROLL_STATE_TOUCH_SCROLL && mRefreshState != REFRESHING ) {
-		            if ( firstVisibleItem == 0 ) {
-		                mHeaderImage.setVisibility( View.VISIBLE );
-		                
-		        		Log.e( TAG, "header bottom = " + mHeader.getBottom() );
-		        		//Log.e( TAG, "mRefreshViewHeight + PULL_RELEASE_THRESHOLD = " + mRefreshViewHeight + " + " + PULL_RELEASE_THRESHOLD );
-
-		                if ( pullBeyondBound() && mRefreshState != RELEASE_TO_REFRESH ) {
-		                	Log.e( TAG, "onScroll RELEASE_TO_REFRESH" );
-		                	releaseToRefresh();
-		                }
-		                else if ( releaseBackInBound() && mRefreshState != PULL_TO_REFRESH ) {
-		                	Log.e( TAG, "onScroll PULL_TO_REFRESH" );
-		                	mHeaderText.setText( R.string.pull_to_refresh_pull_label );
-		                    
-		                    if ( mRefreshState != TAP_TO_REFRESH ) {
-		                        mHeaderImage.clearAnimation();
-		                        mHeaderImage.startAnimation( mReverseFlipAnimation );
-		                    }
-		                    setRefreshState( PULL_TO_REFRESH );
-		                }
-		            } 
-		            else {
-		                mHeaderImage.setVisibility( View.GONE );
-		                resetHeader();
-		            }
-		        } 
-				else if ( mCurrentScrollState == SCROLL_STATE_FLING && 
-						  firstVisibleItem == 0 && mRefreshState != REFRESHING ) {
-		            getList().setSelection(1);
-		        }
-
+			public void onScroll( AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount ) 
+			{
+				// TODO disable the pull to refresh temporarily 
+				
+//				if ( mCurrentScrollState == SCROLL_STATE_TOUCH_SCROLL && mRefreshState != REFRESHING ) 
+//				{
+//		            if ( firstVisibleItem == 0 ) 
+//		            {
+//		                mHeaderImage.setVisibility( View.VISIBLE );
+//		                
+//		        		Log.e( TAG, "header bottom = " + mHeader.getBottom() );
+//		        		//Log.e( TAG, "mRefreshViewHeight + PULL_RELEASE_THRESHOLD = " + mRefreshViewHeight + " + " + PULL_RELEASE_THRESHOLD );
+//
+//		                if ( pullBeyondBound() && mRefreshState != RELEASE_TO_REFRESH ) 
+//		                {
+//		                	Log.e( TAG, "onScroll RELEASE_TO_REFRESH" );
+//		                	releaseToRefresh();
+//		                }
+//		                else if ( releaseBackInBound() && mRefreshState != PULL_TO_REFRESH ) 
+//		                {
+//		                	Log.e( TAG, "onScroll PULL_TO_REFRESH" );
+//		                	mHeaderText.setText( R.string.pull_to_refresh_pull_label );
+//		                    
+//		                    if ( mRefreshState != TAP_TO_REFRESH ) 
+//		                    {
+//		                        mHeaderImage.clearAnimation();
+//		                        mHeaderImage.startAnimation( mReverseFlipAnimation );
+//		                    }
+//		                    setRefreshState( PULL_TO_REFRESH );
+//		                }
+//		            } 
+//		            else 
+//		            {
+//		                mHeaderImage.setVisibility( View.GONE );
+//		                resetHeader();
+//		            }
+//		        } 
+//				else if ( mCurrentScrollState == SCROLL_STATE_FLING && 
+//						  firstVisibleItem == 0 && mRefreshState != REFRESHING ) 
+//				{
+//		            getList().setSelection(1);
+//		        }
 			}
 
 			@Override
-			public void onScrollStateChanged( AbsListView view, int scrollState ) {
+			public void onScrollStateChanged( AbsListView view, int scrollState ) 
+			{
 				mCurrentScrollState = scrollState;
 				
-				switch ( scrollState ) {
+				switch ( scrollState ) 
+				{
 					
 					case OnScrollListener.SCROLL_STATE_IDLE:
 						

@@ -3,8 +3,10 @@ package com.android.shuomi.groupon;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.android.shuomi.EnhancedEditText;
 import com.android.shuomi.R;
 import com.android.shuomi.ServiceListView;
+import com.android.shuomi.EnhancedEditText.OnEditorActionDoneListener;
 import com.android.shuomi.intent.REQUEST;
 import com.android.shuomi.util.Util;
 
@@ -13,6 +15,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -40,6 +43,34 @@ public class GrouponMainView extends LinearLayout  {
 		inflateLayout();
 		createCityList();
 		createGrouponList();
+		registerEditorListener();
+	}
+
+	private void registerEditorListener() 
+	{
+		final EnhancedEditText edit = (EnhancedEditText) findViewById( R.id.edit_search );
+		edit.setLeftDrawable( R.drawable.ic_search_small );
+		edit.setOnEditorDoneListener( EditorInfo.IME_ACTION_SEARCH, new OnEditorActionDoneListener() 
+		{
+			@Override
+			public void done() 
+			{
+				searchByKeyword( edit.getText().toString() );				
+			}
+		} );
+	}
+	
+	private void searchByKeyword( String keyword )
+	{
+		if ( Util.isValid( keyword ) )
+		{
+			Bundle bundle = new Bundle();
+			bundle.putString( REQUEST.PARAM_PROVINCE, mProvince );
+			bundle.putString( REQUEST.PARAM_CITY, mCity );
+			bundle.putString( REQUEST.PARAM_TITLE, keyword );
+			
+	    	goToNextView( new GrouponListView( getContext(), bundle ) );
+		}
 	}
 
 	private void inflateLayout() {

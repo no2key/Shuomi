@@ -1,21 +1,23 @@
 package com.android.shuomi.around;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.android.shuomi.NetworkRequestLayout;
 import com.android.shuomi.R;
+import com.android.shuomi.ServiceListView;
+import com.android.shuomi.groupon.GrouponDetailsView;
 import com.android.shuomi.groupon.GrouponMainView;
 import com.android.shuomi.intent.GrouponAroundRequestIntent;
 import com.android.shuomi.intent.REQUEST;
+import com.android.shuomi.intent.RESPONSE;
 import com.android.shuomi.parser.ResponseParser;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.OverlayItem;
 
-import android.R.integer;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,14 +29,18 @@ public class GrouponAroundView extends NetworkRequestLayout {
 	private static final String TAG = "GrouponAroundView";
 	private static final int DEFAULT_DISTANCE = 5000;
 	private static final int[] CATEGORY = GrouponMainView.GROUPON_LIST_ITEM;
+	private static final int POPUP_VIEW_ALPHA = 200;
+	
 	private MapView mMapView;
 	private MyLocationOverlay mMyLocationOverlay = null;
 	private GeoPoint mMyGeoPoint; 
 	private ArrayList<String[]> mItemList = null;
 	private View mPopupView = null;
-	private AroundOverlay[] mOverlays= new AroundOverlay[CATEGORY.length];
+	private AroundOverlay[] mOverlays = new AroundOverlay[CATEGORY.length];
 	private int[] mPinResIds = { R.drawable.ic_pin_red, R.drawable.ic_pin_blue, 
 			R.drawable.ic_pin_yellow, R.drawable.ic_pin_black, R.drawable.ic_pin_black, R.drawable.ic_pin_black };
+	private HashMap< GeoPoint , Integer> mPointTable = null;
+	
 	
 	public GrouponAroundView( Context context ) {
 		super(context);
@@ -48,7 +54,7 @@ public class GrouponAroundView extends NetworkRequestLayout {
 	{
 		for ( int i = 0; i < CATEGORY.length; i ++ )
 		{
-			mOverlays[i] = new AroundOverlay( getContext(), mMapView, mPopupView, 
+			mOverlays[i] = new AroundOverlay( this, mMapView, mPopupView, 
 					getResources().getDrawable( mPinResIds[i] ) );
 		}
 	}
@@ -68,14 +74,24 @@ public class GrouponAroundView extends NetworkRequestLayout {
 		Log.d( TAG, "width = " + mMapView.getWidth()  );
 	    mMapView.addView( mPopupView, 
 	             new MapView.LayoutParams( /*MapView.LayoutParams.FILL_PARENT*/200, MapView.LayoutParams.WRAP_CONTENT,
-	            		 null, MapView.LayoutParams.BOTTOM_CENTER | MapView.LayoutParams.CENTER_HORIZONTAL ) );
-	    mPopupView.getBackground().setAlpha( 170 );
+	            		 null, MapView.LayoutParams.BOTTOM_CENTER ) );
+	    mPopupView.getBackground().setAlpha( POPUP_VIEW_ALPHA );
 	    mPopupView.setVisibility( View.GONE );
 	}
 	
-	public View getPopupView()
+	public void goToDetailsView( GeoPoint point )
 	{
-		return mPopupView;
+		if ( mPointTable != null )
+		{
+			Integer index = mPointTable.get( point );
+			
+			if ( index.intValue() < mItemList.size() )
+			{
+				String id = mItemList.get( index.intValue() )[8];
+				( ( ServiceListView ) getContext() ).goToNextView
+					( new GrouponDetailsView( getContext(), id, RESPONSE.HTTP_RESPONSE_AROUND ) );
+			}
+		}
 	}
 	
 	private void initView()
@@ -93,7 +109,19 @@ public class GrouponAroundView extends NetworkRequestLayout {
 		title.setText( R.string.groupon_around );
 		
 		Button refresh = (Button) findViewById( R.id.titlebar_button );
-		refresh.setText( R.string.refresh );
+		refresh.setText( R.string.refresh_location );
+		refresh.setOnClickListener( new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				refreshLocation();
+			}
+		});
+	}
+	
+	private void refreshLocation()
+	{
+		goToMyLocation();
 	}
 	
 	private void clearMyLocationOverlay()
@@ -104,9 +132,21 @@ public class GrouponAroundView extends NetworkRequestLayout {
 		}
 	}
 	
+	private void clearAroundGrouponOverlays()
+	{
+		for ( AroundOverlay overlay : mOverlays )
+		{
+			if ( overlay != null )
+			{
+				mMapView.getOverlays().remove( overlay );
+			}
+		}
+	}
+	
 	private void goToMyLocation()
 	{
 		clearMyLocationOverlay();
+		clearAroundGrouponOverlays();
 		
 		mMyLocationOverlay = new MyLocationOverlay( getContext(), mMapView );
 		mMyLocationOverlay.enableMyLocation();
@@ -147,6 +187,7 @@ public class GrouponAroundView extends NetworkRequestLayout {
 			{
 				Log.d( TAG,  "update view" );
 				mItemList = (ArrayList<String[]>) data;
+				mPointTable = new HashMap<GeoPoint, Integer>();
 				updateView();
 			}
 		}
@@ -158,10 +199,17 @@ public class GrouponAroundView extends NetworkRequestLayout {
 		{
 			for ( int i = 0; i < mItemList.size(); i ++ )
 			{
-				addMarker( mItemList.get(i) );
+				GeoPoint point = addMarker( mItemList.get(i) );
+				mPointTable.put( point, Integer.valueOf( i ) );
 			}
 			
 			commitUpdate();
+			mMapView.getController().setZoom( 13 );
+			
+//			for ( int i = 0; i < 2; i ++ )
+//			{
+//				addMarkerTest( mItemList.get(i) );
+//			}
 		}
 	}
 	
@@ -179,30 +227,50 @@ public class GrouponAroundView extends NetworkRequestLayout {
 		return category;
 	}
 	
-	private void addMarker( String[] item ) 
+//	private void addMarkerTest( String[] item )
+//	{
+//		int longtitudeE6 = (int) (Float.parseFloat( item[13] ) * 1E6);
+//		int latitudeE6 = (int) (Float.parseFloat( item[14] ) * 1E6);
+//		GeoPoint point = new GeoPoint( latitudeE6, longtitudeE6 );
+//		Log.d( TAG, point.toString() );
+//		
+//		OverlayItem overlayItem = new OverlayItem( point, item[5], item[10] );
+//		overlayItem.setMarker( getResources().getDrawable( R.drawable.ic_pin_blue ) );
+//		
+//		Drawable draw = overlayItem.getMarker( OverlayItem.ITEM_STATE_FOCUSED_MASK );
+//		Log.d(  TAG, "item marker focused: " + draw.toString() );
+//		
+//		draw = overlayItem.getMarker( OverlayItem.ITEM_STATE_PRESSED_MASK );
+//		Log.d(  TAG, "item marker pressed: " + draw.toString() );
+//		
+//		draw = overlayItem.getMarker( OverlayItem.ITEM_STATE_SELECTED_MASK );
+//		Log.d(  TAG, "item marker selected: " + draw.toString() );
+//		
+//
+//		Drawable drawable = getResources().getDrawable( R.drawable.ic_pin_yellow );		
+//		AroundOverlay aroundOverlay = new AroundOverlay( getContext(), mMapView, mPopupView, drawable );
+//		aroundOverlay.addOverlay( overlayItem );		
+//		mMapView.getOverlays().add( aroundOverlay );
+//	}
+	
+	private GeoPoint addMarker( String[] item ) 
 	{
 		int category = findCategory( item[10] );
 		
 		int longtitudeE6 = (int) (Float.parseFloat( item[13] ) * 1E6);
 		int latitudeE6 = (int) (Float.parseFloat( item[14] ) * 1E6);
 		GeoPoint point = new GeoPoint( latitudeE6, longtitudeE6 );
-		Log.d( TAG, point.toString() );
+		//Log.d( TAG, point.toString() );
 		
 		OverlayItem overlayItem = new OverlayItem( point, item[5], item[10] );
-		//overlayItem.setMarker( getResources().getDrawable( R.drawable.ic_pin_blue ) );
-
-		//Drawable drawable = getResources().getDrawable( R.drawable.ic_pin_yellow );		
-		//AroundOverlay aroundOverlay = new AroundOverlay( getContext(), mMapView, mPopupView, drawable );
-		//aroundOverlay.addOverlay( overlayItem );
 		mOverlays[category].addOverlay( overlayItem );
 		
-		//mMapView.getOverlays().add( aroundOverlay );
+		return point;
 	}
 	
 	private void commitUpdate()
 	{
 		for ( int i = 0; i < mOverlays.length; i ++ ) {
-			//mOverlays[i].populate();
 			mMapView.getOverlays().add( mOverlays[i] );
 		}
 	}

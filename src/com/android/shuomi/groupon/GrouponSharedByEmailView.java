@@ -16,6 +16,7 @@ import android.content.DialogInterface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
@@ -58,6 +59,7 @@ public class GrouponSharedByEmailView extends LinearLayout {
 		} );
 		
 		mEdit = ( EnhancedEditText ) findViewById( R.id.edit_address );
+		mEdit.setLeftDrawable( android.R.drawable.sym_action_email );
 		addEditTextListeners();
 		
 		Button send = (Button) findViewById( R.id.btn_send );
@@ -103,39 +105,14 @@ public class GrouponSharedByEmailView extends LinearLayout {
 	}
 	
 	private void addEditTextListeners() {
-		mEdit.setOnEditorDoneListener( new OnEditorActionDoneListener() {
-			
+		mEdit.setOnEditorDoneListener( EditorInfo.IME_ACTION_DONE, new OnEditorActionDoneListener() 
+		{
 			@Override
-			public void done() {
+			public void done() 
+			{
 				addListItem();				
 			}
-			
 		} );
-		
-//		mEdit.setOnAfterTextChangedListener( new OnAfterTextChangedListener() {
-//
-//			@Override
-//			public void onChanged() {
-//				if ( Util.isValid( mEdit.getText().toString() ) ) {
-//					mEdit.setCompoundDrawablesWithIntrinsicBounds( android.R.drawable.sym_action_email, 
-//							0, R.drawable.ic_cancel, 0 );
-//				}
-//				else {
-//					mEdit.setCompoundDrawablesWithIntrinsicBounds( android.R.drawable.sym_action_email, 
-//							0, 0, 0 );
-//				}
-//			}
-//			
-//		} );
-//		
-//		mEdit.setOnRightDrawableClickListener( new OnRightDrawableClickListener() {
-//
-//			@Override
-//			public void onClick() {
-//				mEdit.setText( "" );
-//			}
-//			
-//		});
 	}
 	
 	private void addListItem() {

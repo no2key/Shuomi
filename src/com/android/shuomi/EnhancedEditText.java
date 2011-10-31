@@ -9,7 +9,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -28,6 +28,7 @@ public class EnhancedEditText extends EditText {
 	}
 	
 	private OnRightDrawableClickListener mRightClickListener = null;
+	private int mLeftDrawableResId = 0;
 	
 	public EnhancedEditText( Context context, AttributeSet attrs, int defStyle ) {
         super( context, attrs, defStyle );
@@ -35,7 +36,7 @@ public class EnhancedEditText extends EditText {
     }
 	
     public EnhancedEditText( Context context, AttributeSet attrs ) {
-        super(context, attrs);
+        super( context, attrs );
         setDefaultListener();
     }
     
@@ -44,16 +45,27 @@ public class EnhancedEditText extends EditText {
         setDefaultListener();
     }
 
-    public void setOnEditorDoneListener( final OnEditorActionDoneListener listener ) {
-    	setOnEditorActionListener( new OnEditorActionListener() {
+    public void setOnEditorDoneListener( final int imeAction, final OnEditorActionDoneListener listener ) 
+    {
+    	setOnEditorActionListener( new OnEditorActionListener()
+    	{
 			@Override
-			public boolean onEditorAction( TextView view, int actionId, KeyEvent event ) {
-				if ( actionId == EditorInfo.IME_ACTION_DONE ) {
+			public boolean onEditorAction( TextView view, int actionId, KeyEvent event ) 
+			{
+				if ( actionId == imeAction ) 
+				{
 					listener.done();
+					InputMethodManager imm = (InputMethodManager)getContext().getSystemService( Context.INPUT_METHOD_SERVICE );
+					imm.hideSoftInputFromWindow( getWindowToken(), 0 );
 				}
 				return false;
-			}			
+			}
 		} );
+    }
+    
+    public void setLeftDrawable( int resId )
+    {
+    	mLeftDrawableResId = resId;
     }
     
     public void setOnRightDrawableClickListener( OnRightDrawableClickListener listener ) {
@@ -102,14 +114,15 @@ public class EnhancedEditText extends EditText {
     {
     	setOnAfterTextChangedListener( new OnAfterTextChangedListener() {
 
+//    		android.R.drawable.sym_action_email
 			@Override
 			public void onChanged() {
 				if ( Util.isValid( getText().toString() ) ) {
-					setCompoundDrawablesWithIntrinsicBounds( android.R.drawable.sym_action_email, 
+					setCompoundDrawablesWithIntrinsicBounds( mLeftDrawableResId, 
 							0, R.drawable.ic_cancel, 0 );
 				}
 				else {
-					setCompoundDrawablesWithIntrinsicBounds( android.R.drawable.sym_action_email, 
+					setCompoundDrawablesWithIntrinsicBounds( mLeftDrawableResId, 
 							0, 0, 0 );
 				}
 			}

@@ -15,7 +15,8 @@ public class GrouponDetailsRequestComposer extends RequestComposer {
 	protected String encodeUri( RequestIntent request ) {
 		String url = null;
 		
-		if ( request.getAction().equals( REQUEST.OBTAIN_DETAILS ) ) {
+		if ( request.getAction().equals( REQUEST.OBTAIN_DETAILS ) ) 
+		{
 			GrouponDetailsRequestIntent req = ( GrouponDetailsRequestIntent ) request;
 			url = getCommonPrefix() + REQUEST.PARAM_DETAIL;			
 			url += encodeParam( new String[] { REQUEST.PARAM_ID }, new String[] { req.getItemId() } );

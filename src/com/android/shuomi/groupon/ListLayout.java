@@ -34,7 +34,9 @@ abstract public class ListLayout extends NetworkRequestLayout {
 	private void getChildWidgets() {
 		mTitle = ( TextView ) findViewById( R.id.titlebar_label );		
 		mButton = ( Button ) findViewById( R.id.titlebar_button );
+
 		mList = ( ListView ) findViewById( R.id.list );
+		mList.setEmptyView( findViewById( R.id.text_no_item ) );
 		
 		mList.setOnItemClickListener( new OnItemClickListener() {                            
 			  

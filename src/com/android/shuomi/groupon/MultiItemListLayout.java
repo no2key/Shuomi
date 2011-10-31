@@ -6,6 +6,7 @@ import com.android.shuomi.R;
 import com.android.shuomi.ServiceListView;
 import com.android.shuomi.intent.GrouponListRequestIntent;
 import com.android.shuomi.intent.REQUEST;
+import com.android.shuomi.intent.RESPONSE;
 import com.android.shuomi.parser.ResponseParser;
 import com.android.shuomi.util.Util;
 
@@ -44,7 +45,8 @@ public abstract class MultiItemListLayout extends PullToRefreshListLayout {
 			String id = item[item.length-1].getString();
 			Log.d( TAG, "click, pos = " + position );
 			Log.d( TAG, "click, id = " + id );
-			( ( ServiceListView ) getContext() ).goToNextView( new GrouponDetailsView( getContext(),  id ) );
+			( ( ServiceListView ) getContext() ).goToNextView
+				( new GrouponDetailsView( getContext(), id, RESPONSE.HTTP_RESPONSE_GROUPON ) );
 		}
 	}
 	
@@ -117,16 +119,8 @@ public abstract class MultiItemListLayout extends PullToRefreshListLayout {
 		}
 	}
 	
-	private String[] convertFields( String[] fields ) {
-//		float discount = 0;
-//		
-//		if ( Float.parseFloat( fields[2] ) > 0 ) {
-//			discount = 10 * Float.parseFloat( fields[3] ) / Float.parseFloat( fields[2] );
-//		}
-//		
-//		DecimalFormat df = new DecimalFormat( "########.0");
-//		discount = Float.parseFloat( df.format( discount ) );
-		
+	private String[] convertFields( String[] fields ) 
+	{		
 		String discount = Util.getDiscount( fields[3] , fields[2] );
 		
 		if ( Util.isValid( discount ) ) {

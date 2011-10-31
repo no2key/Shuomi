@@ -10,7 +10,6 @@ import com.android.shuomi.intent.GrouponDetailsRequestIntent;
 import com.android.shuomi.intent.GrouponFavoriteRequestIntent;
 import com.android.shuomi.intent.REQUEST;
 import com.android.shuomi.intent.RESPONSE;
-import com.android.shuomi.network.NetworkSession;
 import com.android.shuomi.parser.ResponseParser;
 import com.android.shuomi.parser.ShopListParser;
 import com.android.shuomi.persistence.DatabaseSession;
@@ -34,19 +33,20 @@ import android.widget.TextView;
 
 public class GrouponDetailsView extends NetworkRequestLayout {
 	
-	static private final String TAG = "GrouponDetailsView"; 
+	static private final String TAG = "GrouponDetailsView";
+	
 	private String mItemId;
 	private AsyncImageLoader mImageLoader = new AsyncImageLoader();
 	private String mUrl = null;
 	private String mShopList = null;
 	private String[] mFields = null;
 	
-	public GrouponDetailsView( Context context, String itemId ) {
+	public GrouponDetailsView( Context context, String itemId, String responseAction ) {
 		super(context);		
 		inflateLayout();
 		registerButtonActions();
 		mItemId = itemId;
-		requestGrouponDetails();
+		requestGrouponDetails( responseAction );
 	}
 	
 	private void registerButtonActions() {
@@ -90,7 +90,7 @@ public class GrouponDetailsView extends NetworkRequestLayout {
 	private void onAddToFavorite() {
 		if ( !DatabaseSession.getInstance().isRecordExisted( RESPONSE.PARAM_ID, mFields[6] ) ) 
 		{
-			NetworkSession.send( new GrouponFavoriteRequestIntent( getClass().getName(), mItemId ) );
+			sendRequest( new GrouponFavoriteRequestIntent( getClass().getName(), mItemId ) );
 			saveToDb();
 			Log.d( TAG, "add new record" );
 		}
@@ -198,8 +198,9 @@ public class GrouponDetailsView extends NetworkRequestLayout {
 		getContext().startActivity( new Intent( Intent.ACTION_VIEW, Uri.parse( mUrl ) ) );     
 	}
 
-	private void requestGrouponDetails() {
-		GrouponDetailsRequestIntent request = new GrouponDetailsRequestIntent( REQUEST.OBTAIN_DETAILS, mItemId );
+	private void requestGrouponDetails( String responseAction ) 
+	{
+		GrouponDetailsRequestIntent request = new GrouponDetailsRequestIntent( REQUEST.OBTAIN_DETAILS, responseAction, mItemId );
 		request.setSourceClass( getClass().getName() );
 		sendRequest( request );
 	}
@@ -211,8 +212,10 @@ public class GrouponDetailsView extends NetworkRequestLayout {
 
 	@Override
 	public void update( String requestAction, int dataType, Object data, int pageCount ) {
-		if ( requestAction.equals( REQUEST.OBTAIN_DETAILS ) ) {
-			if ( dataType == ResponseParser.TYPE_ARRAY && data != null ) {
+		if ( requestAction.equals( REQUEST.OBTAIN_DETAILS ) ) 
+		{
+			if ( dataType == ResponseParser.TYPE_ARRAY && data != null ) 
+			{
 				updateView( ( String[] ) ( data ) );
 				switchView();
 			}
