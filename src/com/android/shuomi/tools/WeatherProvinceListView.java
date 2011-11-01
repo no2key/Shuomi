@@ -13,6 +13,7 @@ import com.android.shuomi.BackableView;
 import com.android.shuomi.R;
 import com.android.shuomi.ServiceListView;
 import com.android.shuomi.SimpleListLayout;
+import com.android.shuomi.UI;
 import com.android.shuomi.intent.REQUEST;
 import com.android.shuomi.intent.RESPONSE;
 import com.android.shuomi.intent.RequestIntent;
@@ -34,7 +35,7 @@ private static final String TAG = "WeatherProvinceListView";
 	
 	public WeatherProvinceListView(Context context) {
 		super(context);
-
+		getList().getBackground().setAlpha( UI.VIEW_DEFAULT_ALPHA );		
 		enableButton( false );
 		onStateChange( 0 );
 	}

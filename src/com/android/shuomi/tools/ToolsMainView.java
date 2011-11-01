@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.android.shuomi.R;
 import com.android.shuomi.ServiceListView;
+import com.android.shuomi.UI;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -50,7 +51,8 @@ public class ToolsMainView extends LinearLayout {
 	}
 	
 	private void setupList() {
-		ListView list = (ListView) findViewById( R.id.list );		
+		ListView list = (ListView) findViewById( R.id.list );
+		list.getBackground().setAlpha( UI.VIEW_DEFAULT_ALPHA );
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>( getContext(), 
 				R.layout.single_field_item, R.id.text_groupon_item, getLabelList() );
 		list.setAdapter( adapter );

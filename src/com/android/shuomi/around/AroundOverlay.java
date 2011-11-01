@@ -24,6 +24,7 @@ public class AroundOverlay extends ItemizedOverlay<OverlayItem> {
     private View mParent;
     private View mPopupView = null;
     private MapView mMapView = null;
+    private boolean mViewShown = false;
     
 	public AroundOverlay( View parent, MapView mapView, View popupView, Drawable defaultMarker ) {
 		super(defaultMarker);
@@ -42,42 +43,59 @@ public class AroundOverlay extends ItemizedOverlay<OverlayItem> {
 			@Override
 			public void onFocusChanged( ItemizedOverlay overlay, OverlayItem newFocus ) 
 			{
-				Log.d( "AroundOverlay", "onFocusChanged" );
-				focusChanged( overlay, newFocus );
+				if ( newFocus != null )
+					Log.d( "AroundOverlay", "onFocusChanged: " + newFocus.toString() );
+				else
+					Log.d( "AroundOverlay", "onFocusChanged: null" );
+
+				showPopupView( newFocus );
+				
+//				if ( newFocus == null && mViewShown ) 
+//				{
+//					enablePopupView( false );
+//				}
 			}
 		});
 
 	}
 	
-	@SuppressWarnings("rawtypes")
-	private void focusChanged( ItemizedOverlay overlay, final OverlayItem newFocus )
+	private void enablePopupView( boolean enable )
+	{
+		mViewShown = enable;
+		mPopupView.setVisibility( enable ? View.VISIBLE : View.GONE );
+	}
+	
+	private void showPopupView( final OverlayItem item )
 	{
 		if ( mPopupView != null ) 
 		{
-			mPopupView.setVisibility( View.GONE );
+			//mPopupView.setVisibility( View.GONE );
+			enablePopupView( false );
+		}
 			 
-			if ( newFocus != null ) 
+			if ( item != null ) 
 			{
 				TextView description = (TextView) mPopupView.findViewById( R.id.details );
-				description.setText( newFocus.getTitle() );
+				description.setText( item.getTitle() );
 				 
 				TextView category = (TextView) mPopupView.findViewById( R.id.category );
-				category.setText( newFocus.getSnippet() );
+				category.setText( item.getSnippet() );
 				
 				mPopupView.findViewById( R.id.indicator ).setOnClickListener( new OnClickListener() 
 				{
 					@Override
 					public void onClick(View v)
 					{
-						goToDetailsView( newFocus.getPoint() );
+						goToDetailsView( item.getPoint() );
 					}
 				} );
 
-				MapView.LayoutParams layout = calculatePopupLayout( newFocus );
+				MapView.LayoutParams layout = calculatePopupLayout( item );
 				mMapView.updateViewLayout( mPopupView, layout );
-				mPopupView.setVisibility( View.VISIBLE );
+				
+				//mPopupView.setVisibility( View.VISIBLE );
+				enablePopupView( true );
 			}
-		}
 	}
 	
 	private void goToDetailsView( GeoPoint point )
@@ -132,6 +150,8 @@ public class AroundOverlay extends ItemizedOverlay<OverlayItem> {
 	protected boolean onTap( int index )
 	{
 		Log.d( "AroundOverlay", "onTap index = " + index );
-		return true;
+		//showPopupView( getItem( index ) );
+		
+		return false;
 	}
 }

@@ -12,13 +12,15 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:paddingTop="10dip"
-        android:paddingBottom="10dip">
+        android:paddingBottom="10dip"
+        android:background="@drawable/white_tile_bg">
         
         <ProgressBar
             android:id="@+android:id/progress_large"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminate="true"
+            android:padding="3dip"
             style="?android:attr/progressBarStyleSmall">
         </ProgressBar>
         
@@ -29,7 +31,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="1.0dip"
-            android:text="@string/loading">
+            android:text="@string/loading"
+            android:textSize="18dip"
+            android:textColor="@color/darkgrey">
         </TextView>
         
     </LinearLayout>

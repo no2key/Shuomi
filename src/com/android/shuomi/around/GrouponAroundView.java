@@ -38,7 +38,7 @@ public class GrouponAroundView extends NetworkRequestLayout {
 	private View mPopupView = null;
 	private AroundOverlay[] mOverlays = new AroundOverlay[CATEGORY.length];
 	private int[] mPinResIds = { R.drawable.ic_pin_red, R.drawable.ic_pin_blue, 
-			R.drawable.ic_pin_yellow, R.drawable.ic_pin_black, R.drawable.ic_pin_black, R.drawable.ic_pin_black };
+			R.drawable.ic_pin_yellow, R.drawable.ic_pin_green, R.drawable.ic_pin_purple, R.drawable.ic_pin_black };
 	private HashMap< GeoPoint , Integer> mPointTable = null;
 	
 	
@@ -121,6 +121,7 @@ public class GrouponAroundView extends NetworkRequestLayout {
 	
 	private void refreshLocation()
 	{
+		clearOverlays();
 		goToMyLocation();
 	}
 	
@@ -143,11 +144,19 @@ public class GrouponAroundView extends NetworkRequestLayout {
 		}
 	}
 	
-	private void goToMyLocation()
+	private void clearOverlays()
 	{
+		if ( mPopupView != null )
+		{
+			mPopupView.setVisibility( View.GONE );
+		}
+		
 		clearMyLocationOverlay();
 		clearAroundGrouponOverlays();
-		
+	}
+	
+	private void goToMyLocation()
+	{
 		mMyLocationOverlay = new MyLocationOverlay( getContext(), mMapView );
 		mMyLocationOverlay.enableMyLocation();
 		

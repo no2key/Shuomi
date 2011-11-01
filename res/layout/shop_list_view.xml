@@ -6,7 +6,8 @@
     android:layout_height="match_parent" 
     android:weightSum="1" 
     android:focusable="true"
-    android:focusableInTouchMode="true" >
+    android:focusableInTouchMode="true"
+    android:background="@drawable/grid_bg" >
     
     <ListView 
         android:id="@+id/list_shop" 

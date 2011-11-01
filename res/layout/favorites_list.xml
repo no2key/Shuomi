@@ -6,11 +6,12 @@
     android:layout_height="match_parent"
     android:weightSum="1"
     android:focusable="true"
-    android:focusableInTouchMode="true" >
+    android:focusableInTouchMode="true"
+    android:background="@drawable/view_bg" >
     
-<!--     <include  -->
-<!--         android:id="@+id/header_view" -->
-<!--         layout="@layout/title_bar"/> -->
+    <include 
+        android:id="@+id/header_view"
+        layout="@layout/title_bar"/>
     
     <ListView 
         android:id="@+id/list"        
@@ -33,6 +34,7 @@
 	    android:layout_gravity="center_vertical|center_horizontal"
 	    android:textSize="18dip"
 	    android:textStyle="bold"
+	    android:textColor="@color/black"
 	    android:text="@string/no_favorites" />
             
 </LinearLayout>

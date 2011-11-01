@@ -13,7 +13,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/unknown"
+        android:src="@drawable/phone_call"
         android:padding="15dip"
         android:layout_marginRight="2dip"
         android:id="@+id/ic_call"
@@ -43,6 +43,7 @@
             android:id="@+id/shop_address"
             android:text="Shop address"
             android:textSize="16dip"
+            android:textColor="@color/darkgrey"
             android:paddingRight="3dip" >
         </TextView>
         

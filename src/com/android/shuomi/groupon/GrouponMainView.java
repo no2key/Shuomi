@@ -7,6 +7,7 @@ import com.android.shuomi.EnhancedEditText;
 import com.android.shuomi.R;
 import com.android.shuomi.ServiceListView;
 import com.android.shuomi.EnhancedEditText.OnEditorActionDoneListener;
+import com.android.shuomi.UI;
 import com.android.shuomi.intent.REQUEST;
 import com.android.shuomi.util.Util;
 
@@ -77,6 +78,7 @@ public class GrouponMainView extends LinearLayout  {
 		LayoutInflater layoutInflater = ( LayoutInflater )getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
 		layoutInflater.inflate( R.layout.groupon_main, this, true );
 		mCityList = ( ListView ) findViewById( R.id.list_city );
+		mCityList.getBackground().setAlpha( UI.VIEW_DEFAULT_ALPHA );
 	}
 	
 	public void setLocation( String province, String city ) {
@@ -137,6 +139,7 @@ public class GrouponMainView extends LinearLayout  {
 	
 	private void createGrouponList() {
 		ListView grouponListView = ( ListView ) findViewById( R.id.list_groupon );
+		grouponListView.getBackground().setAlpha( UI.VIEW_DEFAULT_ALPHA );
 		
 		SimpleAdapter adpter = new SimpleAdapter ( getContext(), getData( getListItemLabels() ), 
 				R.layout.single_field_item, mMapKeys, mMapValues );

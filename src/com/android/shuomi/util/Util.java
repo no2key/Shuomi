@@ -16,15 +16,24 @@ public class Util {
 		return ( first > second ) ? second : first;
 	}
 	
-	public static String getDiscount( String dividend, String divisor ) {
+	public static String getDiscount( String dividend, String divisor ) 
+	{
 		String result = null;
-		
-		if ( Float.parseFloat( divisor ) != 0 ) {
-			float discount = 10 * Float.parseFloat( dividend ) / Float.parseFloat( divisor );
-			DecimalFormat df = new DecimalFormat( "########.0");
-			discount = Float.parseFloat( df.format( discount ) );
-			
-			result = Float.toString( discount );
+
+		try 
+		{
+			if ( Float.parseFloat( divisor ) != 0 ) 
+			{
+				float discount = 10 * Float.parseFloat( dividend ) / Float.parseFloat( divisor );
+				DecimalFormat df = new DecimalFormat( "########.0");
+				discount = Float.parseFloat( df.format( discount ) );
+				
+				result = Float.toString( discount );
+			}
+		}
+		catch ( NumberFormatException e) 
+		{
+			result = null;
 		}
 		
 		return result;

@@ -7,6 +7,7 @@ import java.util.Observer;
 
 import com.android.shuomi.R;
 import com.android.shuomi.ServiceListView;
+import com.android.shuomi.UI;
 import com.android.shuomi.intent.RESPONSE;
 import com.android.shuomi.persistence.DatabaseSession;
 import com.android.shuomi.util.Util;
@@ -28,7 +29,7 @@ import android.widget.TextView;
 
 public class FavoritesListView extends LinearLayout {
 
-	//private static final String TAG = "FavoritesListView";
+	private static final String TAG = "FavoritesListView";
 	private ListView mList = null;
 	private ArrayList< HashMap<String, Object> > mItemDataList = new ArrayList< HashMap<String,Object> >();
 	private SimpleAdapter mAdapter = null;
@@ -56,13 +57,14 @@ public class FavoritesListView extends LinearLayout {
 	
 	public FavoritesListView(Context context) {
 		super(context);
+		
 		inflateLayout();
+		setupTitle();
+		
 		getDataFromDb();
 		initList();
 		registerItemClickListener();
-		
 		registerDbRecordAdded( mObserver );
-		
 	}
 
 	private void inflateLayout() {
@@ -72,11 +74,19 @@ public class FavoritesListView extends LinearLayout {
 	
 	private void initList() {
 		mList = (ListView) findViewById( R.id.list );
+		mList.getBackground().setAlpha( UI.VIEW_DEFAULT_ALPHA );
 		mList.setEmptyView( findViewById( R.id.text_no_item ) );
 		
 		mAdapter = new SimpleAdapter ( getContext(), mItemDataList, 
 				R.layout.favorites_list_item, mMapKeys, mItemWidgetResIds );
 		mList.setAdapter( mAdapter );
+	}
+	
+	private void setupTitle()
+	{
+		TextView title = ( TextView ) findViewById( R.id.titlebar_label );
+		title.setText( R.string.my_favourite );
+		findViewById( R.id.titlebar_button ).setVisibility( View.GONE );
 	}
 	
 	private void getDataFromDb() {
@@ -86,7 +96,9 @@ public class FavoritesListView extends LinearLayout {
 				RESPONSE.PARAM_ID, RESPONSE.PARAM_URL, RESPONSE.PARAM_SHOPLIST, 
 				RESPONSE.PARAM_TIMESTAMP, BaseColumns._ID };
 		
+		Log.d( TAG, "start read db" );
 		mDbDataList = DatabaseSession.getInstance().loadFavoriteRecords( columns, "timestamp desc" );
+		Log.d( TAG, "end read db" );
 		getAdapterDataList();
 	}
 	

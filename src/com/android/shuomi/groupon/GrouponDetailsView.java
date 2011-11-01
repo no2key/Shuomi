@@ -114,7 +114,9 @@ public class GrouponDetailsView extends NetworkRequestLayout {
 	}
 	
 	private void onShare() {
-		showSharedByDialog();
+		//showSharedByDialog();
+		
+		sharedByEmail();
 		
 //		WindowManager wm = (WindowManager)getContext().getSystemService( "window" );  
 //		WindowManager.LayoutParams params = new WindowManager.LayoutParams();  

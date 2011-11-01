@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:weightSum="1"
     android:focusable="true"
-    android:focusableInTouchMode="true" >
+    android:focusableInTouchMode="true">
     
     <include 
         android:id="@+id/header_view"
@@ -16,11 +16,6 @@
 		android:id="@+id/empty_view_loading"
 		layout="@layout/empty_list_loading" />
     
-<!--     <RelativeLayout -->
-<!--         android:layout_width="fill_parent" -->
-<!--         android:layout_height="fill_parent" -->
-<!--         android:orientation="vertical"> -->
-        
     <ListView 
         android:id="@+id/list"        
         android:layout_width="fill_parent"

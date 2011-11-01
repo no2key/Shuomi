@@ -15,7 +15,7 @@
         
         <ImageView
         	android:id="@+id/demo_big_image"
-        	android:src="@drawable/unknown"
+        	android:src="@drawable/ic_pic_na"
         	android:layout_width="0px"
 			android:layout_weight="3" 
 	        android:layout_height="wrap_content"	        

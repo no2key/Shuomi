@@ -142,7 +142,7 @@ public abstract class MultiItemListLayout extends PullToRefreshListLayout {
 			
 			if ( items != null ) {
 				// the 1st field is for image URI
-				items[0] = new ListItemUnion( R.drawable.unknown, fields[0] );
+				items[0] = new ListItemUnion( R.drawable.ic_pic_na, fields[0] );
 				
 				for ( int i = 1; i < fields.length; i ++ ) {
 					items[i] = new ListItemUnion( fields[i] );

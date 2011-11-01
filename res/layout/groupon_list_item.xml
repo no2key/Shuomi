@@ -6,12 +6,13 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:id="@+id/groupon_list_item"
-    android:padding="2dip">
-    
+    android:padding="2dip"
+    android:background="@drawable/white_tile_bg">
+
     <ImageView
         android:layout_width="70px"
         android:layout_height="42px"
-        android:src="@drawable/unknown"
+        android:src="@drawable/ic_pic_na"
         android:padding="2dip"
         android:layout_marginRight="2dip"
         android:id="@+id/demo_image"
@@ -19,7 +20,6 @@
         android:gravity="center" 
         android:layout_gravity="center_vertical"
         android:background="@color/white">
-<!--         android:background="@drawable/image_bg"> -->
     </ImageView>
         
     <LinearLayout
@@ -39,7 +39,7 @@
                 android:layout_width="wrap_content"   
                 android:id="@+id/provider"
                 android:text="provider"
-                android:textSize="16dip"
+                android:textSize="18dip"
                 android:textColor="@color/blue"
                 android:paddingRight="3dip" >
             </TextView>
@@ -94,6 +94,7 @@
                 android:id="@+id/details"
                 android:text="Details......"
                 android:textSize="16dip"
+                android:textColor="@color/black"
                 android:paddingRight="3dip"
                 android:maxLines="3">
             </TextView>

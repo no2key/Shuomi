@@ -6,7 +6,8 @@
     android:layout_height="match_parent" 
     android:weightSum="1" 
     android:focusable="true"
-    android:focusableInTouchMode="true" >
+    android:focusableInTouchMode="true"
+    android:background="@drawable/view_bg" >
     
     <include 
         android:id="@+id/header_view"

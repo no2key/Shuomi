@@ -44,7 +44,8 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 	
 	private final String mTag = "tab";
 	private final int mTabLabels[] = { R.string.groupon_info, R.string.my_favourite, R.string.groupon_around, R.string.utility_list };
-	private final int mTabResIds[] = { R.id.tab1, R.id.tab2, R.id.tab3, R.id.tab4 };	
+	private final int mTabResIds[] = { R.id.tab1, R.id.tab2, R.id.tab3, R.id.tab4 };
+	private final int mTabIconIds[] = { R.drawable.tab_gift, R.drawable.tab_heart, R.drawable.tab_map, R.drawable.tab_toolbox };
 	private ViewFlipper[] mFlippers;
 	
 	private String mProvinceSelected = null;
@@ -74,8 +75,9 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
         
         for ( int i = 0; i < mTabLabels.length; i ++ ) {
         	mTabHost.addTab( mTabHost.newTabSpec( mTag + String.valueOf( i+1 ) )
-                   .setIndicator( getString( mTabLabels[i] ) ) 
+                   .setIndicator( getString( mTabLabels[i] ), getResources().getDrawable( mTabIconIds[i] ) ) 
                    .setContent( mTabResIds[i] ) );
+        		   
         }
         
         final TabWidget tabWidget = mTabHost.getTabWidget();
