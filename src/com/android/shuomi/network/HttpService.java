@@ -82,10 +82,12 @@ public class HttpService {
 		catch ( ClientProtocolException e ) {
 			mStatus = ERROR_PROTOCOL;
 			mBody = e.getMessage();
+			Log.d( "HttpService", mBody );
 		}
 		catch ( IOException e ) {
 			mStatus = ERROR_GENERIC;
 			mBody = e.getMessage();
+			Log.d( "HttpService", mBody );
 		}
 		
 		httpClient.getConnectionManager().shutdown();

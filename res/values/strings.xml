@@ -112,5 +112,6 @@
     <string name="express_query_result">快递查询结果</string>
     
     <string name="refresh_location">刷新位置</string>
-    
+	<string name="network_error">网络连接错误，请检查配置后重试。</string>
+	
 </resources>

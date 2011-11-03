@@ -34,16 +34,24 @@ public class EventIndicator {
     	Toast.makeText( context, prompt, Toast.LENGTH_SHORT ).show();
     }
     
-    static public void showAlert( Context context, int error, String message ) {
-    	AlertDialog.Builder builder = new AlertDialog.Builder( context );
+    static public void showAlert( Context context, int error, String message ) 
+    {
     	String prompt = message;
     	
-    	if ( prompt == null || prompt.length() == 0 ) {
+    	if ( !Util.isValid( prompt ) ) 
+    	{
     		prompt = context.getString( getResIdByError( error ) );
     	}
     	
+    	showAlert( context, prompt );
+    }
+    
+    static public void showAlert( Context context, String message ) 
+    {
+    	AlertDialog.Builder builder = new AlertDialog.Builder( context );
+
     	builder.setTitle( R.string.app_error )
-    		   .setMessage( prompt ) 
+    		   .setMessage( message ) 
     	       .setCancelable( false ) 
     	       .setPositiveButton( R.string.dlg_btn_ok, new DialogInterface.OnClickListener() { 
     	           public void onClick( DialogInterface dialog, int id ) { 

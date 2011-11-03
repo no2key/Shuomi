@@ -332,8 +332,12 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 	}
 
 	@Override
-	public void onNegativeResponse( int error, String message ) {
-		// TODO Auto-generated method stub		
+	public void onNegativeResponse( int error, String message ) 
+	{
+		if ( error < 0 )
+		{
+			EventIndicator.showAlert( this, getString( R.string.network_error ) );
+		}
 	}
 	
 	private void updateView( ResponseIntent response ) {
