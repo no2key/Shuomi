@@ -9,10 +9,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Shader.TileMode;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.util.Log;
 import android.view.Gravity;
@@ -45,12 +41,6 @@ public class ShopListView extends LinearLayout {
 		inflateLayout();
 		mDataList = list;
 		fillList();
-		
-		Bitmap bmp = BitmapFactory.decodeResource( getResources(), R.drawable.cell_bg_1 );
-	    BitmapDrawable bitmapDrawable = new BitmapDrawable( bmp );
-	    bitmapDrawable.setTileModeXY( TileMode.REPEAT, TileMode.REPEAT );
-	    //LinearLayout layout = new LinearLayout(this);
-	    this.setBackgroundDrawable( bitmapDrawable );
 	}
 	
 	private void inflateLayout() {

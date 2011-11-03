@@ -51,6 +51,7 @@ public class EventIndicator {
     	AlertDialog.Builder builder = new AlertDialog.Builder( context );
 
     	builder.setTitle( R.string.app_error )
+    		   .setIcon( android.R.drawable.ic_dialog_alert )
     		   .setMessage( message ) 
     	       .setCancelable( false ) 
     	       .setPositiveButton( R.string.dlg_btn_ok, new DialogInterface.OnClickListener() { 
