@@ -83,7 +83,7 @@ public class NetworkService extends Service {
 				
 				if ( Util.isValid( response.getString( PARAM.HTTP_RSP.BODY ) ) ) {
 					Log.d( "NetworkService",  "STATUS: " + response.getInt( PARAM.HTTP_RSP.STATUS ) );
-					Log.d( "NetworkService",  response.getString( PARAM.HTTP_RSP.BODY ) );
+					//Log.d( "NetworkService",  response.getString( PARAM.HTTP_RSP.BODY ) );
 				}
 				
 				notifyResponseObservers( response );

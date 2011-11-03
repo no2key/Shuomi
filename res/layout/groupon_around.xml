@@ -14,7 +14,7 @@
 	    android:layout_width="fill_parent"
 	    android:layout_height="fill_parent"
 	    android:clickable="true"
-	    android:apiKey="0Koa7aqoqutAFoJS1TOavi4g5KlhueDf7TB_Upg"/>
+	    android:apiKey="0Koa7aqoqutDk-VBGD_sklXePbWaQBoCQCKbucQ"/>
 	    
 <!-- 	android:apiKey="0Koa7aqoqutAFoJS1TOavi4g5KlhueDf7TB_Upg" the key for the release certificate  -->
 <!-- 	android:apiKey="0Koa7aqoqutAz5qyhGYe5A8xDYsKgYf5NR8ruzw" the key on home desktop ubuntu  -->

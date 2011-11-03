@@ -7,7 +7,7 @@ import com.android.shuomi.util.Util;
 import android.content.Context;
 import android.os.Bundle;
 
-public class GrouponListView extends MultiItemListLayout {
+public class GrouponListView extends MultiPageListLayout {
 
 	private String mReqAction = REQUEST.LIST_GROUPON;
 	private Bundle mBundle = null;

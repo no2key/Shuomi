@@ -131,6 +131,7 @@ public class GrouponDetailsView extends NetworkRequestLayout {
 //		wm.addView( shareView, params );
 	}
 	
+	@SuppressWarnings("unused")
 	private void showSharedByDialog() {
 		LayoutInflater inflater = LayoutInflater.from( getContext() );
 		View shareView = inflater.inflate( R.layout.groupon_share_view, null );
@@ -286,16 +287,20 @@ public class GrouponDetailsView extends NetworkRequestLayout {
 		Drawable drawable = mImageLoader.loadDrawable( uri, new ImageCallback() {
 
 			public void imageLoaded( Drawable imageDrawable, String imageUrl ) {
-				Bitmap bitmap = ImageScaler.drawableToBitmap( imageDrawable );
-				int height = bitmap.getHeight();
-				int width = bitmap.getWidth();
-				Log.d( TAG,  "bitmap " + width + ", " + height );
-				int expectedWidth = image.getWidth();
-				int expectedHeight = height * expectedWidth / width;
-				Log.d( TAG,  "expected " + expectedWidth + ", " + expectedHeight );
-				Drawable newImageDrawable = ImageScaler.scaleDrawable( bitmap, expectedWidth, expectedHeight );
-				image.setImageDrawable( newImageDrawable );
+				
+//				Bitmap bitmap = ImageScaler.drawableToBitmap( imageDrawable );
+//				int height = bitmap.getHeight();
+//				int width = bitmap.getWidth();
+//				Log.d( TAG,  "bitmap " + width + ", " + height );
+//				int expectedWidth = image.getWidth();
+//				int expectedHeight = height * expectedWidth / width;
+//				Log.d( TAG,  "expected " + expectedWidth + ", " + expectedHeight );
+//				Drawable newImageDrawable = ImageScaler.scaleDrawable( bitmap, expectedWidth, expectedHeight );
+//				image.setImageDrawable( newImageDrawable );
+				
 				//switchView();
+				
+				image.setImageDrawable( imageDrawable );
 			}
 		});
 	}

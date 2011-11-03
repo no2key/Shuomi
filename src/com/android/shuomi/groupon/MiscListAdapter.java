@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.android.shuomi.R;
 import com.android.shuomi.groupon.AsyncImageLoader.ImageCallback;
 import com.android.shuomi.util.Util;
 
@@ -14,17 +15,23 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.TextView;
 
-public class MiscListAdapter extends ArrayAdapter<ListItemUnion[]> {
+public class MiscListAdapter extends ArrayAdapter<ListItemUnion[]> 
+{
 	private AsyncImageLoader mImageLoader = new AsyncImageLoader();
 	private Map<Integer, View> mViewMap = new HashMap<Integer, View>();
 	private int[] mTitleResIds;
 	private String[] mTitleLabelStrings;
 	private int[] mItemFieldsResId;
 	private int mResource;
+	
+	private Animation mRotateAnimation= AnimationUtils.loadAnimation( this.getContext(), R.anim.no_image_rotate );
 	
 	public MiscListAdapter( Context context, int resource, List<ListItemUnion[]> itemList,
 			int[] titleResIds, String[] titleLabelStrings, int[] itemFieldsResId ) {
@@ -79,36 +86,50 @@ public class MiscListAdapter extends ArrayAdapter<ListItemUnion[]> {
 		}
 	}
 	
-	private void setImageViewData( View parent, int imageViewResId, DyncImage image ) {
-		if ( parent != null && image != null && imageViewResId != 0 ) {
-			try {
+	private void setImageViewData( View parent, int imageViewResId, DyncImage image ) 
+	{
+		if ( parent != null && image != null && imageViewResId != 0 ) 
+		{
+			try 
+			{
 				final ImageView imageView = ( ImageView ) parent.findViewById( imageViewResId );
 				
-				if ( imageView != null ) {
-					Drawable drawable = mImageLoader.loadDrawable( image.getUrl(), new ImageCallback() {
-
-						public void imageLoaded( Drawable imageDrawable, String imageUrl ) {
+				if ( imageView != null ) 
+				{
+					Drawable drawable = mImageLoader.loadDrawable( image.getUrl(), new ImageCallback() 
+					{
+						public void imageLoaded( Drawable imageDrawable, String imageUrl ) 
+						{
+							imageView.clearAnimation();
 							imageView.setImageDrawable( imageDrawable );
+							imageView.setScaleType(  ScaleType.FIT_CENTER );
 						}
 					});
 					
-					if ( drawable == null ) {
+					if ( drawable == null ) 
+					{
 						imageView.setImageResource( image.getResourceId() );
+						imageView.startAnimation( mRotateAnimation );
 					}
 				}
 			}
-			catch( ClassCastException e ) {
+			catch( ClassCastException e ) 
+			{
 				Log.e( "MiscListAdapter", e.getMessage() );
 			}
 		}
 	}
 	
-	private void setItems( View rowView, int[] itemFieldsResId, ListItemUnion[] items ) {
-		if ( rowView != null && itemFieldsResId != null && items != null ) {
+	private void setItems( View rowView, int[] itemFieldsResId, ListItemUnion[] items ) 
+	{
+		if ( rowView != null && itemFieldsResId != null && items != null ) 
+		{
 			int length = Util.min( itemFieldsResId.length, items.length );
 			
-			for ( int i = 0; i < length; i ++ ) {
-				switch ( items[i].getType() ) {
+			for ( int i = 0; i < length; i ++ ) 
+			{
+				switch ( items[i].getType() ) 
+				{
 				case ListItemUnion.IMAGE:
 					setImageViewData( rowView, itemFieldsResId[i], items[i].getDyncImage()  );
 					break;

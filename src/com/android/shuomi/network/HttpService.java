@@ -190,7 +190,7 @@ public class HttpService {
 				int last;
 				for ( last = total-1; last > -1 && ( recvBuf[last] > 127 || recvBuf[last] < 0 ); last -- );
 				
-				String chunk = new String( recvBuf, 0, last + 1, "utf-8" );				
+				String chunk = new String( recvBuf, 0, last + 1, "utf-8" );
 				s.append( chunk );
 				
 				total = total - last - 1;
@@ -219,6 +219,7 @@ public class HttpService {
 			InputStream is = entity.getContent();
 
 			content = getEntityText( is );
+			content.trim();
 			Log.d( "HttpService", "content len: " + content.length() );
 			
 			byte[] contentbyte = content.getBytes();

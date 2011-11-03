@@ -45,15 +45,15 @@ public class AsyncImageLoader {
 		return null;
 	}
 	
-	protected Drawable loadImageFromUrl( String imageUrl ) {
+	protected Drawable loadImageFromUrl( String imageUrl ) 
+	{
 		Drawable image = null;
-		try {
+		try 
+		{
 			image = Drawable.createFromStream( new URL(imageUrl).openStream(), "src" );
-			//Log.d( String.valueOf( image.getBounds().width() ), String.valueOf( image.getBounds().height() ) );
-			//ScaleDrawable scaleImage = new ScaleDrawable( image, Gravity.CENTER, 0.25f, 0.25f );
-			//image = scaleImage.getDrawable();
 		}
-		catch ( Exception e ) {
+		catch ( Exception e ) 
+		{
 			Log.w( "AsyncImageLoader", e.getMessage() );
 		}
 		

@@ -27,9 +27,9 @@ public abstract class PullToRefreshListLayout extends ListLayout {
 	private final String TAG = " PullToRefreshListLayout";
 	protected Bundle mBundle = null;
 	
-	private View mFooter = null;
-	private LinearLayout mFooterInnerView = null;
-	private int mFooterInnerViewHeight = 0;
+//	private View mFooter = null;
+//	private LinearLayout mFooterInnerView = null;
+//	private int mFooterInnerViewHeight = 0;
 	
 	private View mHeader = null;
 	private LinearLayout mHeaderInnerView = null;
@@ -62,7 +62,7 @@ public abstract class PullToRefreshListLayout extends ListLayout {
 		super( context );
 		
 		LayoutInflater layoutInflater = ( LayoutInflater )getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-		setupFooterView( layoutInflater );
+		//setupFooterView( layoutInflater );
 		setupHeaderView( layoutInflater );
 		
 		setRefreshState( TAP_TO_REFRESH );
@@ -171,28 +171,28 @@ public abstract class PullToRefreshListLayout extends ListLayout {
         }
 	}
 	
-	protected View getFooterView() {
-		return mFooter;
-	}
+//	protected View getFooterView() {
+//		return mFooter;
+//	}
 	
-	private void setupFooterView( LayoutInflater inflater ) {
-		mFooter = inflater.inflate( R.layout.list_loading_footer, getList(), false );
-		
-		mFooterInnerView = (LinearLayout) mFooter.findViewById( R.id.loading_more );
-		mFooterInnerViewHeight = mFooterInnerView.getLayoutParams().height;
-
-		enableFooterView( false );		
-		getList().addFooterView( mFooter );
-	}
+//	private void setupFooterView( LayoutInflater inflater ) {
+//		mFooter = inflater.inflate( R.layout.list_loading_footer, getList(), false );
+//		
+//		mFooterInnerView = (LinearLayout) mFooter.findViewById( R.id.loading_more );
+//		mFooterInnerViewHeight = mFooterInnerView.getLayoutParams().height;
+//
+//		enableFooterView( false );		
+//		getList().addFooterView( mFooter );
+//	}
 	
-	protected void enableFooterView( boolean enable ) {
-		mFooterInnerView.getLayoutParams().height = enable ? mFooterInnerViewHeight : 0;
-		mFooter.setVisibility( enable ? View.VISIBLE : View.GONE );
-		
-		if ( enable ) {
-			getList().setSelection( getList().getCount() - 1 );
-		}
-	}
+//	protected void enableFooterView( boolean enable ) {
+//		mFooterInnerView.getLayoutParams().height = enable ? mFooterInnerViewHeight : 0;
+//		mFooter.setVisibility( enable ? View.VISIBLE : View.GONE );
+//		
+//		if ( enable ) {
+//			getList().setSelection( getList().getCount() - 1 );
+//		}
+//	}
 	
 	private void resetHeader() {
         if ( mRefreshState != TAP_TO_REFRESH ) {
@@ -320,7 +320,7 @@ public abstract class PullToRefreshListLayout extends ListLayout {
 						
 						if ( reachBottom( view ) ) {
 							Log.v( TAG, "reach the bottom" );
-							onReachLastItem();
+							//onReachLastItem();
 						}
 						
 						break;
@@ -366,7 +366,7 @@ public abstract class PullToRefreshListLayout extends ListLayout {
 		                }
 		            	if ( reachBottom( getList() ) ) {
 							Log.v( TAG, "reach the bottom 1" );
-							onReachLastItem();
+							//onReachLastItem();
 						}
 		            	mLastMotionY = y;
 		                break;
@@ -445,10 +445,10 @@ public abstract class PullToRefreshListLayout extends ListLayout {
 		//enableHeaderView( true );
 	}
 	
-	private void onReachLastItem() {
-		enableFooterView( true );
-		requestGrouponList( mBundle );
-	}
+//	private void onReachLastItem() {
+//		enableFooterView( true );
+//		requestGrouponList( mBundle );
+//	}
 
 	private void setRefreshState( int state ) {
 		String[] status = { "NULL", "TAP_TO_REFRESH", "PULL_TO_REFRESH", "RELEASE_TO_REFRESH", "REFRESHING" };

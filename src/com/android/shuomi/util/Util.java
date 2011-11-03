@@ -8,7 +8,7 @@ public class Util {
 		return ( string != null && string.length() > 0 );
 	}
 	
-	public static boolean isValid( String[] array ) {
+	public static boolean isValid( Object[] array ) {
 		return ( array != null && array.length > 0 );
 	}
 	

@@ -9,23 +9,38 @@
     android:padding="2dip"
     android:background="@drawable/white_tile_bg">
 
-    <ImageView
-        android:layout_width="70px"
-        android:layout_height="42px"
-        android:src="@drawable/ic_pic_na"
-        android:padding="2dip"
-        android:layout_marginRight="2dip"
-        android:id="@+id/demo_image"
-        android:scaleType="fitXY"
-        android:gravity="center" 
-        android:layout_gravity="center_vertical"
-        android:background="@color/white">
-    </ImageView>
+	<LinearLayout
+        android:orientation="vertical"  
+        android:layout_width="0dip"
+        android:layout_height="fill_parent"
+        android:layout_weight="6"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:paddingBottom="1dip" >
+        
+	    <ImageView
+	    	android:id="@+id/demo_image"
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:padding="1dip"
+	        android:layout_marginRight="2dip"
+
+	        android:scaleType="centerInside"
+	        android:layout_gravity="center_vertical|center_horizontal">
+<!-- 	        android:src="@drawable/spinner_black_16"	         -->
+<!-- 	        android:gravity="center_horizontal" -->
+<!-- 	        android:background="@color/lightgrey" -->
+<!-- 	        android:background="@color/white"> -->
+<!-- 	        android:padding="2dip" -->
+<!-- 	        android:layout_marginRight="2dip" -->
+	    </ImageView>
+    
+    </LinearLayout>
         
     <LinearLayout
         android:orientation="vertical"  
-        android:layout_width="fill_parent"
+        android:layout_width="0dip"
         android:layout_height="wrap_content"
+        android:layout_weight="14"
         android:paddingBottom="1dip" >
         
         <LinearLayout

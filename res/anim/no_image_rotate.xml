@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+	android:interpolator="@android:anim/linear_interpolator">
+	<!-- 
+		fromDegrees 开始角度
+		toDegrees 结束角度
+		pivotX   
+		pivotY
+		50 绝对定位 Animation.ABSOLUTE
+		50% 相对于控件本身定位 Animation.RELATIVE_TO_SELF
+		50%p 相对于父控件定位 Animation.RELATIVE_TO_PARENT   
+		duration 执行时间
+	 -->
+	<rotate
+		android:interpolator="@android:anim/linear_interpolator"
+		android:fromDegrees="0"
+		android:toDegrees="+360"
+		android:pivotX="50%p"
+		android:pivotY="50%p"
+		android:duration="3000"
+		android:repeatMode="restart"
+        android:repeatCount="-1"/>
+		
+</set>

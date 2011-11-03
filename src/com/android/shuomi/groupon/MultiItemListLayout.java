@@ -4,28 +4,20 @@ import java.util.ArrayList;
 
 import com.android.shuomi.R;
 import com.android.shuomi.ServiceListView;
-import com.android.shuomi.intent.GrouponListRequestIntent;
-import com.android.shuomi.intent.REQUEST;
 import com.android.shuomi.intent.RESPONSE;
-import com.android.shuomi.parser.ResponseParser;
 import com.android.shuomi.util.Util;
 
 import android.content.Context;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.BaseAdapter;
 
 
-public abstract class MultiItemListLayout extends PullToRefreshListLayout {
+public abstract class MultiItemListLayout extends ListLayout {
 
-	private final String TAG = " MultiItemLayout ";
+	//private final String TAG = " MultiItemLayout ";
 	private final int[] mItemFieldResIds = { R.id.demo_image, R.id.provider, R.id.discount, R.id.price, R.id.details };
 	private final int mItemResId = R.layout.groupon_list_item;
 	
-	private boolean mLoadingInProgress = false;
-	private int mDesiredPage = 1;
-	private int mTotalPage = 1;
 	private ArrayList<ListItemUnion[]> mDataList = null;
 	private BaseAdapter mAdapter = null;
 	
@@ -33,84 +25,49 @@ public abstract class MultiItemListLayout extends PullToRefreshListLayout {
 		super( context );
 	}
 	
-	private void switchView() {
-		findViewById( R.id.empty_view_loading ).setVisibility( View.GONE );
-		getList().setVisibility( View.VISIBLE );
-	}
-	
 	@Override
-	protected void onItemSingleClick( View view, int position, long rowId ) {
-		if ( mAdapter != null ) {
+	protected void onItemSingleClick( View view, int position, long rowId ) 
+	{
+		if ( mAdapter != null && position - getList().getHeaderViewsCount() < mAdapter.getCount() )
+		{
 			ListItemUnion[] item = (ListItemUnion[]) mAdapter.getItem( position - getList().getHeaderViewsCount() );
-			String id = item[item.length-1].getString();
-			Log.d( TAG, "click, pos = " + position );
-			Log.d( TAG, "click, id = " + id );
-			( ( ServiceListView ) getContext() ).goToNextView
-				( new GrouponDetailsView( getContext(), id, RESPONSE.HTTP_RESPONSE_GROUPON ) );
-		}
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public void update( String requestAction, int dataType, Object data, int pageCount ) {
-		
-		if ( requestAction.equals( getRequestAction() ) ) {
-			switchView();
 			
-			switch ( dataType ) {
-			
-			case ResponseParser.TYPE_ARRAY_LIST:
-				mLoadingInProgress = false;
-				updatePage( pageCount );
-				updateMultiPageList( pageCount, ( ArrayList<String[]> ) data );
-				setFooterOnResponse();
-				break;
-				
-			default:
-				break;
+			if ( Util.isValid( item ) )
+			{
+				String id = item[item.length-1].getString();
+				( ( ServiceListView ) getContext() ).goToNextView
+					( new GrouponDetailsView( getContext(), id, RESPONSE.HTTP_RESPONSE_GROUPON ) );
 			}
 		}
 	}
 	
-	private void setFooterOnResponse() {
-		if ( mDesiredPage == mTotalPage  ) {
-			getList().removeFooterView( getFooterView() );
-		}
-		else {
-			enableFooterView( false );
-		}
-	}
-	
-	protected void updatePage( int totalPage ) {
-		mTotalPage = totalPage;
-		mDesiredPage ++;
-	}
-	
-	protected void updateMultiPageList( int page, ArrayList<String[]> itemList ) {
-		if ( itemList != null ) {
-			if ( mDataList == null ) {
+	protected void appendListItems( ArrayList<String[]> itemList )
+	{
+		if ( itemList != null ) 
+		{
+			if ( mDataList == null ) 
+			{
 				mDataList = new ArrayList<ListItemUnion[]>();
 			}
 			
 			appendToDataList( itemList );
 			
-			if ( mAdapter == null ) {
-				mAdapter = new MiscListAdapter( getContext(), mItemResId, mDataList, 
-			    		null, null, mItemFieldResIds );
+			if ( mAdapter == null ) 
+			{
+				mAdapter = new MiscListAdapter( getContext(), mItemResId, mDataList, null, null, mItemFieldResIds );
 				getList().setAdapter( mAdapter );
-				
-				// TODO: to be checked
-				//getList().setSelection( getList().getHeaderViewsCount() );
-				setSelectionOnTop();
 			}
 			
 			mAdapter.notifyDataSetChanged();
 		}
 	}
 	
-	private void appendToDataList( ArrayList<String[]> fieldsList ) {
-		if ( mDataList != null && fieldsList != null ) {
-			for ( int i = 0; i < fieldsList.size(); i ++ ) {
+	private void appendToDataList( ArrayList<String[]> fieldsList ) 
+	{
+		if ( mDataList != null && fieldsList != null ) 
+		{
+			for ( int i = 0; i < fieldsList.size(); i ++ ) 
+			{
 				String[] fields = fieldsList.get( i );
 				fields = convertFields( fields );
 				ListItemUnion[] items = getListItemUnion( fields );
@@ -123,10 +80,12 @@ public abstract class MultiItemListLayout extends PullToRefreshListLayout {
 	{		
 		String discount = Util.getDiscount( fields[3] , fields[2] );
 		
-		if ( Util.isValid( discount ) ) {
+		if ( Util.isValid( discount ) ) 
+		{
 			fields[2] = discount + getContext().getString( R.string.discount_symbol );
 		}
-		else {
+		else 
+		{
 			fields[2] = "";
 		}
 		
@@ -135,40 +94,27 @@ public abstract class MultiItemListLayout extends PullToRefreshListLayout {
 		return fields;
 	}
 	
-	private ListItemUnion[] getListItemUnion( String[] fields ) {
+	private ListItemUnion[] getListItemUnion( String[] fields ) 
+	{
 		ListItemUnion[] items = null;
-		if ( fields != null && fields.length > 0 ) {
+		
+		if ( Util.isValid( fields ) ) 
+		{
 			items = new ListItemUnion[ fields.length ];
 			
-			if ( items != null ) {
+			if ( items != null ) 
+			{
 				// the 1st field is for image URI
-				items[0] = new ListItemUnion( R.drawable.ic_pic_na, fields[0] );
+				items[0] = new ListItemUnion( R.drawable.spinner_black_16, fields[0] );
 				
-				for ( int i = 1; i < fields.length; i ++ ) {
+				for ( int i = 1; i < fields.length; i ++ ) 
+				{
 					items[i] = new ListItemUnion( fields[i] );
 				}
 			}
 		}
 		
 		return items;
-	}
-	
-	protected void requestGrouponList( Bundle bundle ) {
-		mBundle = bundle;
-		Log.d( "MultiItemListLayout", "Desired page = " + String.valueOf( mDesiredPage ) + ", Total page = " + String.valueOf( mTotalPage ) );
-		
-		if ( mDesiredPage <= mTotalPage && !mLoadingInProgress ) {
-			sendGrouponListRequest( bundle );
-			mLoadingInProgress = true;
-		}
-	}
-	
-	private void sendGrouponListRequest( Bundle bundle ) {
-		bundle.putInt( REQUEST.PARAM_PAGE, mDesiredPage );
-		GrouponListRequestIntent request = new GrouponListRequestIntent();
-		request.setSourceClass( getClass().getName() );
-		request.putExtras( bundle );
-		sendRequest( request );
 	}
 	
 	protected BaseAdapter getAdapter() {

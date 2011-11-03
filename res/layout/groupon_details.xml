@@ -18,14 +18,16 @@
         	android:src="@drawable/ic_pic_na"
         	android:layout_width="0px"
 			android:layout_weight="3" 
-	        android:layout_height="wrap_content"	        
-	        android:padding="2dip"
+	        android:layout_height="fill_parent"	        
+	        android:padding="1dip"
 	        android:layout_marginTop="2dip"
-	        android:layout_marginLeft="5dip"
+	        android:layout_marginLeft="2dip"
 	        android:layout_marginRight="2dip"
+	        android:layout_marginBottom="2dip"
 	        android:adjustViewBounds="true"
-	        android:gravity="center" 
-	        android:layout_gravity="center_vertical"
+	        android:gravity="center"
+	        android:scaleType="fitCenter"
+	        android:layout_gravity="center_vertical|center_horizontal"
 	        android:background="@color/white">
 	    </ImageView>
        
