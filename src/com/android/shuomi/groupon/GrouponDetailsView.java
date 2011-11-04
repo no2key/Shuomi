@@ -2,7 +2,6 @@ package com.android.shuomi.groupon;
 
 import java.util.ArrayList;
 
-import com.android.shuomi.ImageScaler;
 import com.android.shuomi.NetworkRequestLayout;
 import com.android.shuomi.R;
 import com.android.shuomi.groupon.AsyncImageLoader.ImageCallback;
@@ -21,7 +20,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.Log;
@@ -281,25 +279,12 @@ public class GrouponDetailsView extends NetworkRequestLayout {
 	
 	private void setBigImage( String uri ) {
 		final ImageView image = (ImageView) findViewById( R.id.demo_big_image );
-		Log.d( TAG, "dim = " + image.getWidth() + "," + image.getHeight() );
 		
 		@SuppressWarnings("unused")
 		Drawable drawable = mImageLoader.loadDrawable( uri, new ImageCallback() {
 
-			public void imageLoaded( Drawable imageDrawable, String imageUrl ) {
-				
-//				Bitmap bitmap = ImageScaler.drawableToBitmap( imageDrawable );
-//				int height = bitmap.getHeight();
-//				int width = bitmap.getWidth();
-//				Log.d( TAG,  "bitmap " + width + ", " + height );
-//				int expectedWidth = image.getWidth();
-//				int expectedHeight = height * expectedWidth / width;
-//				Log.d( TAG,  "expected " + expectedWidth + ", " + expectedHeight );
-//				Drawable newImageDrawable = ImageScaler.scaleDrawable( bitmap, expectedWidth, expectedHeight );
-//				image.setImageDrawable( newImageDrawable );
-				
-				//switchView();
-				
+			public void imageLoaded( Drawable imageDrawable, String imageUrl ) 
+			{
 				image.setImageDrawable( imageDrawable );
 			}
 		});

@@ -31,6 +31,7 @@ public class DatabaseSession {
 	
 	private ServiceDb mDatabase = null;
 	static final private String TABLE_FAVORITE = "TAB_FAVORITE";
+	static final private String TABLE_IMAGECACHE = "TABLE_IMAGECACHE";
 	
 	public DatabaseSession( Context context ) {
 		mDatabase = new ServiceDb( context );
