@@ -12,6 +12,7 @@ import com.android.shuomi.intent.RESPONSE;
 import com.android.shuomi.parser.ResponseParser;
 import com.android.shuomi.parser.ShopListParser;
 import com.android.shuomi.persistence.DatabaseSession;
+import com.android.shuomi.persistence.FavoriteDbSession;
 import com.android.shuomi.util.EventIndicator;
 import com.android.shuomi.util.Util;
 import com.android.shuomi.ServiceListView;
@@ -86,7 +87,7 @@ public class GrouponDetailsView extends NetworkRequestLayout {
 	}
 	
 	private void onAddToFavorite() {
-		if ( !DatabaseSession.getInstance().isRecordExisted( RESPONSE.PARAM_ID, mFields[6] ) ) 
+		if ( !((FavoriteDbSession) DatabaseSession.getInstance()).isRecordExisted( RESPONSE.PARAM_ID, mFields[6] ) ) 
 		{
 			sendRequest( new GrouponFavoriteRequestIntent( getClass().getName(), mItemId ) );
 			saveToDb();
@@ -108,7 +109,7 @@ public class GrouponDetailsView extends NetworkRequestLayout {
 				RESPONSE.PARAM_TIMESTAMP };
 		
 		mFields[ mFields.length-1 ] = String.valueOf( System.currentTimeMillis() );
-		DatabaseSession.getInstance().saveFavoriteRecord( columns, mFields );
+		((FavoriteDbSession) DatabaseSession.getInstance()).saveFavoriteRecord( columns, mFields );
 	}
 	
 	private void onShare() {

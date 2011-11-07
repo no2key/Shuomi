@@ -10,6 +10,7 @@ import com.android.shuomi.ServiceListView;
 import com.android.shuomi.UI;
 import com.android.shuomi.intent.RESPONSE;
 import com.android.shuomi.persistence.DatabaseSession;
+import com.android.shuomi.persistence.FavoriteDbSession;
 import com.android.shuomi.util.Util;
 
 import android.app.AlertDialog;
@@ -97,7 +98,7 @@ public class FavoritesListView extends LinearLayout {
 				RESPONSE.PARAM_TIMESTAMP, BaseColumns._ID };
 		
 		Log.d( TAG, "start read db" );
-		mDbDataList = DatabaseSession.getInstance().loadFavoriteRecords( columns, "timestamp desc" );
+		mDbDataList = ((FavoriteDbSession) FavoriteDbSession.getInstance()).loadFavoriteRecords( columns, "timestamp desc" );
 		Log.d( TAG, "end read db" );
 		getAdapterDataList();
 	}
@@ -127,7 +128,7 @@ public class FavoritesListView extends LinearLayout {
 	}
 	
 	private void registerDbRecordAdded( Observer observer ) {
-		DatabaseSession.getInstance().registerRecordAddObserver( observer );
+		((FavoriteDbSession) DatabaseSession.getInstance()).registerRecordAddObserver( observer );
 	}
 	
 	private void registerItemClickListener() {
@@ -182,7 +183,7 @@ public class FavoritesListView extends LinearLayout {
 	private void removeListItem( int position ) 
 	{
 		String dbId = mDbDataList.get( position )[10];
-		DatabaseSession.getInstance().deleteFavoriteRecord( BaseColumns._ID, dbId );
+		((FavoriteDbSession) DatabaseSession.getInstance()).deleteFavoriteRecord( BaseColumns._ID, dbId );
 		
 		if ( mItemDataList != null && mItemDataList.size() > position ) {
 			mItemDataList.remove( position );

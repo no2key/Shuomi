@@ -3,6 +3,8 @@ package com.android.shuomi.persistence;
 import java.util.ArrayList;
 import java.util.Observer;
 
+import com.android.shuomi.util.Util;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -342,6 +344,36 @@ public class ServiceDb extends SQLiteOpenHelper {
 			SQLiteDatabase db = getWritableDatabase();
 			int count = db.delete( table, key + "=?", new String[] { value } );
 			result = ( count > 0 );		
+		}
+		
+		return result;
+	}
+	
+	public String getOldestRecord( String table, String key )
+	{
+		String value = null;
+		
+		SQLiteDatabase db = getWritableDatabase();
+		
+		Cursor cursor = db.query( table , new String[] { key }, null, null, null, null, key, "1" );
+
+		if ( cursor != null && cursor.getCount() > 0 )
+		{
+			value = cursor.getString( 0 );
+			cursor.close();
+		}
+		
+		return value;
+	}
+	
+	public boolean deleteOldestRecord( String table, String key )
+	{
+		boolean result = false;
+		String value = getOldestRecord( table, key );
+		
+		if ( Util.isValid( value ) )
+		{
+			result = deleteRecord( table, key, value );
 		}
 		
 		return result;

@@ -1,6 +1,7 @@
 package com.android.shuomi.groupon;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -70,7 +71,7 @@ public class AsyncImageLoader {
 		return image;
 	}
 	
-	private void readCacheImage()
+	private Drawable readCacheImage( String file )
 	{
 //		File file = new File
 //		   InputStream in = null;
@@ -83,6 +84,20 @@ public class AsyncImageLoader {
 //		     }
 //		   }
 //		 }
+		Drawable image = null;
+		
+		try 
+		{
+			InputStream imageStream = ServiceListView.gContext.openFileInput( file );
+			image = Drawable.createFromStream( imageStream, "src" );			
+		} 
+		catch (FileNotFoundException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return image;
 	}
 	
 	private void cacheImage( InputStream is )
