@@ -1,10 +1,5 @@
 package com.android.shuomi.groupon;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.SoftReference;
 import java.net.URL;
@@ -12,9 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.android.shuomi.ServiceListView;
-import com.android.shuomi.StreamReader;
 
-import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
@@ -60,71 +53,24 @@ public class AsyncImageLoader {
 		Drawable image = null;
 		try 
 		{
-			InputStream imageStream = new URL(imageUrl).openStream();
-			image = Drawable.createFromStream( imageStream, "src" );
+			image = ImageCache.loadImage( ServiceListView.gContext, imageUrl );
+			
+			if ( image == null )
+			{
+				InputStream imageStream = new URL( imageUrl ).openStream();
+				image = Drawable.createFromStream( imageStream, "src" );
+				ImageCache.saveImage( ServiceListView.gContext, imageStream, imageUrl );
+			}
 		}
 		catch ( Exception e ) 
 		{
-			Log.w( "AsyncImageLoader", e.getMessage() );
+			Log.e( "AsyncImageLoader", "loadImageFromUrl: " + e.getMessage() );
 		}
 		
 		return image;
 	}
 	
-	private Drawable readCacheImage( String file )
-	{
-//		File file = new File
-//		   InputStream in = null;
-//		   try {
-//		     in = new BufferedInputStream(new FileInputStream(file));
-//		     ...
-//		    finally {
-//		     if (in != null) {
-//		       in.close();
-//		     }
-//		   }
-//		 }
-		Drawable image = null;
-		
-		try 
-		{
-			InputStream imageStream = ServiceListView.gContext.openFileInput( file );
-			image = Drawable.createFromStream( imageStream, "src" );			
-		} 
-		catch (FileNotFoundException e) 
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return image;
-	}
 	
-	private void cacheImage( InputStream is )
-	{
-		StreamReader reader = new StreamReader( is, 0 );
-		
-		if ( reader.size() > 0 )
-		{
-			FileOutputStream fos;
-			try 
-			{
-				fos = ServiceListView.gContext.openFileOutput( String.valueOf( System.currentTimeMillis() ), Context.MODE_PRIVATE );
-				fos.write( reader.getString().getBytes() ); 
-				fos.close();
-			}				
-			catch ( FileNotFoundException e ) 
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			catch (IOException e) 
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} 
-		}
-	}
 
 	public interface ImageCallback {
 		public void imageLoaded( Drawable imageDrawable, String imageUrl );

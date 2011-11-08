@@ -2,21 +2,72 @@ package com.android.shuomi.persistence;
 
 import com.android.shuomi.util.Util;
 
-import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 public class ImageCacheDbSession extends DatabaseSession {
 
+	static final private String TAG = "ImageCacheDbSession";
 	static final private String TABLE_IMAGECACHE = "TABLE_IMAGECACHE";
 	static final private String IMAGECACHE_COLUMNS[] = { "URI", "FILE_NAME" };
 	static final private int IMAGECACHE_MAX_ROW = 100;
-
-	public ImageCacheDbSession(Context context) {
-		super(context);
-		// TODO Auto-generated constructor stub
+	
+	static private ImageCacheDbSession mThis = null;
+	
+	static public ImageCacheDbSession create() 
+	{
+		if ( mThis == null ) 
+		{
+			mThis = new ImageCacheDbSession();
+		}
+		
+		return mThis;
+	}
+	
+	static public ImageCacheDbSession getInstance() 
+	{
+		if ( mThis == null ) 
+		{
+			mThis = new ImageCacheDbSession();
+		}
+		
+		return mThis;
 	}
 
+	public ImageCacheDbSession() {
+		
+	}
+
+	public String getFileName( String uri )
+	{
+		Log.w( TAG, "getFileName uri: " + uri );
+		Log.w( TAG, "getFileName mDatabase: " + mDatabase.toString() );
+		
+		SQLiteDatabase db = mDatabase.getReadableDatabase();
+		Log.w( TAG, "getFileName db: " + db.toString() );
+		
+		Cursor cursor = db.query( TABLE_IMAGECACHE, new String[]{ "FILENAME" }, "URI=?", new String[] { uri }, null, null, null );
+		String file = null;
+		
+		if ( cursor != null && cursor.getCount() > 0 )
+		{
+			file = cursor.getString( 0 );
+		}
+		else 
+		{
+			Log.w( TAG, "get NO record for uri: " + uri );
+		}
+		
+		return file;
+	}
 	
-	public boolean addImageCacheRecord( String uri, String file )
+	public int getExceedingCount()
+	{
+		return mDatabase.getRecordCount( TABLE_IMAGECACHE ) - IMAGECACHE_MAX_ROW + 1;
+	}
+	
+	public boolean addRecord( String uri, String file )
 	{
 		boolean result = false;
 		
@@ -28,5 +79,13 @@ public class ImageCacheDbSession extends DatabaseSession {
 		return result;
 	}
 	
-	//public boolean deleteOldestImageCacheRecord
+	public boolean deleteRecord( String file )
+	{
+		return mDatabase.deleteRecord( TABLE_IMAGECACHE, "FILE_NAME", file );
+	}
+	
+	public String[] getOldestRecords( int count )
+	{
+		return mDatabase.getOldestRecords( TABLE_IMAGECACHE, "FILE_NAME", count );
+	}
 }

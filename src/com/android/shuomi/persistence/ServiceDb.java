@@ -3,8 +3,6 @@ package com.android.shuomi.persistence;
 import java.util.ArrayList;
 import java.util.Observer;
 
-import com.android.shuomi.util.Util;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -349,33 +347,55 @@ public class ServiceDb extends SQLiteOpenHelper {
 		return result;
 	}
 	
-	public String getOldestRecord( String table, String key )
+	public String[] getOldestRecords( String table, String key, int count )
 	{
-		String value = null;
-		
-		SQLiteDatabase db = getWritableDatabase();
-		
-		Cursor cursor = db.query( table , new String[] { key }, null, null, null, null, key, "1" );
+		Cursor cursor = getReadableDatabase().query( table , new String[] { key }, 
+				null, null, null, null, key, String.valueOf( count ) );
 
+		String[] values = null;
+		
 		if ( cursor != null && cursor.getCount() > 0 )
 		{
-			value = cursor.getString( 0 );
+			values = new String[ cursor.getCount() ];
+			
+			for ( int i = 0; i < cursor.getCount(); i ++, cursor.moveToNext() )
+			{
+				values[i] = cursor.getString( 0 );
+			}
+			
 			cursor.close();
 		}
 		
-		return value;
+		return values;
 	}
 	
-	public boolean deleteOldestRecord( String table, String key )
+//	public String[] deleteOldestRecords( String table, String key, int count )
+//	{
+//		String[] values = getOldestRecords( table, key, count );
+//		
+//		if ( Util.isValid( values ) )
+//		{
+//			for ( String value : values )
+//			{
+//				deleteRecord( table, key, value );
+//			}
+//		}
+//		
+//		return values;
+//	}
+	
+	public int getRecordCount( String table )
 	{
-		boolean result = false;
-		String value = getOldestRecord( table, key );
-		
-		if ( Util.isValid( value ) )
+		int count = -1;
+		SQLiteDatabase db = getReadableDatabase();
+		Cursor cursor = db.query( table, null, null, null, null, null, null, null );
+
+		if ( cursor != null && cursor.getCount() > 0 )
 		{
-			result = deleteRecord( table, key, value );
+			count = cursor.getCount();
+			cursor.close();
 		}
 		
-		return result;
+		return count;
 	}
 }

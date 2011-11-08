@@ -5,32 +5,34 @@ import android.util.Log;
 
 public class DatabaseSession {
 
-	static final private String TAG = "DatabaseSessionEx";
-	static private DatabaseSession mThis = null;
+	static final private String TAG = "DatabaseSession";
 	
-	@SuppressWarnings("unchecked")
-	static public <T extends DatabaseSession> T create( Context context ) {
+	
+	static protected DatabaseSession mThis = null;
+	
+	static public DatabaseSession create( Context context ) {
 		if ( mThis == null ) {
 			mThis = new DatabaseSession( context );
 		}
 		
-		return (T) mThis;
+		return mThis;
 	}
 	
-	@SuppressWarnings("unchecked")
-	static public <T extends DatabaseSession> T getInstance() 
+	static public DatabaseSession getInstance() 
 	{
 		if ( mThis == null ) 
 		{
 			Log.e( TAG, "null database session instance" );
 		}
 		
-		return (T) mThis;
+		return mThis;
 	}
 	
 	protected ServiceDb mDatabase = null;
 	
+	public DatabaseSession() {}
+	
 	public DatabaseSession( Context context ) {
 		mDatabase = new ServiceDb( context );
-	}	
+	}
 }
