@@ -19,7 +19,6 @@ import com.android.shuomi.tools.WeatherServiceView;
 import com.android.shuomi.util.EventIndicator;
 import com.android.shuomi.util.Util;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -51,8 +50,6 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 	private String mProvinceSelected = null;
 	private String mCitySelected = null;
 	private TabHost mTabHost;
-	
-	public static Context gContext = null;
 	
 	////////////////////////////
 	// Initialize Activity

@@ -66,7 +66,8 @@ public abstract class MultiItemListLayout extends ListLayout {
 	{
 		if ( mDataList != null && fieldsList != null ) 
 		{
-			for ( int i = 0; i < fieldsList.size(); i ++ ) 
+			//TODO for test only
+			for ( int i = 0; i < 1/*fieldsList.size()*/; i ++ ) 
 			{
 				String[] fields = fieldsList.get( i );
 				fields = convertFields( fields );

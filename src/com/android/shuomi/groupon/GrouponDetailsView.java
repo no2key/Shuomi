@@ -282,7 +282,7 @@ public class GrouponDetailsView extends NetworkRequestLayout {
 		final ImageView image = (ImageView) findViewById( R.id.demo_big_image );
 		
 		@SuppressWarnings("unused")
-		Drawable drawable = mImageLoader.loadDrawable( uri, new ImageCallback() {
+		Drawable drawable = mImageLoader.loadDrawable( getContext(), uri, new ImageCallback() {
 
 			public void imageLoaded( Drawable imageDrawable, String imageUrl ) 
 			{

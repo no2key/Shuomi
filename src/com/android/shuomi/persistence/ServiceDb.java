@@ -20,7 +20,7 @@ public class ServiceDb extends SQLiteOpenHelper {
 	private static final String _ID = BaseColumns._ID;
 	
 	private Cursor mCursor;
-	private boolean mIsTableExist = false;
+	//private boolean mIsTableExist = false;
 	private String mTableName = null;
 	private String[] mTableColumns = null;
 	private DbObservable mAddRecordObservable = new DbObservable();
@@ -41,9 +41,9 @@ public class ServiceDb extends SQLiteOpenHelper {
 		mTableName = tableName;
 		mTableColumns = columns;
 		mCursor = null;		
-		mIsTableExist = isTableExist( mTableName );
+		//mIsTableExist = isTableExist( mTableName );
 		
-		if ( mIsTableExist ) {
+		if ( isTableExist( mTableName ) ) {
 			checkColumns( mTableName, mTableColumns );
 		}
 		else {
@@ -349,21 +349,24 @@ public class ServiceDb extends SQLiteOpenHelper {
 	
 	public String[] getOldestRecords( String table, String key, int count )
 	{
-		Cursor cursor = getReadableDatabase().query( table , new String[] { key }, 
-				null, null, null, null, key, String.valueOf( count ) );
-
 		String[] values = null;
 		
-		if ( cursor != null && cursor.getCount() > 0 )
+		if ( isTableExist( table ) )
 		{
-			values = new String[ cursor.getCount() ];
+			Cursor cursor = getReadableDatabase().query( table , new String[] { key }, 
+					null, null, null, null, key, String.valueOf( count ) );
 			
-			for ( int i = 0; i < cursor.getCount(); i ++, cursor.moveToNext() )
+			if ( cursor != null && cursor.getCount() > 0 )
 			{
-				values[i] = cursor.getString( 0 );
+				values = new String[ cursor.getCount() ];
+				
+				for ( int i = 0; i < cursor.getCount(); i ++, cursor.moveToNext() )
+				{
+					values[i] = cursor.getString( 0 );
+				}
+				
+				cursor.close();
 			}
-			
-			cursor.close();
 		}
 		
 		return values;
@@ -387,13 +390,17 @@ public class ServiceDb extends SQLiteOpenHelper {
 	public int getRecordCount( String table )
 	{
 		int count = -1;
-		SQLiteDatabase db = getReadableDatabase();
-		Cursor cursor = db.query( table, null, null, null, null, null, null, null );
-
-		if ( cursor != null && cursor.getCount() > 0 )
+		
+		if ( isTableExist( table ) )
 		{
-			count = cursor.getCount();
-			cursor.close();
+			SQLiteDatabase db = getReadableDatabase();
+			Cursor cursor = db.query( table, null, null, null, null, null, null, null );
+	
+			if ( cursor != null && cursor.getCount() > 0 )
+			{
+				count = cursor.getCount();
+				cursor.close();
+			}
 		}
 		
 		return count;

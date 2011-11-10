@@ -30,9 +30,12 @@ public class DatabaseSession {
 	
 	protected ServiceDb mDatabase = null;
 	
-	public DatabaseSession() {}
+	protected DatabaseSession( DatabaseSession session ) 
+	{
+		this.mDatabase = session.mDatabase;
+	}
 	
-	public DatabaseSession( Context context ) {
+	private DatabaseSession( Context context ) {
 		mDatabase = new ServiceDb( context );
 	}
 }

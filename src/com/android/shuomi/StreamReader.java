@@ -3,14 +3,18 @@ package com.android.shuomi;
 import java.io.IOException;
 import java.io.InputStream;
 
+import android.util.Log;
+
 public class StreamReader 
 {
+	static final private String TAG = "StreamReader";
+	
 	static final public int DEFAULT_BUF_SIZE = 1024 * 8;
 	
 	private StringBuffer mStringBuffer = new StringBuffer();	
 	
 //	private InputStream mInputStream = null;
-//	private int mBufferSize = 0;
+	private int mBufferSize = 0;
 	
 	public StreamReader( InputStream is, int bufferSize )
 	{
@@ -43,12 +47,14 @@ public class StreamReader
 	
 	private void readStream( InputStream is, int bufferSize ) throws IOException
 	{
+		Log.d( TAG, "readStream bufferSize: " + bufferSize );
 		byte[] recvBuf = new byte[bufferSize];
 		int length = 0;
 		int total = 0;
 
 		do 
 		{
+			Log.d( TAG, "readStream total: " + total );
 			while ( total < bufferSize )
 			{
 				length = is.read( recvBuf, total, bufferSize - total );
@@ -56,7 +62,8 @@ public class StreamReader
 				if ( length < 0 ) break;
 				
 				total += length;
-				//Log.d( "HttpService", "read: " + length + ", total: " + total );
+				Log.d( TAG, "read: " + length + ", total: " + total );
+				mBufferSize += length;
 			}
 			
 			int last;
@@ -77,7 +84,8 @@ public class StreamReader
 	
 	public int size()
 	{
-		return mStringBuffer.length();
+		//return mStringBuffer.toString().getBytes().length;
+		return mBufferSize;
 	}
 	
 	public String getString()

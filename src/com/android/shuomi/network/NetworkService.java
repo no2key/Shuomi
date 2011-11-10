@@ -141,7 +141,7 @@ public class NetworkService extends Service {
 	public void onDestroy() {
 		super.onDestroy();		
 		//mWorkHandler.getLooper().quit();
-		Log.e( "NetworkService", "onDestroy" );
+		Log.d( "NetworkService", "onDestroy" );
 	}
 	
 	private void sendRequestMessage( String url ) {

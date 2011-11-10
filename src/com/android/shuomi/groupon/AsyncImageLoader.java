@@ -1,5 +1,6 @@
 package com.android.shuomi.groupon;
 
+import java.io.File;
 import java.io.InputStream;
 import java.lang.ref.SoftReference;
 import java.net.URL;
@@ -7,17 +8,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.android.shuomi.ServiceListView;
+import com.android.shuomi.util.Util;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
 public class AsyncImageLoader {
+	
 	private Map<String, SoftReference<Drawable>> imageCache = new HashMap<String, SoftReference<Drawable>>();
 	
-	public Drawable loadDrawable( final String imageUrl, final ImageCallback callback ) {
-		if ( imageCache.containsKey( imageUrl ) ) {
+	public Drawable loadDrawable( final Context context, final String imageUrl, final ImageCallback callback ) 
+	{
+		if ( imageCache.containsKey( imageUrl ) ) 
+		{
 			SoftReference<Drawable> softReference = imageCache.get( imageUrl );
 			if ( softReference.get() != null ) {
 				return softReference.get();
@@ -35,7 +41,7 @@ public class AsyncImageLoader {
 		
 		new Thread() {
 			public void run() {
-				Drawable drawable = loadImageFromUrl( imageUrl );
+				Drawable drawable = loadImageFromUrl( context, imageUrl );
 				
 				if ( drawable != null ) {
 					imageCache.put( imageUrl, new SoftReference<Drawable>( drawable ) );
@@ -48,18 +54,26 @@ public class AsyncImageLoader {
 		return null;
 	}
 	
-	protected Drawable loadImageFromUrl( String imageUrl ) 
+	private Drawable loadImageFromUrl( Context context, String imageUrl ) 
 	{
 		Drawable image = null;
 		try 
 		{
-			image = ImageCache.loadImage( ServiceListView.gContext, imageUrl );
+			image = ImageCache.loadImage( context, imageUrl );
 			
 			if ( image == null )
 			{
 				InputStream imageStream = new URL( imageUrl ).openStream();
-				image = Drawable.createFromStream( imageStream, "src" );
-				ImageCache.saveImage( ServiceListView.gContext, imageStream, imageUrl );
+				//image = Drawable.createFromStream( imageStream, "src" );
+				String file = ImageCache.saveImage( context, imageStream, imageUrl );
+				
+				if ( Util.isValid( file ) )
+				{
+					File imageFile = context.getFileStreamPath( file );
+					Log.v( "AsyncImageLoader", imageFile.getAbsolutePath() );
+					image = Drawable.createFromPath( imageFile.getAbsolutePath() );
+					Log.e( "AsyncImageLoader", "image from path: " + image.toString() );
+				}
 			}
 		}
 		catch ( Exception e ) 
@@ -69,8 +83,6 @@ public class AsyncImageLoader {
 		
 		return image;
 	}
-	
-	
 
 	public interface ImageCallback {
 		public void imageLoaded( Drawable imageDrawable, String imageUrl );

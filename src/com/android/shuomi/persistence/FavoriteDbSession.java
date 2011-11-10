@@ -5,15 +5,34 @@ import java.util.Observer;
 
 import com.android.shuomi.util.Util;
 
-import android.content.Context;
-
 public class FavoriteDbSession extends DatabaseSession {
 
 	static final private String TABLE_FAVORITE = "TAB_FAVORITE";
 	
-	public FavoriteDbSession(Context context) {
-		super(context);
-		// TODO Auto-generated constructor stub
+//	public FavoriteDbSession(Context context) {
+//		super(context);
+//		// TODO Auto-generated constructor stub
+//	}
+	
+	static private FavoriteDbSession mThis = null;
+	
+	static public FavoriteDbSession getInstance() 
+	{
+		if ( mThis == null ) 
+		{
+			DatabaseSession parent = DatabaseSession.getInstance();
+			
+			if ( parent != null )
+			{
+				mThis = new FavoriteDbSession( parent );
+			}
+		}
+		
+		return mThis;
+	}
+	
+	private FavoriteDbSession( DatabaseSession session ) {
+		super( session );
 	}
 
 	public boolean saveFavoriteRecord( String[] columns, String[] values ) {

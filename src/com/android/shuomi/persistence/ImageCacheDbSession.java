@@ -15,39 +15,53 @@ public class ImageCacheDbSession extends DatabaseSession {
 	
 	static private ImageCacheDbSession mThis = null;
 	
-	static public ImageCacheDbSession create() 
-	{
-		if ( mThis == null ) 
-		{
-			mThis = new ImageCacheDbSession();
-		}
-		
-		return mThis;
-	}
+//	static public ImageCacheDbSession create() 
+//	{
+//		if ( mThis == null ) 
+//		{
+//			mThis = new ImageCacheDbSession();
+//		}
+//		
+//		return mThis;
+//	}
 	
 	static public ImageCacheDbSession getInstance() 
 	{
 		if ( mThis == null ) 
 		{
-			mThis = new ImageCacheDbSession();
+			DatabaseSession parent = DatabaseSession.getInstance();
+			
+			if ( parent != null )
+			{
+				mThis = new ImageCacheDbSession( parent );
+			}
 		}
 		
 		return mThis;
 	}
-
-	public ImageCacheDbSession() {
-		
+	
+	private ImageCacheDbSession( DatabaseSession session ) {
+		super( session );
 	}
 
 	public String getFileName( String uri )
 	{
-		Log.w( TAG, "getFileName uri: " + uri );
-		Log.w( TAG, "getFileName mDatabase: " + mDatabase.toString() );
+		//Log.w( TAG, "getFileName uri: " + uri );
+		//Log.w( TAG, "getFileName mDatabase: " + mDatabase.toString() );
 		
 		SQLiteDatabase db = mDatabase.getReadableDatabase();
-		Log.w( TAG, "getFileName db: " + db.toString() );
+		//Log.w( TAG, "getFileName db: " + db.toString() );
 		
-		Cursor cursor = db.query( TABLE_IMAGECACHE, new String[]{ "FILENAME" }, "URI=?", new String[] { uri }, null, null, null );
+		Cursor cursor = null;
+		try
+		{
+			cursor = db.query( TABLE_IMAGECACHE, new String[]{ "FILENAME" }, "URI=?", new String[] { uri }, null, null, null );
+		}
+		catch( Exception e )
+		{
+			Log.w( TAG, "getFileName, query error: " + e.getMessage() );
+		}
+		
 		String file = null;
 		
 		if ( cursor != null && cursor.getCount() > 0 )

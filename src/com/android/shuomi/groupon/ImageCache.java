@@ -21,15 +21,9 @@ public class ImageCache {
 	{
 		Log.d( TAG, "loadImage start" );
 		
-		ImageCacheDbSession session = null;
+		ImageCacheDbSession session = ImageCacheDbSession.getInstance();
 		
-		try {
-			session = ImageCacheDbSession.getInstance();
-		} catch (Exception e) {
-			Log.d( TAG, "cast to ImageCacheDbSession failed" );
-		}
-		
-		String file = session.getFileName( uri );
+		String file = ( session != null ) ? session.getFileName( uri ) : null;
 		
 		if ( Util.isValid( file ) )
 		{
@@ -61,17 +55,27 @@ public class ImageCache {
 		return image;
 	}
 	
-	static public void saveImage( Context context, InputStream is, String uri )
+	static public String saveImage( Context context, InputStream is, String uri )
 	{
-		String fileName = String.valueOf( System.currentTimeMillis() );
+		String fileName = null;
 		
 		if ( checkExceeding( context ) )
 		{
+			fileName = String.valueOf( System.currentTimeMillis() );
+			Log.d( TAG, "saveImage: fileName: " + fileName + ", uri: " + uri );
+			
 			if ( saveImageFile( context, is, fileName ) )
-			{		
+			{
+				Log.d( TAG, "saveImage: ready to write data to db" );
 				((ImageCacheDbSession) ImageCacheDbSession.getInstance()).addRecord( uri, fileName );
 			}
+			else 
+			{
+				fileName = null;
+			}
 		}
+		
+		return fileName;
 	}
 	
 	static private boolean checkExceeding( Context context )
@@ -124,7 +128,9 @@ public class ImageCache {
 	static private boolean saveImageFile( Context context, InputStream is, String file )
 	{
 		boolean result = false;
-		StreamReader reader = new StreamReader( is, 0 );
+		StreamReader reader = new StreamReader( is, 1024*8 );
+		
+		Log.d( TAG, "saveImageFile, size: " + reader.size() );
 		
 		if ( reader.size() > 0 )
 		{
