@@ -2,28 +2,16 @@ package com.android.shuomi.persistence;
 
 import com.android.shuomi.util.Util;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
-
 public class ImageCacheDbSession extends DatabaseSession {
 
-	static final private String TAG = "ImageCacheDbSession";
+	//static final private String TAG = "ImageCacheDbSession";
 	static final private String TABLE_IMAGECACHE = "TABLE_IMAGECACHE";
-	static final private String IMAGECACHE_COLUMNS[] = { "URI", "FILE_NAME" };
+	static final private String URI = "URI";
+	static final private String FILE_NAME = "FILE_NAME";
+	static final private String IMAGECACHE_COLUMNS[] = { URI, FILE_NAME };
 	static final private int IMAGECACHE_MAX_ROW = 100;
 	
 	static private ImageCacheDbSession mThis = null;
-	
-//	static public ImageCacheDbSession create() 
-//	{
-//		if ( mThis == null ) 
-//		{
-//			mThis = new ImageCacheDbSession();
-//		}
-//		
-//		return mThis;
-//	}
 	
 	static public ImageCacheDbSession getInstance() 
 	{
@@ -46,34 +34,7 @@ public class ImageCacheDbSession extends DatabaseSession {
 
 	public String getFileName( String uri )
 	{
-		//Log.w( TAG, "getFileName uri: " + uri );
-		//Log.w( TAG, "getFileName mDatabase: " + mDatabase.toString() );
-		
-		SQLiteDatabase db = mDatabase.getReadableDatabase();
-		//Log.w( TAG, "getFileName db: " + db.toString() );
-		
-		Cursor cursor = null;
-		try
-		{
-			cursor = db.query( TABLE_IMAGECACHE, new String[]{ "FILENAME" }, "URI=?", new String[] { uri }, null, null, null );
-		}
-		catch( Exception e )
-		{
-			Log.w( TAG, "getFileName, query error: " + e.getMessage() );
-		}
-		
-		String file = null;
-		
-		if ( cursor != null && cursor.getCount() > 0 )
-		{
-			file = cursor.getString( 0 );
-		}
-		else 
-		{
-			Log.w( TAG, "get NO record for uri: " + uri );
-		}
-		
-		return file;
+		return mDatabase.findRecordByValue( TABLE_IMAGECACHE, new String[]{ FILE_NAME }, URI, uri );
 	}
 	
 	public int getExceedingCount()
@@ -95,11 +56,11 @@ public class ImageCacheDbSession extends DatabaseSession {
 	
 	public boolean deleteRecord( String file )
 	{
-		return mDatabase.deleteRecord( TABLE_IMAGECACHE, "FILE_NAME", file );
+		return mDatabase.deleteRecord( TABLE_IMAGECACHE, FILE_NAME, file );
 	}
 	
 	public String[] getOldestRecords( int count )
 	{
-		return mDatabase.getOldestRecords( TABLE_IMAGECACHE, "FILE_NAME", count );
+		return mDatabase.getOldestRecords( TABLE_IMAGECACHE, FILE_NAME, count );
 	}
 }

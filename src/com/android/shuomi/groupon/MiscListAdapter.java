@@ -96,7 +96,7 @@ public class MiscListAdapter extends ArrayAdapter<ListItemUnion[]>
 				
 				if ( imageView != null ) 
 				{
-					Drawable drawable = mImageLoader.loadDrawable( getContext(), image.getUrl(), new ImageCallback() 
+					Drawable drawable = mImageLoader.loadDrawableWithCache( getContext(), image.getUrl(), new ImageCallback() 
 					{
 						public void imageLoaded( Drawable imageDrawable, String imageUrl ) 
 						{

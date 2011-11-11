@@ -130,14 +130,15 @@ public class ImageCache {
 		boolean result = false;
 		StreamReader reader = new StreamReader( is, 1024*8 );
 		
-		Log.d( TAG, "saveImageFile, size: " + reader.size() );
+		Log.d( TAG, "saveImageFile, size: " + reader.byteSize() );
 		
-		if ( reader.size() > 0 )
+		if ( reader.byteSize() > 0 )
 		{
 			try 
 			{
 				FileOutputStream fos = context.openFileOutput( file, Context.MODE_PRIVATE );
-				fos.write( reader.getString().getBytes() ); 
+				//fos.write( reader.getString().getBytes() );
+				fos.write( reader.getBytes() );
 				fos.close();
 				result = true;
 			}				

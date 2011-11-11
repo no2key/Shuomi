@@ -8,6 +8,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 import android.util.Log;
@@ -362,6 +363,7 @@ public class ServiceDb extends SQLiteOpenHelper {
 				
 				for ( int i = 0; i < cursor.getCount(); i ++, cursor.moveToNext() )
 				{
+					cursor.moveToFirst();
 					values[i] = cursor.getString( 0 );
 				}
 				
@@ -371,21 +373,6 @@ public class ServiceDb extends SQLiteOpenHelper {
 		
 		return values;
 	}
-	
-//	public String[] deleteOldestRecords( String table, String key, int count )
-//	{
-//		String[] values = getOldestRecords( table, key, count );
-//		
-//		if ( Util.isValid( values ) )
-//		{
-//			for ( String value : values )
-//			{
-//				deleteRecord( table, key, value );
-//			}
-//		}
-//		
-//		return values;
-//	}
 	
 	public int getRecordCount( String table )
 	{
@@ -404,5 +391,37 @@ public class ServiceDb extends SQLiteOpenHelper {
 		}
 		
 		return count;
+	}
+	
+	public String findRecordByValue( String table, String[] columns, String key, String value )
+	{
+		String target = null;
+		
+		//if ( isTableExist( table ) )
+		{
+			try {
+				
+			
+			Cursor cursor = getReadableDatabase().query( table, columns, key + "=?", new String[] { value }, null, null, null );
+			
+			if ( cursor != null && cursor.getCount() > 0 )
+			{
+				cursor.moveToFirst();
+				target = cursor.getString( 0 );
+				Log.w( TAG, "findRecordByValue record: " + target );
+			}
+			else 
+			{
+				Log.w( TAG, "get NO record for key: " + key + ", value: " + value );
+			}
+			
+			cursor.close();
+			
+			} catch (SQLiteException e) {
+				// TODO: handle exception
+			}
+		}
+		
+		return target;
 	}
 }

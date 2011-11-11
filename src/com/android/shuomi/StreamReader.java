@@ -3,24 +3,19 @@ package com.android.shuomi;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.http.util.ByteArrayBuffer;
+
 import android.util.Log;
 
 public class StreamReader 
 {
 	static final private String TAG = "StreamReader";
-	
 	static final public int DEFAULT_BUF_SIZE = 1024 * 8;
-	
-	private StringBuffer mStringBuffer = new StringBuffer();	
-	
-//	private InputStream mInputStream = null;
-	private int mBufferSize = 0;
+
+	private ByteArrayBuffer mByteBuffer = new ByteArrayBuffer(0);
 	
 	public StreamReader( InputStream is, int bufferSize )
 	{
-//		mInputStream = is;
-//		mBufferSize = ( bufferSize > 0 ) ? bufferSize : DEFAULT_BUF_SIZE;
-		
 		read( is, bufferSize );
 	}
 	
@@ -39,22 +34,19 @@ public class StreamReader
 			} 
 			catch (IOException e) 
 			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.d( TAG, "exception on read input stream" );
 			}
 		}
 	}
 	
 	private void readStream( InputStream is, int bufferSize ) throws IOException
 	{
-		Log.d( TAG, "readStream bufferSize: " + bufferSize );
 		byte[] recvBuf = new byte[bufferSize];
 		int length = 0;
 		int total = 0;
 
 		do 
 		{
-			Log.d( TAG, "readStream total: " + total );
 			while ( total < bufferSize )
 			{
 				length = is.read( recvBuf, total, bufferSize - total );
@@ -62,34 +54,23 @@ public class StreamReader
 				if ( length < 0 ) break;
 				
 				total += length;
-				Log.d( TAG, "read: " + length + ", total: " + total );
-				mBufferSize += length;
+				//Log.d( TAG, "read: " + length + ", total: " + total );
 			}
 			
-			int last;
-			for ( last = total-1; last > -1 && ( recvBuf[last] > 127 || recvBuf[last] < 0 ); last -- );
+			mByteBuffer.append( recvBuf, 0, total );
 			
-			String chunk = new String( recvBuf, 0, last + 1, "utf-8" );
-			mStringBuffer.append( chunk );
-			
-			total = total - last - 1;
-				
-			for ( int i = 0; i < total; i ++ )
-			{
-				recvBuf[i] = recvBuf[last+1+i];
-			}
+			total = 0;
 		} 
 		while ( length > -1 );
 	}
 	
-	public int size()
+	public int byteSize()
 	{
-		//return mStringBuffer.toString().getBytes().length;
-		return mBufferSize;
+		return mByteBuffer.length();
 	}
 	
-	public String getString()
+	public byte[] getBytes()
 	{
-		return mStringBuffer.toString();
+		return mByteBuffer.toByteArray();
 	}
 }
