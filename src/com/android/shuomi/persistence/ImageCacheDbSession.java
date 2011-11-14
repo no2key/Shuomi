@@ -1,10 +1,12 @@
 package com.android.shuomi.persistence;
 
+import android.util.Log;
+
 import com.android.shuomi.util.Util;
 
 public class ImageCacheDbSession extends DatabaseSession {
 
-	//static final private String TAG = "ImageCacheDbSession";
+	static final private String TAG = "ImageCacheDbSession";
 	static final private String TABLE_IMAGECACHE = "TABLE_IMAGECACHE";
 	static final private String URI = "URI";
 	static final private String FILE_NAME = "FILE_NAME";
@@ -39,6 +41,7 @@ public class ImageCacheDbSession extends DatabaseSession {
 	
 	public int getExceedingCount()
 	{
+		Log.w( TAG, "record count: " + mDatabase.getRecordCount( TABLE_IMAGECACHE ) );
 		return mDatabase.getRecordCount( TABLE_IMAGECACHE ) - IMAGECACHE_MAX_ROW + 1;
 	}
 	

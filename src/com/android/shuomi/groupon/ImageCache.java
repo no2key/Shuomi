@@ -17,6 +17,8 @@ public class ImageCache {
 
 	static private final String TAG = "ImageCache";
 	
+	private final static byte[] mWriteLock = new byte[0];
+	
 	static public Drawable loadImage( Context context, String uri )
 	{
 		Log.d( TAG, "loadImage start" );
@@ -59,19 +61,22 @@ public class ImageCache {
 	{
 		String fileName = null;
 		
-		if ( checkExceeding( context ) )
+		synchronized ( mWriteLock ) 
 		{
-			fileName = String.valueOf( System.currentTimeMillis() );
-			Log.d( TAG, "saveImage: fileName: " + fileName + ", uri: " + uri );
-			
-			if ( saveImageFile( context, is, fileName ) )
+			if ( checkExceeding( context ) )
 			{
-				Log.d( TAG, "saveImage: ready to write data to db" );
-				((ImageCacheDbSession) ImageCacheDbSession.getInstance()).addRecord( uri, fileName );
-			}
-			else 
-			{
-				fileName = null;
+				fileName = String.valueOf( System.currentTimeMillis() );
+				Log.d( TAG, "saveImage: fileName: " + fileName + ", uri: " + uri );
+				
+				if ( saveImageFile( context, is, fileName ) )
+				{
+					Log.d( TAG, "saveImage: ready to write data to db" );
+					((ImageCacheDbSession) ImageCacheDbSession.getInstance()).addRecord( uri, fileName );
+				}
+				else 
+				{
+					fileName = null;
+				}
 			}
 		}
 		
@@ -82,7 +87,7 @@ public class ImageCache {
 	{
 		boolean result = true;
 		
-		int exceeding = ((ImageCacheDbSession) ImageCacheDbSession.getInstance()).getExceedingCount();			
+		int exceeding = ((ImageCacheDbSession) ImageCacheDbSession.getInstance()).getExceedingCount();
 		
 		if ( exceeding > 0 )
 		{
@@ -116,6 +121,8 @@ public class ImageCache {
 	static private boolean purgeRecord( Context context, String file )
 	{
 		boolean result = ((ImageCacheDbSession) ImageCacheDbSession.getInstance()).deleteRecord( file );
+		
+		Log.w( TAG, "purge db record: " + file + ", result: " + result );
 		
 		if ( result )
 		{
