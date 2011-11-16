@@ -12,9 +12,13 @@ import com.android.shuomi.intent.RESPONSE;
 import com.android.shuomi.parser.ResponseParser;
 import com.android.shuomi.parser.ShopListParser;
 import com.android.shuomi.persistence.FavoriteDbSession;
+import com.android.shuomi.thirdparty.SinaWeiboHandlerView;
 import com.android.shuomi.util.EventIndicator;
 import com.android.shuomi.util.Util;
 import com.android.shuomi.ServiceListView;
+import com.weibo.net.RequestToken;
+import com.weibo.net.Weibo;
+import com.weibo.net.WeiboException;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -29,7 +33,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class GrouponDetailsView extends NetworkRequestLayout {
+public class GrouponDetailsView extends NetworkRequestLayout implements SinaWeiboHandlerView {
 	
 	static private final String TAG = "GrouponDetailsView";
 	
@@ -112,9 +116,9 @@ public class GrouponDetailsView extends NetworkRequestLayout {
 	}
 	
 	private void onShare() {
-		//showSharedByDialog();
+		showSharedByDialog();
 		
-		sharedByEmail();
+		//sharedByEmail();
 		
 //		WindowManager wm = (WindowManager)getContext().getSystemService( "window" );  
 //		WindowManager.LayoutParams params = new WindowManager.LayoutParams();  
@@ -129,7 +133,6 @@ public class GrouponDetailsView extends NetworkRequestLayout {
 //		wm.addView( shareView, params );
 	}
 	
-	@SuppressWarnings("unused")
 	private void showSharedByDialog() {
 		LayoutInflater inflater = LayoutInflater.from( getContext() );
 		View shareView = inflater.inflate( R.layout.groupon_share_view, null );
@@ -171,7 +174,29 @@ public class GrouponDetailsView extends NetworkRequestLayout {
 	}
 	
 	private void sharedByMicroBlog() {
+//		final String URL_ACTIVITY_CALLBACK = "weiboandroidsdk://AuthorizationDone";
+//		final String FROM = "xweibo";
+//		
+//		final String CONSUMER_KEY = "316097992";
+//		final String CONSUMER_SECRET = "72800980b6d168fb6416b5debfc681ef";
+//		
+//		Weibo weibo = Weibo.getInstance();
+//		weibo.setupConsumerConfig(CONSUMER_KEY, CONSUMER_SECRET);
+//		try {
+//			/*AccessToken at = weibo.getXauthAccessToken(TextActivity.this, Weibo.APP_KEY, Weibo.APP_SECRET, 
+//					"", "");
+//			mToken.setText(at.getToken());*/
+//			
+//			RequestToken requestToken = weibo.getRequestToken( getContext(), Weibo.APP_KEY, 
+//					Weibo.APP_SECRET, URL_ACTIVITY_CALLBACK);
+//			Uri uri = Uri.parse(Weibo.URL_AUTHENTICATION + "?display=wap2.0&oauth_token=" + 
+//					requestToken.getToken() + "&from=" + FROM);
+//			getContext().startActivity(new Intent(Intent.ACTION_VIEW, uri));
+//		}catch (WeiboException e){
+//			e.printStackTrace();
+//		}
 		
+		( ( ServiceListView ) getContext() ).goToNextView( new SharedBySinaWeiboView( getContext(), null, null ) );
 	}
 	
 	private void sharedByEmail() {
@@ -325,5 +350,11 @@ public class GrouponDetailsView extends NetworkRequestLayout {
 		}
 		
 		return time;
+	}
+
+	@Override
+	public void processResponse(Uri uri) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -21,9 +21,17 @@
 <!--     </style>  -->
 
 	<style name="Transparent">
-    	<item name="android:windowBackground">@color/transparent</item>
+    	<item name="android:windowBackground">@color/transparent_shuomi</item>
         <item name="android:windowIsTranslucent">true</item>   
         <item name="android:windowAnimationStyle">@+android:style/Animation.Translucent</item>
  	</style>
+ 	
+ 	<style name="ContentOverlay" parent="android:style/Theme.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@color/transparent_weibo</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Translucent</item>
+        <item name="android:windowContentOverlay">@null</item> 
+    </style>
 
 </resources>

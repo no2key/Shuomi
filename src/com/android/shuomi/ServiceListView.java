@@ -14,6 +14,11 @@ import com.android.shuomi.parser.ResponseParser;
 import com.android.shuomi.parser.ResponseParserCreator;
 import com.android.shuomi.persistence.DatabaseSession;
 import com.android.shuomi.persistence.Preference;
+import com.android.shuomi.thirdparty.ExternalResponseHandler;
+import com.android.shuomi.thirdparty.ExternalResponseHandlerFactory;
+import com.android.shuomi.thirdparty.ExternalResponseType;
+import com.android.shuomi.thirdparty.SinaWeiboHandlerView;
+import com.android.shuomi.thirdparty.ThirdPartyResponseHandler;
 import com.android.shuomi.tools.ToolsMainView;
 import com.android.shuomi.tools.WeatherServiceView;
 import com.android.shuomi.util.EventIndicator;
@@ -23,6 +28,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -33,8 +39,8 @@ import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
-public class ServiceListView extends NetworkBindActivity implements NetworkResponseHandler {
-	
+public class ServiceListView extends NetworkBindActivity implements NetworkResponseHandler, ExternalResponseHandlerFactory 
+{
 	private static final String TAG = "ServiceListView";
 	private static final int GROUPON = 0;
 	private static final int FAVORITES = 1;
@@ -293,6 +299,22 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 			ResponseIntent response = new ResponseIntent( intent );
 			NetworkResponse.process( this, ( ResponseIntent ) response );
 		}
+		else if ( ThirdPartyResponseHandler.processResponse( intent, this ) )
+		{
+			Log.d( TAG, "response handled by 3rd parth handler" );
+		}
+	}
+	
+	@Override
+	public ExternalResponseHandler createHandler(ExternalResponseType type) {
+		ExternalResponseHandler handler = null;
+		
+		if ( type == ExternalResponseType.SINA_WEIBO )
+		{
+			
+		}
+		
+		return handler;
 	}
 	
 	@Override
@@ -403,6 +425,22 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 		}
 		
 		return target;
+	}
+	
+	private SinaWeiboHandlerView findSinaWeiboHandlerView()
+	{
+		SinaWeiboHandlerView view = null;
+		
+		try
+		{
+			view = (SinaWeiboHandlerView) mFlippers[GROUPON].getCurrentView();
+		}
+		catch (ClassCastException e) 
+		{
+			// TODO: handle exception
+		}
+		
+		return view;
 	}
 	
     @Override

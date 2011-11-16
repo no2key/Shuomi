@@ -11,6 +11,7 @@
     <color name="strawberry">#872657</color>
     <color name="ivory">#FAFFF0</color>
     <color name="lightgrey">#D3D3D3</color>
-    <color name="transparent">#9000</color>
-    
+    <color name="transparent_shuomi">#9000</color>
+    <color name="text_num_gray">#333</color>
+    <color name="transparent_weibo">#00ffffff</color>
 </resources>

@@ -8,7 +8,10 @@
     <uses-permission android:name="android.permission.CALL_PHONE"/>
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> 
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission> 
+    <uses-permission android:name="android.permission.WRITE_APN_SETTINGS"></uses-permission>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"></uses-permission>
     
     <application 
         android:icon="@drawable/logo_shuomi"
@@ -63,7 +66,20 @@
                 <action android:name="com.android.shuomi.HTTP_RESPONSE_AROUND" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+            
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="weiboandroidsdk" android:host="AuthorizationDone" /> 
+            </intent-filter>
 
+        </activity>
+        
+        <activity android:theme="@style/ContentOverlay"
+            android:launchMode="singleTask"
+            android:configChanges="keyboardHidden|orientation"                           
+            android:windowSoftInputMode="adjustPan|stateAlwaysVisible" android:name="com.weibo.net.ShareActivity">
         </activity>
 
     </application>

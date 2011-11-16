@@ -29,6 +29,11 @@ public class AsyncImageLoader
 		return loadDrawable( context, imageUrl, callback, true );
 	}
 	
+	public Drawable loadDrawableWithStore( final Context context, final String imageUrl, final ImageCallback callback, String fileName ) 
+	{
+		return loadDrawable( context, imageUrl, callback, true );
+	}
+	
 	private Drawable loadDrawable( final Context context, final String imageUrl, final ImageCallback callback, final boolean withCache ) 
 	{
 		if ( imageCache.containsKey( imageUrl ) ) 
