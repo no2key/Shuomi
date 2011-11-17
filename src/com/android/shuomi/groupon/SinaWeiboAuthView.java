@@ -7,8 +7,11 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.webkit.HttpAuthHandler;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -64,10 +67,13 @@ public class SinaWeiboAuthView extends LinearLayout implements SinaWeiboHandlerV
 	{
 		WebView view = (WebView) findViewById( R.id.content_view );
 		view.getSettings().setJavaScriptEnabled( true );
-		view.getSettings().setSaveFormData( true );
-		view.getSettings().setBuiltInZoomControls( true );
+		
 		view.getSettings().setSavePassword( true );
 		view.getSettings().setDatabaseEnabled( true );
+		view.getSettings().setSaveFormData( true );
+		
+		view.getSettings().setSupportZoom(true);
+		view.getSettings().setBuiltInZoomControls( true );
 		
         view.setScrollBarStyle( 0 );
         
@@ -78,6 +84,7 @@ public class SinaWeiboAuthView extends LinearLayout implements SinaWeiboHandlerV
         
         view.setWebViewClient( new WebViewClient() 
         {
+        	@Override
         	public boolean shouldOverrideUrlLoading(WebView view, String url) 
         	{
         		Uri uri = Uri.parse( url );
@@ -94,9 +101,28 @@ public class SinaWeiboAuthView extends LinearLayout implements SinaWeiboHandlerV
                 
                 return true;
         	}
+        	
+        	@Override
+        	public void onReceivedHttpAuthRequest( WebView view, HttpAuthHandler handler, String host, String realm) 
+        	{
+        	    //handler.proceed("me@test.com", "mypassword");
+        		Log.e( TAG, "onReceivedHttpAuthRequest" );
+        	}
+        	
+//        	@Override
+//        	public void onReceivedLoginRequest(WebView view, String realm, String account, String args)
+//        	{
+//        		super.onReceivedLoginRequest( view, realm, account, args );
+//        		Log.e( TAG, "onReceivedLoginRequest" );
+//        	}
+        	
         } );
         
         view.requestFocus();
+        
+        CookieSyncManager.createInstance( getContext() );
+        CookieSyncManager.getInstance().startSync();
+        CookieManager.getInstance();
 	}
 	
 	private void goToShareView( String accessToken, String tokenSecret, String content, String picPath )
@@ -122,7 +148,7 @@ public class SinaWeiboAuthView extends LinearLayout implements SinaWeiboHandlerV
 			bundle.putString( SinaWeiboShareView.EXTRA_WEIBO_CONTENT, content );
 			bundle.putString( SinaWeiboShareView.EXTRA_PIC_URI, picPath );
 			
-			( ( ServiceListView ) getContext() ).goToNextView( new SinaWeiboShareView( getContext(), bundle ) );
+			( ( ServiceListView ) getContext() ).goToNextView( new SinaWeiboShareView( getContext(), bundle ), true );
 		}
 	}
 	
@@ -140,10 +166,6 @@ public class SinaWeiboAuthView extends LinearLayout implements SinaWeiboHandlerV
 				try 
 				{
 					weibo.generateAccessToken( getContext(), null );
-					
-//					weibo.share2weibo( getContext(), weibo.getAccessToken().getToken(), 
-//							weibo.getAccessToken().getSecret(), content, picPath );
-					
 					goToShareView( weibo.getAccessToken().getToken(), 
 							weibo.getAccessToken().getSecret(), content, picPath );
 				}

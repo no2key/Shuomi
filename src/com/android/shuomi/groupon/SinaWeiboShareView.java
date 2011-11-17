@@ -182,16 +182,22 @@ public class SinaWeiboShareView extends LinearLayout implements RequestListener
 		}
 		else
 		{
-			mPiclayout.setVisibility(View.VISIBLE);
-			
-			//File file = new File(mPicPath);
+			mPiclayout.setVisibility( View.VISIBLE );
 			File file = getContext().getFileStreamPath( mPicPath );
 			
 			if ( file.exists() )
 			{
-				Bitmap pic = BitmapFactory.decodeFile( this.mPicPath );
-				ImageView image = (ImageView) this.findViewById( R.id.ivImage );
-				image.setImageBitmap( pic );
+				Bitmap pic = BitmapFactory.decodeFile( file.getAbsolutePath() );
+				
+				if ( pic != null )
+				{
+					ImageView image = (ImageView) this.findViewById( R.id.ivImage );
+					image.setImageBitmap( pic );
+				}
+				else
+				{
+					mPiclayout.setVisibility( View.GONE );
+				}
 			}
 			else
 			{
@@ -285,7 +291,7 @@ public class SinaWeiboShareView extends LinearLayout implements RequestListener
 			
 			if ( picFile.exists() )
 			{
-				bundle.add( "pic", file );
+				bundle.add( "pic", picFile.getAbsolutePath() );
 			}
 		}
 				

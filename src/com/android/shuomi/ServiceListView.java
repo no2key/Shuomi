@@ -212,6 +212,22 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 		current.showNext();
 	}
 	
+	public void goToNextView( View view, boolean closeCurrent ) 
+	{
+		ViewFlipper current = getCurrentFlipper();
+		
+		if ( current != null ) 
+		{
+			if ( closeCurrent )
+			{
+				current.removeViewAt( current.getDisplayedChild() );
+			}
+
+			current.addView( view );
+			current.showNext();
+		}
+	}
+	
 	public void goToPrevView()
 	{
 		ViewFlipper current = getCurrentFlipper();
