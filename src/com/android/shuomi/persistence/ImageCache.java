@@ -1,4 +1,4 @@
-package com.android.shuomi.groupon;
+package com.android.shuomi.persistence;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import com.android.shuomi.StreamReader;
-import com.android.shuomi.persistence.ImageCacheDbSession;
 import com.android.shuomi.util.Util;
 
 import android.content.Context;
@@ -132,7 +131,7 @@ public class ImageCache {
 		return result;
 	}
 	
-	static private boolean saveImageFile( Context context, InputStream is, String file )
+	static public boolean saveImageFile( Context context, InputStream is, String file )
 	{
 		boolean result = false;
 		StreamReader reader = new StreamReader( is, 1024*8 );
@@ -151,12 +150,10 @@ public class ImageCache {
 			}				
 			catch ( FileNotFoundException e ) 
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			catch (IOException e) 
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} 
 		}

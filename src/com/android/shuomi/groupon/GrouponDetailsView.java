@@ -12,13 +12,9 @@ import com.android.shuomi.intent.RESPONSE;
 import com.android.shuomi.parser.ResponseParser;
 import com.android.shuomi.parser.ShopListParser;
 import com.android.shuomi.persistence.FavoriteDbSession;
-import com.android.shuomi.thirdparty.SinaWeiboHandlerView;
 import com.android.shuomi.util.EventIndicator;
 import com.android.shuomi.util.Util;
 import com.android.shuomi.ServiceListView;
-import com.weibo.net.RequestToken;
-import com.weibo.net.Weibo;
-import com.weibo.net.WeiboException;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -33,9 +29,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class GrouponDetailsView extends NetworkRequestLayout implements SinaWeiboHandlerView {
+public class GrouponDetailsView extends NetworkRequestLayout {
 	
 	static private final String TAG = "GrouponDetailsView";
+	
+	static private final String CACHE_FILE = "image.cache";
 	
 	private String mItemId;
 	private AsyncImageLoader mImageLoader = new AsyncImageLoader();
@@ -89,6 +87,12 @@ public class GrouponDetailsView extends NetworkRequestLayout implements SinaWeib
 		});
 	}
 	
+	@Override
+	protected void finalize()
+	{
+		getContext().deleteFile( CACHE_FILE );
+	}
+	
 	private void onAddToFavorite() {
 		if ( !((FavoriteDbSession) FavoriteDbSession.getInstance()).isRecordExisted( RESPONSE.PARAM_ID, mFields[6] ) ) 
 		{
@@ -117,8 +121,6 @@ public class GrouponDetailsView extends NetworkRequestLayout implements SinaWeib
 	
 	private void onShare() {
 		showSharedByDialog();
-		
-		//sharedByEmail();
 		
 //		WindowManager wm = (WindowManager)getContext().getSystemService( "window" );  
 //		WindowManager.LayoutParams params = new WindowManager.LayoutParams();  
@@ -173,33 +175,14 @@ public class GrouponDetailsView extends NetworkRequestLayout implements SinaWeib
 		});
 	}
 	
-	private void sharedByMicroBlog() {
-//		final String URL_ACTIVITY_CALLBACK = "weiboandroidsdk://AuthorizationDone";
-//		final String FROM = "xweibo";
-//		
-//		final String CONSUMER_KEY = "316097992";
-//		final String CONSUMER_SECRET = "72800980b6d168fb6416b5debfc681ef";
-//		
-//		Weibo weibo = Weibo.getInstance();
-//		weibo.setupConsumerConfig(CONSUMER_KEY, CONSUMER_SECRET);
-//		try {
-//			/*AccessToken at = weibo.getXauthAccessToken(TextActivity.this, Weibo.APP_KEY, Weibo.APP_SECRET, 
-//					"", "");
-//			mToken.setText(at.getToken());*/
-//			
-//			RequestToken requestToken = weibo.getRequestToken( getContext(), Weibo.APP_KEY, 
-//					Weibo.APP_SECRET, URL_ACTIVITY_CALLBACK);
-//			Uri uri = Uri.parse(Weibo.URL_AUTHENTICATION + "?display=wap2.0&oauth_token=" + 
-//					requestToken.getToken() + "&from=" + FROM);
-//			getContext().startActivity(new Intent(Intent.ACTION_VIEW, uri));
-//		}catch (WeiboException e){
-//			e.printStackTrace();
-//		}
-		
-		( ( ServiceListView ) getContext() ).goToNextView( new SharedBySinaWeiboView( getContext(), null, null ) );
+	private void sharedByMicroBlog() 
+	{
+		Log.d( TAG, "content: " + mFields[4] );
+		( ( ServiceListView ) getContext() ).goToNextView( new SinaWeiboAuthView( getContext(), mFields[3], CACHE_FILE ) );
 	}
 	
-	private void sharedByEmail() {
+	private void sharedByEmail() 
+	{
 		( ( ServiceListView ) getContext() ).goToNextView( new GrouponSharedByEmailView( getContext(), mItemId ) );
 	}
 	
@@ -253,8 +236,10 @@ public class GrouponDetailsView extends NetworkRequestLayout implements SinaWeib
 		findViewById( R.id.content_view ).setVisibility( View.VISIBLE );
 	}
 	
-	private void updateView( String[] items ) {
-		if ( Util.isValid( items ) ) {
+	private void updateView( String[] items ) 
+	{
+		if ( Util.isValid( items ) ) 
+		{
 			
 			setBigImage( items[0] );
 			setPrices( items[2], items[3] );
@@ -278,11 +263,14 @@ public class GrouponDetailsView extends NetworkRequestLayout implements SinaWeib
 		}
 	}
 	
-	private void cacheFields( String[] items ) {
-		if ( Util.isValid( items ) ) {
+	private void cacheFields( String[] items ) 
+	{
+		if ( Util.isValid( items ) ) 
+		{
 			mFields = new String[ items.length ];
 			
-			for( int i = 0; i < items.length-1; i ++ ) {
+			for( int i = 0; i < items.length-1; i ++ ) 
+			{
 				mFields[i] = items[i+1];
 			}
 		}
@@ -306,9 +294,9 @@ public class GrouponDetailsView extends NetworkRequestLayout implements SinaWeib
 		final ImageView image = (ImageView) findViewById( R.id.demo_big_image );
 		
 		@SuppressWarnings("unused")
-		Drawable drawable = mImageLoader.loadDrawableWithoutCache( getContext(), uri, new ImageCallback() {
-
-			public void imageLoaded( Drawable imageDrawable, String imageUrl ) 
+		Drawable drawable = mImageLoader.loadDrawableWithStore( getContext(), uri, CACHE_FILE, new ImageCallback() 
+		{
+			public void imageLoaded( Drawable imageDrawable, String imageUrl )
 			{
 				image.setImageDrawable( imageDrawable );
 			}
@@ -350,11 +338,5 @@ public class GrouponDetailsView extends NetworkRequestLayout implements SinaWeib
 		}
 		
 		return time;
-	}
-
-	@Override
-	public void processResponse(Uri uri) {
-		// TODO Auto-generated method stub
-		
 	}
 }

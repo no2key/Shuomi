@@ -154,7 +154,7 @@ public class Weibo {
      * Share text content or image to weibo .
      *
      */
-	public boolean share2weibo(Activity activity, String accessToken, String tokenSecret, String content, String picPath) 
+	public boolean share2weibo( Context context, String accessToken, String tokenSecret, String content, String picPath) 
 		throws WeiboException{
 			if(TextUtils.isEmpty(accessToken)){
 				throw new WeiboException("token can not be null!");
@@ -165,12 +165,12 @@ public class Weibo {
 			if(TextUtils.isEmpty(content) && TextUtils.isEmpty(picPath)){
 				throw new WeiboException("weibo content can not be null!");
 			}
-			Intent i = new Intent(activity, ShareActivity.class);
+			Intent i = new Intent(context, ShareActivity.class);
 			i.putExtra(ShareActivity.EXTRA_ACCESS_TOKEN, accessToken);
 			i.putExtra(ShareActivity.EXTRA_TOKEN_SECRET, tokenSecret);
 			i.putExtra(ShareActivity.EXTRA_WEIBO_CONTENT, content);
 			i.putExtra(ShareActivity.EXTRA_PIC_URI, picPath);
-			activity.startActivity(i);	
+			context.startActivity(i);	
 			
 			return true;
 	}

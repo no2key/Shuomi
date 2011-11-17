@@ -1,23 +1,9 @@
 package com.android.shuomi.groupon;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
-import com.android.shuomi.R;
-import com.android.shuomi.thirdparty.SinaWeiboHandlerView;
-import com.android.shuomi.util.Util;
-import com.weibo.net.RequestToken;
-import com.weibo.net.Weibo;
-import com.weibo.net.WeiboException;
-
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,9 +12,18 @@ import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class SharedBySinaWeiboView extends LinearLayout implements SinaWeiboHandlerView
-{
-	private static final String TAG = "SharedBySinaWeiboView";
+import com.android.shuomi.R;
+import com.android.shuomi.ServiceListView;
+import com.android.shuomi.thirdparty.SinaWeiboHandlerView;
+import com.android.shuomi.util.EventIndicator;
+import com.android.shuomi.util.Util;
+import com.weibo.net.RequestToken;
+import com.weibo.net.Weibo;
+import com.weibo.net.WeiboException;
+
+public class SinaWeiboAuthView extends LinearLayout implements SinaWeiboHandlerView {
+
+	private static final String TAG = "SinaWeiboAuthView";
 	
 	private static final String SINA_URL_SCHEME = "weiboandroidsdk";
 	private static final String URL_ACTIVITY_CALLBACK = "weiboandroidsdk://AuthorizationDone";
@@ -36,9 +31,16 @@ public class SharedBySinaWeiboView extends LinearLayout implements SinaWeiboHand
 	private static final String CONSUMER_KEY = "316097992";
 	private static final String CONSUMER_SECRET = "72800980b6d168fb6416b5debfc681ef";
 	
-	public SharedBySinaWeiboView( Context context, String text, String imageFile ) 
+	private String mText;
+	private String mImageFile;
+	
+	public SinaWeiboAuthView( Context context, String text, String imageFile ) 
 	{
 		super( context );
+		
+		mText = text;
+		mImageFile = imageFile;
+		
 		inflateLayout();
 		goToAuthPage();
 	}
@@ -63,6 +65,10 @@ public class SharedBySinaWeiboView extends LinearLayout implements SinaWeiboHand
 		WebView view = (WebView) findViewById( R.id.content_view );
 		view.getSettings().setJavaScriptEnabled( true );
 		view.getSettings().setSaveFormData( true );
+		view.getSettings().setBuiltInZoomControls( true );
+		view.getSettings().setSavePassword( true );
+		view.getSettings().setDatabaseEnabled( true );
+		
         view.setScrollBarStyle( 0 );
         
         String uriStr = composeAuthUrl().toString();
@@ -79,7 +85,7 @@ public class SharedBySinaWeiboView extends LinearLayout implements SinaWeiboHand
         		if ( uri != null && uri.getScheme().equals( SINA_URL_SCHEME ) )
         		{
         			Log.d( TAG, url );
-        			setupShareVars( uri, null, null );
+        			launchShare( uri, mText, mImageFile );
         		}
         		else 
         		{
@@ -93,7 +99,34 @@ public class SharedBySinaWeiboView extends LinearLayout implements SinaWeiboHand
         view.requestFocus();
 	}
 	
-	private void setupShareVars( Uri uri, String content, String picPath )
+	private void goToShareView( String accessToken, String tokenSecret, String content, String picPath )
+	{
+		if ( TextUtils.isEmpty( accessToken ) )
+		{
+			EventIndicator.showToast( getContext() , "token can not be null!" );
+		}
+		else if ( TextUtils.isEmpty( tokenSecret ) )
+		{
+			EventIndicator.showToast( getContext() , "secret can not be null!" );
+		}
+		else if ( TextUtils.isEmpty(content) || TextUtils.isEmpty(picPath) )
+		{
+			EventIndicator.showToast( getContext() , "weibo content can not be null!" );
+		}
+		else 
+		{
+			Bundle bundle = new Bundle();
+
+			bundle.putString( SinaWeiboShareView.EXTRA_ACCESS_TOKEN, accessToken );
+			bundle.putString( SinaWeiboShareView.EXTRA_TOKEN_SECRET, tokenSecret );
+			bundle.putString( SinaWeiboShareView.EXTRA_WEIBO_CONTENT, content );
+			bundle.putString( SinaWeiboShareView.EXTRA_PIC_URI, picPath );
+			
+			( ( ServiceListView ) getContext() ).goToNextView( new SinaWeiboShareView( getContext(), bundle ) );
+		}
+	}
+	
+	private void launchShare( Uri uri, String content, String picPath )
 	{
 		if ( uri != null )
 		{
@@ -102,13 +135,16 @@ public class SharedBySinaWeiboView extends LinearLayout implements SinaWeiboHand
 			if ( Util.isValid( oauth_verifier ) )
 			{
 				Weibo weibo = Weibo.getInstance();
-				weibo.addOauthverifier(oauth_verifier);
+				weibo.addOauthverifier( oauth_verifier );
 				
 				try 
 				{
 					weibo.generateAccessToken( getContext(), null );
 					
-					weibo.share2weibo( getContext(), weibo.getAccessToken().getToken(), 
+//					weibo.share2weibo( getContext(), weibo.getAccessToken().getToken(), 
+//							weibo.getAccessToken().getSecret(), content, picPath );
+					
+					goToShareView( weibo.getAccessToken().getToken(), 
 							weibo.getAccessToken().getSecret(), content, picPath );
 				}
 				catch (WeiboException e1) 
@@ -141,39 +177,38 @@ public class SharedBySinaWeiboView extends LinearLayout implements SinaWeiboHand
 		return uri;
 	}
 	
-	private boolean saveDrawableToFile( Drawable image, String fileName )
-	{
-		boolean result = false;
-		
-		BitmapDrawable bitmapDrawable = ( BitmapDrawable ) image;
-        Bitmap bitmap = bitmapDrawable.getBitmap();
-        
-        File imageFile = getContext().getFileStreamPath( fileName );
-        FileOutputStream fileStream;
-		try 
-		{
-			fileStream = new FileOutputStream( imageFile, false );
-			bitmap.compress( CompressFormat.PNG, 100, fileStream );
-			fileStream.flush();
-			fileStream.close();
-			result = true;
-		}		
-		catch (FileNotFoundException e) 
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return result;
-	}
+//	private boolean saveDrawableToFile( Drawable image, String fileName )
+//	{
+//		boolean result = false;
+//		
+//		BitmapDrawable bitmapDrawable = ( BitmapDrawable ) image;
+//        Bitmap bitmap = bitmapDrawable.getBitmap();
+//        
+//        File imageFile = getContext().getFileStreamPath( fileName );
+//        FileOutputStream fileStream;
+//		try 
+//		{
+//			fileStream = new FileOutputStream( imageFile, false );
+//			bitmap.compress( CompressFormat.PNG, 100, fileStream );
+//			fileStream.flush();
+//			fileStream.close();
+//			result = true;
+//		}		
+//		catch (FileNotFoundException e) 
+//		{
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		
+//		return result;
+//	}
 
 	@Override
 	public void processResponse(Uri uri) {
 		Log.d( TAG, "received weibo auth done message" );
-		
 	}
 }

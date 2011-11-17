@@ -18,6 +18,7 @@ import com.android.shuomi.thirdparty.ExternalResponseHandler;
 import com.android.shuomi.thirdparty.ExternalResponseHandlerFactory;
 import com.android.shuomi.thirdparty.ExternalResponseType;
 import com.android.shuomi.thirdparty.SinaWeiboHandlerView;
+import com.android.shuomi.thirdparty.SinaWeiboResponseHandler;
 import com.android.shuomi.thirdparty.ThirdPartyResponseHandler;
 import com.android.shuomi.tools.ToolsMainView;
 import com.android.shuomi.tools.WeatherServiceView;
@@ -211,6 +212,16 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 		current.showNext();
 	}
 	
+	public void goToPrevView()
+	{
+		ViewFlipper current = getCurrentFlipper();
+		
+		if ( current != null && current.getChildCount() > 1 ) 
+		{
+			current.removeViewAt( current.getDisplayedChild() );
+		}
+	}
+	
 	@Override
 	protected void onNetworkServiceConnected() {
 		NetworkSession.create( this, getNetworkService() );		
@@ -306,12 +317,13 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 	}
 	
 	@Override
-	public ExternalResponseHandler createHandler(ExternalResponseType type) {
+	public ExternalResponseHandler createHandler(ExternalResponseType type) 
+	{
 		ExternalResponseHandler handler = null;
 		
 		if ( type == ExternalResponseType.SINA_WEIBO )
 		{
-			
+			handler = new SinaWeiboResponseHandler( this, findSinaWeiboHandlerView() );
 		}
 		
 		return handler;

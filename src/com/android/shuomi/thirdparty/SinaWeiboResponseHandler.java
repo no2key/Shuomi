@@ -3,7 +3,6 @@ package com.android.shuomi.thirdparty;
 import com.weibo.net.Weibo;
 import com.weibo.net.WeiboException;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -11,15 +10,15 @@ import android.net.Uri;
 public class SinaWeiboResponseHandler implements ExternalResponseHandler {
 
 	private SinaWeiboHandlerView mView = null;
-	private Activity mContext = null;
+	private Context mContext = null;
 	
-	public SinaWeiboResponseHandler( Activity activity, SinaWeiboHandlerView view )
+	public SinaWeiboResponseHandler( Context context, SinaWeiboHandlerView view )
 	{
-		mContext = activity;
+		mContext = context;
 		mView = view;
 	}
 	
-	private void prepare( Intent response ) 
+	private void prepare( Intent response )
 	{
 		Uri uri = response.getData();
 		String oauth_verifier = uri.getQueryParameter("oauth_verifier");

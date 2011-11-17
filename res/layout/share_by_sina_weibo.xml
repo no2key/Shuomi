@@ -19,8 +19,7 @@
         android:layout_x="0.0dip"
         android:layout_y="0.0dip"
         android:layout_weight="1.0"
-        android:background="@color/ivory"
-        android:visibility="gone"  />
+        android:background="@color/ivory"/>
         
 </LinearLayout>
     
