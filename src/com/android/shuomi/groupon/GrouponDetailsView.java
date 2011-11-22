@@ -12,6 +12,8 @@ import com.android.shuomi.intent.RESPONSE;
 import com.android.shuomi.parser.ResponseParser;
 import com.android.shuomi.parser.ShopListParser;
 import com.android.shuomi.persistence.FavoriteDbSession;
+import com.android.shuomi.persistence.Preference;
+import com.android.shuomi.sina.SinaWeiboAuthView;
 import com.android.shuomi.util.EventIndicator;
 import com.android.shuomi.util.Util;
 import com.android.shuomi.ServiceListView;
@@ -20,8 +22,10 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -87,11 +91,12 @@ public class GrouponDetailsView extends NetworkRequestLayout {
 		});
 	}
 	
-	@Override
-	protected void finalize()
-	{
-		getContext().deleteFile( CACHE_FILE );
-	}
+//	@Override
+//	protected void finalize()
+//	{
+//		getContext().deleteFile( CACHE_FILE );
+//		Log.d( TAG, "cache file deleted" );
+//	}
 	
 	private void onAddToFavorite() {
 		if ( !((FavoriteDbSession) FavoriteDbSession.getInstance()).isRecordExisted( RESPONSE.PARAM_ID, mFields[6] ) ) 
@@ -177,8 +182,18 @@ public class GrouponDetailsView extends NetworkRequestLayout {
 	
 	private void sharedByMicroBlog() 
 	{
-		Log.d( TAG, "content: " + mFields[4] );
-		( ( ServiceListView ) getContext() ).goToNextView( new SinaWeiboAuthView( getContext(), mFields[3], CACHE_FILE ) );
+		SharedPreferences pref = getContext().getSharedPreferences ( "groupon", 0 );
+		String token = pref.getString(  Preference.OAUTH_TOKEN, null );
+		String tokenSecret = pref.getString(  Preference.OAUTH_TOKEN_SECRET, null );
+		
+		if ( TextUtils.isEmpty( token ) || TextUtils.isEmpty( tokenSecret ) )
+		{
+			( ( ServiceListView ) getContext() ).goToNextView( new SinaWeiboAuthView( getContext(), mFields[3], mFields[7], CACHE_FILE ) );
+		}
+		else
+		{
+			SinaWeiboAuthView.goToShareView( getContext(), token, tokenSecret, mFields[3], mFields[7], CACHE_FILE, false );
+		}
 	}
 	
 	private void sharedByEmail() 
@@ -240,7 +255,6 @@ public class GrouponDetailsView extends NetworkRequestLayout {
 	{
 		if ( Util.isValid( items ) ) 
 		{
-			
 			setBigImage( items[0] );
 			setPrices( items[2], items[3] );
 			

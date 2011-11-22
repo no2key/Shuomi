@@ -20,12 +20,8 @@ package com.weibo.net;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
-//import com.weibo.android.AuthorizeActivity;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.text.TextUtils;
 
 
 
@@ -154,41 +150,28 @@ public class Weibo {
      * Share text content or image to weibo .
      *
      */
-	public boolean share2weibo( Context context, String accessToken, String tokenSecret, String content, String picPath) 
-		throws WeiboException{
-			if(TextUtils.isEmpty(accessToken)){
-				throw new WeiboException("token can not be null!");
-			}else if(TextUtils.isEmpty(tokenSecret)){
-				throw new WeiboException("secret can not be null!");
-			}
-			
-			if(TextUtils.isEmpty(content) && TextUtils.isEmpty(picPath)){
-				throw new WeiboException("weibo content can not be null!");
-			}
-			Intent i = new Intent(context, ShareActivity.class);
-			i.putExtra(ShareActivity.EXTRA_ACCESS_TOKEN, accessToken);
-			i.putExtra(ShareActivity.EXTRA_TOKEN_SECRET, tokenSecret);
-			i.putExtra(ShareActivity.EXTRA_WEIBO_CONTENT, content);
-			i.putExtra(ShareActivity.EXTRA_PIC_URI, picPath);
-			context.startActivity(i);	
-			
-			return true;
-	}
+//	public boolean share2weibo( Context context, String accessToken, String tokenSecret, String content, String picPath) 
+//		throws WeiboException{
+//			if(TextUtils.isEmpty(accessToken)){
+//				throw new WeiboException("token can not be null!");
+//			}else if(TextUtils.isEmpty(tokenSecret)){
+//				throw new WeiboException("secret can not be null!");
+//			}
+//			
+//			if(TextUtils.isEmpty(content) && TextUtils.isEmpty(picPath)){
+//				throw new WeiboException("weibo content can not be null!");
+//			}
+//			Intent i = new Intent(context, ShareActivity.class);
+//			i.putExtra(ShareActivity.EXTRA_ACCESS_TOKEN, accessToken);
+//			i.putExtra(ShareActivity.EXTRA_TOKEN_SECRET, tokenSecret);
+//			i.putExtra(ShareActivity.EXTRA_WEIBO_CONTENT, content);
+//			i.putExtra(ShareActivity.EXTRA_PIC_URI, picPath);
+//			context.startActivity(i);	
+//			
+//			return true;
+//	}
 	
-	
-	private void startActivitySignOn(Activity activity, String key, String secret){
-		
-	}
-	
-	
-	private void startDialogAuth(Activity activity, String app_key, String app_secret){
-		
-		
-	}
-	
-	public void authorizeCallBack(int requestCode, int resultCode , Intent data){
-		
-		
+	public void authorizeCallBack(int requestCode, int resultCode , Intent data){		
 	}
 	
 }

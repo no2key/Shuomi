@@ -1,7 +1,8 @@
 package com.android.shuomi.network;
 
 import com.android.shuomi.network.NetworkService.LocalBinder;
-import com.google.android.maps.MapActivity;
+import com.baidu.mapapi.MapActivity;
+//import com.google.android.maps.MapActivity;
 
 import android.content.ComponentName;
 import android.content.Context;

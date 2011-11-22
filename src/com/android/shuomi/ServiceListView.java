@@ -1,6 +1,7 @@
 package com.android.shuomi;
 
-import com.android.shuomi.around.GrouponAroundView;
+import com.android.shuomi.around.GrouponAroundMapView;
+//import com.android.shuomi.around.GrouponAroundView;
 import com.android.shuomi.favorites.FavoritesListView;
 import com.android.shuomi.groupon.GrouponMainView;
 import com.android.shuomi.intent.REQUEST;
@@ -29,7 +30,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -58,6 +58,13 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 	private String mCitySelected = null;
 	private TabHost mTabHost;
 	
+	private static ServiceListView mActivity = null;
+	
+	static public ServiceListView getInstance()
+	{
+		return mActivity;
+	}
+	
 	////////////////////////////
 	// Initialize Activity
 	////////////////////////////
@@ -65,6 +72,8 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 	public void onCreate( Bundle savedInstanceState ) {
 		super.onCreate( savedInstanceState );
 		setContentView( R.layout.service_list );
+		
+		mActivity = this;
 		
         createTab();
         loadSelectedLocation();        
@@ -133,7 +142,8 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 		if ( mFlippers[AROUND] == null ) 
 		{
 			mFlippers[AROUND] = ( ViewFlipper ) findViewById( mTabResIds[AROUND] );
-			goToNextView( new GrouponAroundView( this ) );
+			//goToNextView( new GrouponAroundView( this ) );
+			goToNextView( new GrouponAroundMapView( this ) );
 		}
 	}
 	

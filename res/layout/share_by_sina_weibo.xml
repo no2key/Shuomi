@@ -4,13 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     
-    <include 
-        android:id="@+id/header_view"
-        layout="@layout/title_bar" />
+<!--     <include  -->
+<!--         android:id="@+id/header_view" -->
+<!--         layout="@layout/title_bar" /> -->
     
-<!--     <include -->
-<!--         android:id="@+id/empty_view_loading" -->
-<!--         layout="@layout/empty_list_loading"/> -->
+    <include
+        android:id="@+id/empty_view_loading"
+        layout="@layout/empty_list_loading"/>
         
     <WebView 
         android:id="@+id/content_view"
@@ -19,6 +19,7 @@
         android:layout_x="0.0dip"
         android:layout_y="0.0dip"
         android:layout_weight="1.0"
+        android:visibility="gone"
         android:background="@color/ivory"/>
         
 </LinearLayout>

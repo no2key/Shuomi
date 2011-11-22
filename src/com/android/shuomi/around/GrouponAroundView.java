@@ -209,7 +209,11 @@ public class GrouponAroundView extends NetworkRequestLayout {
 			for ( int i = 0; i < mItemList.size(); i ++ )
 			{
 				GeoPoint point = addMarker( mItemList.get(i) );
-				mPointTable.put( point, Integer.valueOf( i ) );
+				
+				if ( point != null )
+				{
+					mPointTable.put( point, Integer.valueOf( i ) );
+				}
 			}
 			
 			commitUpdate();
@@ -224,13 +228,15 @@ public class GrouponAroundView extends NetworkRequestLayout {
 	
 	private int findCategory( String type ) 
 	{
-		int category;
-
-		for ( category = 0; !type.equals( getContext().getString( CATEGORY[category] ) ); category ++  );
+		int category = -1;
 		
-		if ( category >= CATEGORY.length )
+		for ( int i = 0; i < CATEGORY.length; i ++ )
 		{
-			category = CATEGORY.length - 1;
+			if ( type.equals( getContext().getString( CATEGORY[i] ) ) )
+			{
+				category = i;
+				break;
+			}
 		}
 		
 		return category;
@@ -264,15 +270,19 @@ public class GrouponAroundView extends NetworkRequestLayout {
 	
 	private GeoPoint addMarker( String[] item ) 
 	{
-		int category = findCategory( item[10] );
+		int category = findCategory( item[10] );		
+		GeoPoint point = null;
 		
-		int longtitudeE6 = (int) (Float.parseFloat( item[13] ) * 1E6);
-		int latitudeE6 = (int) (Float.parseFloat( item[14] ) * 1E6);
-		GeoPoint point = new GeoPoint( latitudeE6, longtitudeE6 );
-		//Log.d( TAG, point.toString() );
-		
-		OverlayItem overlayItem = new OverlayItem( point, item[5], item[10] );
-		mOverlays[category].addOverlay( overlayItem );
+		if ( category > -1 && category < CATEGORY.length )
+		{
+			int longtitudeE6 = (int) (Float.parseFloat( item[13] ) * 1E6);
+			int latitudeE6 = (int) (Float.parseFloat( item[14] ) * 1E6);
+			point = new GeoPoint( latitudeE6, longtitudeE6 );
+			//Log.d( TAG, point.toString() );
+			
+			OverlayItem overlayItem = new OverlayItem( point, item[5], item[10] );
+			mOverlays[category].addOverlay( overlayItem );
+		}
 		
 		return point;
 	}

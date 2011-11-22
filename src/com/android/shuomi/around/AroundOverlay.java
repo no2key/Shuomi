@@ -24,7 +24,8 @@ public class AroundOverlay extends ItemizedOverlay<OverlayItem> {
     private View mParent;
     private View mPopupView = null;
     private MapView mMapView = null;
-    private boolean mViewShown = false;
+    @SuppressWarnings("unused")
+	private boolean mViewShown = false;
     
 	public AroundOverlay( View parent, MapView mapView, View popupView, Drawable defaultMarker ) {
 		super(defaultMarker);

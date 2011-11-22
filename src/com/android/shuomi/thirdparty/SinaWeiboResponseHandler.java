@@ -45,12 +45,4 @@ public class SinaWeiboResponseHandler implements ExternalResponseHandler {
 			mView.processResponse( null );
 		}
 	}
-	
-//	private void share()
-//	{
-//		Weibo weibo = Weibo.getInstance();
-//		weibo.share2weibo( mContext, weibo.getAccessToken().getToken(), weibo.getAccessToken().getSecret(), 
-//				content, picPath);
-//	}
-
 }

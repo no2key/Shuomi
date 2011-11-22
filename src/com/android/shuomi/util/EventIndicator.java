@@ -21,15 +21,11 @@ public class EventIndicator {
     	return resId;
     }
     
-    static public void showToast( Context context, int error ) {
-    	int resId = getResIdByError( error );
-    	
-    	if ( resId != -1 ) {
-    		String prompt = context.getResources().getString( resId );
-    		showToast( context, prompt );
-    	}
-    }
-    
+	static public void showToast( Context context, int resId )
+	{
+		Toast.makeText( context, resId, Toast.LENGTH_SHORT ).show();
+	}
+	
     static public void showToast( Context context, String prompt ) {
     	Toast.makeText( context, prompt, Toast.LENGTH_SHORT ).show();
     }
@@ -44,6 +40,11 @@ public class EventIndicator {
     	}
     	
     	showAlert( context, prompt );
+    }
+    
+    static public void showAlert( Context context, int resId ) 
+    {
+    	showAlert( context, context.getString( resId ) );
     }
     
     static public void showAlert( Context context, String message ) 

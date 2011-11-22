@@ -146,6 +146,7 @@ public class ImageCache {
 				//fos.write( reader.getString().getBytes() );
 				fos.write( reader.getBytes() );
 				fos.close();
+				Log.d( TAG, "saveImageFile done, name: " + file );
 				result = true;
 			}				
 			catch ( FileNotFoundException e ) 

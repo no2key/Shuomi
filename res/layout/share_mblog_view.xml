@@ -24,6 +24,10 @@
 	android:orientation="vertical"
 	android:background="#00ffffff">
 	
+	<include
+        android:id="@+id/empty_view_loading"
+        layout="@layout/empty_list_loading"/>
+        
 	<RelativeLayout
 		android:id="@+id/rlTitle"
 		android:layout_width="fill_parent"
@@ -33,7 +37,7 @@
 			android:id="@+id/btnClose"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="@string/close"
+			android:text="@string/change_account"
 			android:textColor="#fff"
 			android:textSize="12sp"
 			android:layout_marginLeft="6dp"
@@ -125,7 +129,7 @@
 					android:id="@+id/ivImage"
 					android:layout_width="fill_parent"
 					android:layout_height="fill_parent"
-					android:src="@drawable/dota"
+					android:src="@drawable/ic_pic_na"
 					android:background="@drawable/image_background"
 					android:layout_gravity="center"
 					android:layout_margin="8dp"/>	

@@ -17,11 +17,9 @@
 package com.weibo.net;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -50,10 +48,6 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.conn.params.ConnRouteParams;
 import org.apache.http.entity.ByteArrayEntity;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-//import com.weibo.android.AuthorizeActivity;
 
 import android.app.AlertDialog.Builder;
 import android.content.Context;
@@ -79,7 +73,7 @@ public class Utility {
 	
 	private static WeiboParameters mRequestHeader = new WeiboParameters();
 	private static HttpHeaderFactory mAuth;
-	private static Token mToken = null;
+	//private static Token mToken = null;
 	
 	public static final String BOUNDARY = "7cd4a6d158c";
     public static final String MP_BOUNDARY = "--" + BOUNDARY;
@@ -95,7 +89,7 @@ public class Utility {
     private static final int SET_SOCKET_TIMEOUT = 200000;
     
 	public static void setTokenObject(Token token){
-		mToken = token;
+		//mToken = token;
 	}
 
 		
@@ -462,15 +456,15 @@ public class Utility {
      * 
      * @return String : http response content
      */
-    private static String read(InputStream in) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        BufferedReader r = new BufferedReader(new InputStreamReader(in), 1000);
-        for (String line = r.readLine(); line != null; line = r.readLine()) {
-            sb.append(line);
-        }
-        in.close();
-        return sb.toString();
-    }
+//    private static String read(InputStream in) throws IOException {
+//        StringBuilder sb = new StringBuilder();
+//        BufferedReader r = new BufferedReader(new InputStreamReader(in), 1000);
+//        for (String line = r.readLine(); line != null; line = r.readLine()) {
+//            sb.append(line);
+//        }
+//        in.close();
+//        return sb.toString();
+//    }
     
     
     /**
