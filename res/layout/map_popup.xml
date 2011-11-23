@@ -1,50 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="200dip"
     android:layout_height="wrap_content"
     android:orientation="horizontal" 
-    android:layout_marginLeft="20dip"
-    android:layout_marginRight="20dip"
+    android:layout_marginLeft="10dip"
+    android:layout_marginRight="10dip"
     android:background="@drawable/corner_bg">
 
-	<LinearLayout
-		android:orientation="vertical"
-		android:layout_width="0dip"
-		android:layout_weight="1"
-    	android:layout_height="wrap_content"
-    	android:paddingLeft="10dip">
-
-	    <TextView 
-	        android:id="@+id/details"
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:padding="3dip"
-	        android:maxLines="1"
-	        android:singleLine="true"
-	        android:ellipsize="end"
-	        android:text="details"
-	        android:textSize="14dip"
-	        android:textColor="@color/white"/>
-	    
-	    <TextView 
-	        android:id="@+id/category"
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:padding="3dip"
-	        android:text="category"
-	        android:textSize="12dip"
-	        android:textColor="@color/white"/>
-        
-    </LinearLayout>
-    
-	<ImageView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/text_box_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:paddingRight="10dip"
-        android:src="@drawable/right_arrow_gray"
-        android:id="@+id/indicator">
-    </ImageView>
+        android:orientation="horizontal">
+    
+		<LinearLayout
+		    android:id="@+id/text_box"
+			android:layout_width="0dip"
+			android:layout_weight="5"
+	    	android:layout_height="wrap_content"
+	    	android:orientation="vertical"
+	    	android:paddingLeft="10dip"
+	    	android:paddingRight="10dip">
+	    	
+		    <TextView 
+		        android:id="@+id/details"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:padding="3dip"
+		        android:maxLines="2"
+		        android:singleLine="false"
+		        android:ellipsize="end"
+		        android:text="details details details details details details"
+		        android:textSize="14dip"
+		        android:textColor="@color/white"/>
+		    
+		    <TextView 
+		        android:id="@+id/category"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:padding="3dip"
+		        android:text="category"
+		        android:textSize="12dip"
+		        android:textColor="@color/white"/>
+	        
+	    </LinearLayout>
+	    
+		<ImageView
+	        android:layout_width="0dip"
+	        android:layout_weight="1"
+	        android:layout_height="wrap_content"
+	        android:gravity="right"
+	        android:layout_gravity="center_vertical"
+	        android:paddingRight="5dip"
+	        android:src="@drawable/right_arrow_gray"
+	        android:id="@+id/indicator"/>
+    
+	</LinearLayout>
 
 </LinearLayout>

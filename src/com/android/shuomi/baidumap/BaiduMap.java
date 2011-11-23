@@ -10,9 +10,10 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
-import com.android.shuomi.MapInterface;
 import com.android.shuomi.R;
 import com.android.shuomi.ServiceListView;
+import com.android.shuomi.around.MapInterface;
+import com.android.shuomi.around.SetupPopupViewInterface;
 import com.android.shuomi.util.EventIndicator;
 
 import com.baidu.mapapi.BMapManager;
@@ -58,10 +59,26 @@ public class BaiduMap implements MapInterface
 	private LocationListener mLocationListener = null;
 	private MyLocationOverlay mMyLocationOverlay = null;
 	private HashMap<String, BaiduOverlay> mOverlays = new HashMap<String, BaiduOverlay>();
+	private View mPopupView = null;
+	private SetupPopupViewInterface mSetupPopListener;
+	private boolean mRequestLoaction = true;
+	
+	static private BaiduMap mInstance = null;
+	
+	static public final BaiduMap getInstance( Context context )
+	{
+		if ( mInstance == null )
+		{
+			mInstance = new BaiduMap( context );
+		}
+		
+		return mInstance;
+	}
 	
 	public BaiduMap( Context context )
 	{
 		mContext = context;
+		mRequestLoaction = true;
 	}
 	
 	@Override
@@ -92,9 +109,9 @@ public class BaiduMap implements MapInterface
 	}
 
 	@Override
-	public void setupMapView(View parent, int mapViewResId) 
+	public void setupMapView( View parent, int mapViewResId, View popupView, SetupPopupViewInterface listener ) 
 	{
-		if ( parent != null )
+		if ( parent != null && popupView != null )
 		{
 			mMapView = ( MapView ) parent.findViewById( R.id.mapview );
 			mMapView.setTraffic( false );
@@ -102,31 +119,53 @@ public class BaiduMap implements MapInterface
 			mMapView.displayZoomControls( true );
 			mMapView.getController().setZoom( 13 );		
 	        mMapView.setDrawOverlayWhenZooming( true );
+	        
+	        mPopupView = popupView;
+	        mSetupPopListener = listener;
+	        
+	        mMapView.addView( mPopupView, 
+		             new MapView.LayoutParams( 200, MapView.LayoutParams.WRAP_CONTENT,
+		             null, MapView.LayoutParams.BOTTOM_CENTER ) );
+	        mPopupView.setVisibility( View.GONE );
+	        
+//	        Log.d( TAG, "createMyLoactionOverLay" );
+//			mMyLocationOverlay = new MyLocationOverlay( mContext, mMapView ) ;
+//			mMyLocationOverlay.enableMyLocation();
+//			mMapView.getOverlays().add( mMyLocationOverlay );
 		}
 	}
 	
 	private void createMyLoactionOverLay( final LocationUpdateListener listener )
 	{
-		mMyLocationOverlay = new MyLocationOverlay( mContext, mMapView ) ;
-		mMapView.getOverlays().add( mMyLocationOverlay );
-		
-        mLocationListener = new LocationListener()
-        {
-			@Override
-			public void onLocationChanged( Location location ) 
-			{
-				if ( location != null )
+		//if ( mMyLocationOverlay == null )
+		{
+			Log.d( TAG, "createMyLoactionOverLay" );
+			mMyLocationOverlay = new MyLocationOverlay( mContext, mMapView ) ;
+			mMapView.getOverlays().add( mMyLocationOverlay );
+			
+	        mLocationListener = new LocationListener()
+	        {
+				@Override
+				public void onLocationChanged( Location location ) 
 				{
-					GeoPoint pt = new GeoPoint( ( int ) ( location.getLatitude() * 1e6 ), ( int )( location.getLongitude() * 1e6 ) );
-					
-					if ( listener != null )
+					if ( location != null )
 					{
-						Log.d( TAG,  pt.toString() );
-						listener.locationUpated( pt );
+						GeoPoint pt = new GeoPoint( ( int ) ( location.getLatitude() * 1e6 ), ( int )( location.getLongitude() * 1e6 ) );
+						
+						if ( listener != null )
+						{
+							Log.d( TAG,  pt.toString() );
+							
+							if ( mRequestLoaction )
+							{
+								mRequestLoaction = false;
+								listener.locationUpated( pt );
+							}
+						}
 					}
 				}
-			}
-        };
+	        };
+		}
 	}
 	
 	@Override
@@ -138,15 +177,21 @@ public class BaiduMap implements MapInterface
 	@Override
 	public void registerLocationUpdate( LocationUpdateListener listener )
 	{
+		mBMapMan.stop();
 		createMyLoactionOverLay( listener );
 		mBMapMan.getLocationManager().requestLocationUpdates( mLocationListener );
+		mBMapMan.start();
 		mMyLocationOverlay.enableMyLocation();
+		Log.d( TAG, "registerLocationUpdate" );
+		
 	}
 
 	@Override
 	public void unregisterLocationUpdate() 
 	{
-		mBMapMan.getLocationManager().removeUpdates( mLocationListener );
+		Log.d( TAG, "unregisterLocationUpdate" );
+		//mBMapMan.getLocationManager().removeUpdates( mLocationListener );
+		//mBMapMan.stop();
 	}
 
 	@Override
@@ -159,12 +204,12 @@ public class BaiduMap implements MapInterface
 			if ( overlay != null )
 			{
 				overlay.addItem( item );
-				Log.d( TAG, "add overlay item, key = " + name );
+				//Log.d( TAG, "add overlay item, key = " + name );
 			}
-			else 
-			{
-				Log.e( TAG, "cannot find overlay, key = " + name );
-			}
+//			else 
+//			{
+//				Log.e( TAG, "cannot find overlay, key = " + name );
+//			}
 		}
 	}
 
@@ -191,7 +236,7 @@ public class BaiduMap implements MapInterface
 		
 		if ( !TextUtils.isEmpty( name ) && marker != null )
 		{
-			overlay = new BaiduOverlay( marker, mContext );
+			overlay = new BaiduOverlay( marker, mContext, mMapView, mPopupView, mSetupPopListener );
 			mOverlays.put( name, overlay );
 			Log.d( TAG, "create overlay, key = " + name );
 		}
@@ -210,7 +255,11 @@ public class BaiduMap implements MapInterface
 		{
 			BaiduOverlay overlay = mOverlays.get( key );
 			Log.d( TAG, "key = " + key + ", item count = " + overlay.size() );
-			mMapView.getOverlays().add( overlay );
+			
+			if ( overlay.size() > 0 )
+			{
+				mMapView.getOverlays().add( overlay );
+			}
 		}
 	}
 
@@ -219,6 +268,7 @@ public class BaiduMap implements MapInterface
 	{
 		mMapView.getOverlays().removeAll( mOverlays.values() );
 		mOverlays.clear();
+		mPopupView.setVisibility( View.GONE );
 	}
 
 	@Override

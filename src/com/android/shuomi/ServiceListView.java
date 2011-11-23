@@ -1,6 +1,7 @@
 package com.android.shuomi;
 
 import com.android.shuomi.around.GrouponAroundMapView;
+import com.android.shuomi.baidumap.BaiduMap;
 //import com.android.shuomi.around.GrouponAroundView;
 import com.android.shuomi.favorites.FavoritesListView;
 import com.android.shuomi.groupon.GrouponMainView;
@@ -69,6 +70,12 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
 	// Initialize Activity
 	////////////////////////////
 	
+	public void onDestroy()
+	{
+		BaiduMap.getInstance( this ).destroy();
+		super.onDestroy();
+	}
+	
 	public void onCreate( Bundle savedInstanceState ) {
 		super.onCreate( savedInstanceState );
 		setContentView( R.layout.service_list );
@@ -79,6 +86,7 @@ public class ServiceListView extends NetworkBindActivity implements NetworkRespo
         loadSelectedLocation();        
         initFlipper();
         DatabaseSession.create( this );
+        BaiduMap.getInstance( this ).create();
     }
 	
 	private void createTab() {

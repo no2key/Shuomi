@@ -7,25 +7,32 @@ import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.android.shuomi.MapInterface;
-import com.android.shuomi.MapInterface.LocationUpdateListener;
 import com.android.shuomi.NetworkRequestLayout;
 import com.android.shuomi.R;
+import com.android.shuomi.ServiceListView;
+import com.android.shuomi.around.MapInterface.LocationUpdateListener;
 import com.android.shuomi.baidumap.BaiduMap;
+import com.android.shuomi.groupon.GrouponDetailsView;
 import com.android.shuomi.groupon.GrouponMainView;
 import com.android.shuomi.intent.GrouponAroundRequestIntent;
 import com.android.shuomi.intent.REQUEST;
+import com.android.shuomi.intent.RESPONSE;
 import com.android.shuomi.parser.ResponseParser;
 import com.baidu.mapapi.GeoPoint;
+import com.baidu.mapapi.MapView;
 import com.baidu.mapapi.OverlayItem;
 
 public class GrouponAroundMapView extends NetworkRequestLayout 
 {
 	private static final String TAG = "GrouponAroundMapView";
 	private static final int DEFAULT_DISTANCE = 5000;
+	private static final int POPUP_VIEW_ALPHA = 200;
 	private static final int[] CATEGORY = GrouponMainView.GROUPON_LIST_ITEM;
 	
 	private final int[] mPinResIds = { R.drawable.ic_pin_red, R.drawable.ic_pin_blue, 
@@ -36,13 +43,13 @@ public class GrouponAroundMapView extends NetworkRequestLayout
 	private MapInterface mMap = null;
 	private ArrayList<String[]> mItemList = null;
 	private HashMap< GeoPoint , Integer> mPointTable = null;
-	
+	private View mPopupView = null;
+	private LocationUpdateListener mUpdateListener = null;
 	
 	public GrouponAroundMapView( Context context ) 
 	{
 		super(context);
-		mMap = new BaiduMap( context );
-		mMap.create();
+		mMap = BaiduMap.getInstance( context );//new BaiduMap( context );
 		
 		Log.d( TAG, "view init" );
 		inflateLayout();
@@ -57,10 +64,81 @@ public class GrouponAroundMapView extends NetworkRequestLayout
 		layoutInflater.inflate( R.layout.groupon_around_baidu, this, true );
 		
 		setupTitle();
+		createPopupView( layoutInflater );
 		
 		mMap.start();
-		mMap.setupMapView( this , R.id.mapview );
-		//createPopupView( layoutInflater );
+		mMap.setupMapView( this, R.id.mapview, mPopupView, new SetupPopupViewInterface() 
+		{
+			@Override
+			public void setup( View popupView, MapView.LayoutParams popupViewLayout, OverlayItem item ) 
+			{
+				setupPopupView( popupView, popupViewLayout, item );				
+			}
+		});
+	}
+	
+	private void setupPopupView( View popupView, MapView.LayoutParams popupViewLayout, final OverlayItem item )
+	{
+		if ( popupView != null && item != null )
+		{
+			LinearLayout textBoxParent = (LinearLayout) popupView.findViewById( R.id.text_box_parent );
+			LinearLayout textBox = (LinearLayout) popupView.findViewById( R.id.text_box );
+			
+			int imageWidth = 0;
+			
+			ImageView indicator = (ImageView) popupView.findViewById( R.id.indicator );
+			
+			if ( indicator != null )
+			{
+				LayoutParams layoutParam = (LayoutParams) indicator.getLayoutParams();
+				imageWidth = indicator.getDrawable().getIntrinsicWidth() + 
+						     indicator.getPaddingLeft() + indicator.getPaddingRight() + 				
+						     layoutParam.leftMargin + layoutParam.rightMargin;
+			}
+			
+			Log.d( TAG, "popup view, view width: " + popupViewLayout.width + ", image width: " + imageWidth );
+			
+			LayoutParams layout = new LayoutParams( popupViewLayout.width - imageWidth, ViewGroup.LayoutParams.WRAP_CONTENT );
+			textBoxParent.updateViewLayout( textBox, layout );
+			
+			TextView description = (TextView) popupView.findViewById( R.id.details );
+			
+			if ( description != null )
+			{
+				description.setText( item.getTitle() );
+			}
+			 
+			TextView category = (TextView) popupView.findViewById( R.id.category );
+			
+			if ( category != null )
+			{
+				category.setText( item.getSnippet() );
+			}
+			
+			indicator.setOnClickListener( new OnClickListener() 
+			{
+				@Override
+				public void onClick(View v)
+				{
+					goToDetailsView( item.getPoint() );
+				}
+			} );	
+		}
+	}
+	
+	private void goToDetailsView( GeoPoint point )
+	{
+		if ( mPointTable != null )
+		{
+			Integer index = mPointTable.get( point );
+			
+			if ( index.intValue() < mItemList.size() )
+			{
+				String id = mItemList.get( index.intValue() )[8];
+				( ( ServiceListView ) getContext() ).goToNextView
+					( new GrouponDetailsView( getContext(), id, RESPONSE.HTTP_RESPONSE_AROUND ) );
+			}
+		}
 	}
 	
 	private void setupTitle() 
@@ -74,14 +152,32 @@ public class GrouponAroundMapView extends NetworkRequestLayout
 			
 			@Override
 			public void onClick(View v) {
-				//refreshLocation();
+				refreshLocation();
 			}
 		});
 	}
 	
+	private void refreshLocation()
+	{
+		mMap.clearMyLocationOverlay();
+		mMap.clearOverlays();
+		startUpdateLocation();
+		
+//		if ( mUpdateListener != null )
+//		{
+//			mMap.registerLocationUpdate( mUpdateListener );
+//		}
+	}
+	
+	private void createPopupView( LayoutInflater inflater )
+	{
+		mPopupView = inflater.inflate( R.layout.map_popup, null );
+	    mPopupView.getBackground().setAlpha( POPUP_VIEW_ALPHA );
+	}
+	
 	private void startUpdateLocation()
 	{
-		mMap.registerLocationUpdate( new LocationUpdateListener() 
+		mUpdateListener = new LocationUpdateListener() 
 		{
 			@Override
 			public void locationUpated( GeoPoint geoPoint ) 
@@ -91,7 +187,9 @@ public class GrouponAroundMapView extends NetworkRequestLayout
 				requestGrouponAround( geoPoint );
 				initOverlays();
 			}
-		} );
+		};
+		
+		mMap.registerLocationUpdate( mUpdateListener );
 	}
 	
 	private void requestGrouponAround( GeoPoint point ) 

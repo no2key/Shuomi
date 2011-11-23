@@ -1,4 +1,4 @@
-package com.android.shuomi;
+package com.android.shuomi.around;
 
 import android.graphics.drawable.Drawable;
 import android.view.View;
@@ -14,7 +14,7 @@ public interface MapInterface
 	public void stop();
 	public void destroy();
 	
-	public void setupMapView( View parent, int mapViewResId );
+	public void setupMapView( View parent, int mapViewResId, View popupView, SetupPopupViewInterface listener );
 	public void moveToPoint( GeoPoint pt );
 	
 	public interface LocationUpdateListener
